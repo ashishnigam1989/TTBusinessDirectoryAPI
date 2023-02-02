@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\InDevelopment\\2023\\TTBusinessDirectory\\CommonService\\CommonService.csproj": {}
+    "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\CommonService\\CommonService.csproj": {}
   },
   "projects": {
-    "D:\\InDevelopment\\2023\\TTBusinessDirectory\\CommonService\\CommonService.csproj": {
+    "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\CommonService\\CommonService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\CommonService\\CommonService.csproj",
+        "projectUniqueName": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\CommonService\\CommonService.csproj",
         "projectName": "CommonService",
-        "projectPath": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\CommonService\\CommonService.csproj",
+        "projectPath": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\CommonService\\CommonService.csproj",
         "packagesPath": "C:\\Users\\ashis\\.nuget\\packages\\",
-        "outputPath": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\CommonService\\obj\\",
+        "outputPath": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\CommonService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ashis\\AppData\\Roaming\\NuGet\\NuGet.Config",

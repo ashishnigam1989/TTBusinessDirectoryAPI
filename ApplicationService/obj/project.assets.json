@@ -6604,11 +6604,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\ApplicationService\\ApplicationService.csproj",
+      "projectUniqueName": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\ApplicationService\\ApplicationService.csproj",
       "projectName": "ApplicationService",
-      "projectPath": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\ApplicationService\\ApplicationService.csproj",
+      "projectPath": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\ApplicationService\\ApplicationService.csproj",
       "packagesPath": "C:\\Users\\ashis\\.nuget\\packages\\",
-      "outputPath": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\ApplicationService\\obj\\",
+      "outputPath": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\ApplicationService\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ashis\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -6625,11 +6625,11 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "D:\\InDevelopment\\2023\\TTBusinessDirectory\\CommonService\\CommonService.csproj": {
-              "projectPath": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\CommonService\\CommonService.csproj"
+            "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\CommonService\\CommonService.csproj": {
+              "projectPath": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\CommonService\\CommonService.csproj"
             },
-            "D:\\InDevelopment\\2023\\TTBusinessDirectory\\DatabaseService\\DatabaseService.csproj": {
-              "projectPath": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\DatabaseService\\DatabaseService.csproj"
+            "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\DatabaseService\\DatabaseService.csproj": {
+              "projectPath": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\DatabaseService\\DatabaseService.csproj"
             }
           }
         }

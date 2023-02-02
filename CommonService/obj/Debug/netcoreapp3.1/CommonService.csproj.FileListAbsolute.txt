@@ -38,3 +38,13 @@ D:\InDevelopment\2023\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\
 D:\InDevelopment\2023\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.csproj.CoreCompileInputs.cache
 D:\InDevelopment\2023\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.dll
 D:\InDevelopment\2023\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.pdb
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\bin\Debug\netcoreapp3.1\CommonService.deps.json
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\bin\Debug\netcoreapp3.1\CommonService.dll
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\bin\Debug\netcoreapp3.1\CommonService.pdb
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.csproj.AssemblyReference.cache
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.GeneratedMSBuildEditorConfig.editorconfig
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.AssemblyInfoInputs.cache
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.AssemblyInfo.cs
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.csproj.CoreCompileInputs.cache
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.dll
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\CommonService\obj\Debug\netcoreapp3.1\CommonService.pdb

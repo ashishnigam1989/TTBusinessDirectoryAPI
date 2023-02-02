@@ -50,3 +50,16 @@ D:\InDevelopment\2023\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.
 D:\InDevelopment\2023\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.dll
 D:\InDevelopment\2023\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.pdb
 D:\InDevelopment\2023\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.genruntimeconfig.cache
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\bin\Debug\netcoreapp3.1\DatabaseService.deps.json
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\bin\Debug\netcoreapp3.1\DatabaseService.runtimeconfig.json
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\bin\Debug\netcoreapp3.1\DatabaseService.runtimeconfig.dev.json
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\bin\Debug\netcoreapp3.1\DatabaseService.dll
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\bin\Debug\netcoreapp3.1\DatabaseService.pdb
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.csproj.AssemblyReference.cache
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.GeneratedMSBuildEditorConfig.editorconfig
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.AssemblyInfoInputs.cache
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.AssemblyInfo.cs
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.csproj.CoreCompileInputs.cache
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.dll
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.pdb
+D:\InDevelopment\TTBusiness\Applications\TTBusinessDirectory\DatabaseService\obj\Debug\netcoreapp3.1\DatabaseService.genruntimeconfig.cache

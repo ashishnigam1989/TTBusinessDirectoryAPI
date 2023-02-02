@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zH0fsM2IDZhvPN1ZhBvaPgUT23rKr8TC+tcYCbfOQAucCABRzMVTTxaxsIyXhwGSw+lXV3YLn4N1/PJfRkP0iw==",
+  "dgSpecHash": "tbRZ6pMiSbSZp6DJOk6Vol60/afcXdIKUO4ApYQldfysEGbiFCLUrAClqq9z3ACMG9a8PurX+4Er/BTAPLcFxQ==",
   "success": true,
-  "projectFilePath": "D:\\InDevelopment\\2023\\TTBusinessDirectory\\CommonService\\CommonService.csproj",
+  "projectFilePath": "D:\\InDevelopment\\TTBusiness\\Applications\\TTBusinessDirectory\\CommonService\\CommonService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ashis\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\ashis\\.nuget\\packages\\microsoft.aspnetcore.authentication.core\\2.2.0\\microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",
