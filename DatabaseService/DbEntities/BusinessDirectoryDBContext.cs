@@ -20,12 +20,29 @@ namespace DatabaseService.DbEntities
         }
 
         public virtual DbSet<Brand> Brand { get; set; }
+        public virtual DbSet<BrandCategory> BrandCategory { get; set; }
         public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<CategoryIndustry> CategoryIndustry { get; set; }
         public virtual DbSet<Company> Company { get; set; }
+        public virtual DbSet<CompanyBanners> CompanyBanners { get; set; }
+        public virtual DbSet<CompanyBrand> CompanyBrand { get; set; }
+        public virtual DbSet<CompanyCategory> CompanyCategory { get; set; }
+        public virtual DbSet<CompanyDynamicMenu> CompanyDynamicMenu { get; set; }
+        public virtual DbSet<CompanyGalleryAttachment> CompanyGalleryAttachment { get; set; }
+        public virtual DbSet<CompanyLinks> CompanyLinks { get; set; }
+        public virtual DbSet<CompanyOffers> CompanyOffers { get; set; }
+        public virtual DbSet<CompanyPackage> CompanyPackage { get; set; }
+        public virtual DbSet<CompanyProduct> CompanyProduct { get; set; }
+        public virtual DbSet<CompanyReviewLike> CompanyReviewLike { get; set; }
+        public virtual DbSet<CompanyService> CompanyService { get; set; }
+        public virtual DbSet<CompanyUsers> CompanyUsers { get; set; }
+        public virtual DbSet<CompanyVideos> CompanyVideos { get; set; }
+        public virtual DbSet<CompanyVouchers> CompanyVouchers { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<FreeListing> FreeListing { get; set; }
         public virtual DbSet<FreeListingDetails> FreeListingDetails { get; set; }
+        public virtual DbSet<Industry> Industry { get; set; }
         public virtual DbSet<MenuRolePermission> MenuRolePermission { get; set; }
         public virtual DbSet<Menus> Menus { get; set; }
         public virtual DbSet<Region> Region { get; set; }
@@ -38,8 +55,7 @@ namespace DatabaseService.DbEntities
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=SQL8003.site4now.net;Database=db_a9174a_ttbusiness;User Id=db_a9174a_ttbusiness_admin;Password=ttbusiness#2019;");
+                optionsBuilder.UseSqlServer("Server=185.182.184.243;Database=BusinessDirectoryDB;User Id=businessdir;Password=BusinessDir@123;");
             }
         }
 
@@ -76,6 +92,19 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.Slug).HasMaxLength(250);
             });
 
+            modelBuilder.Entity<BrandCategory>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
@@ -103,6 +132,19 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.Unspsccode)
                     .HasColumnName("UNSPSCCode")
                     .HasMaxLength(20);
+            });
+
+            modelBuilder.Entity<CategoryIndustry>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Company>(entity =>
@@ -182,6 +224,304 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.VerifiedTime).HasColumnType("datetime");
 
                 entity.Property(e => e.WindowsStoreUrl).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<CompanyBanners>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.ArabicUrl).HasColumnName("ArabicURL");
+
+                entity.Property(e => e.BannerExpiryDate).HasColumnType("datetime");
+
+                entity.Property(e => e.BannerStartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.EnglishUrl).HasColumnName("EnglishURL");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<CompanyBrand>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<CompanyCategory>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<CompanyDynamicMenu>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<CompanyGalleryAttachment>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<CompanyLinks>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.ArabicUrl)
+                    .HasColumnName("ArabicURL")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.EnglishUrl)
+                    .HasColumnName("EnglishURL")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LinkNameArb).HasMaxLength(250);
+
+                entity.Property(e => e.LinkNameEng).HasMaxLength(250);
+
+                entity.Property(e => e.Target).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<CompanyOffers>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Image).HasMaxLength(150);
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.OfferDisplayDate).HasColumnType("datetime");
+
+                entity.Property(e => e.OfferEndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.OfferNameArb).HasMaxLength(150);
+
+                entity.Property(e => e.OfferNameEng).HasMaxLength(150);
+
+                entity.Property(e => e.OfferShortDescriptionArb).HasMaxLength(250);
+
+                entity.Property(e => e.OfferShortDescriptionEng).HasMaxLength(250);
+
+                entity.Property(e => e.OfferStartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.OldPrice).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+            });
+
+            modelBuilder.Entity<CompanyPackage>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<CompanyProduct>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Image).HasMaxLength(150);
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.NameArb).HasMaxLength(150);
+
+                entity.Property(e => e.NameEng)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(e => e.OfferEndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.OfferStartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.OldPrice).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.PartNumber).HasMaxLength(50);
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.ShortDescriptionArb).HasMaxLength(250);
+
+                entity.Property(e => e.ShortDescriptionEng).HasMaxLength(250);
+
+                entity.Property(e => e.WarrantyArb).HasMaxLength(150);
+
+                entity.Property(e => e.WarrantyEng).HasMaxLength(150);
+            });
+
+            modelBuilder.Entity<CompanyReviewLike>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<CompanyService>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Image).HasMaxLength(150);
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.NameArb).HasMaxLength(150);
+
+                entity.Property(e => e.NameEng)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(e => e.OfferEndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.OfferStartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.OldPrice).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.ShortDescriptionArb).HasMaxLength(250);
+
+                entity.Property(e => e.ShortDescriptionEng).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<CompanyUsers>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+            });
+
+            modelBuilder.Entity<CompanyVideos>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.ArabicUrl)
+                    .HasColumnName("ArabicURL")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.EnglishUrl)
+                    .HasColumnName("EnglishURL")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.VideoNameArb).HasMaxLength(250);
+
+                entity.Property(e => e.VideoNameEng).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<CompanyVouchers>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.OldPrice).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.VoucherDisplayDate).HasColumnType("datetime");
+
+                entity.Property(e => e.VoucherEndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.VoucherNameArb).HasMaxLength(150);
+
+                entity.Property(e => e.VoucherNameEng).HasMaxLength(150);
+
+                entity.Property(e => e.VoucherShortDescriptionArb).HasMaxLength(250);
+
+                entity.Property(e => e.VoucherShortDescriptionEng).HasMaxLength(250);
+
+                entity.Property(e => e.VoucherStartDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Country>(entity =>
@@ -302,6 +642,35 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.RelatedProduct).HasMaxLength(150);
+            });
+
+            modelBuilder.Entity<Industry>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Icon).HasMaxLength(50);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.MetaDescriptionArb).HasMaxLength(160);
+
+                entity.Property(e => e.MetaDescriptionEng).HasMaxLength(160);
+
+                entity.Property(e => e.MetaTitleArb).HasMaxLength(70);
+
+                entity.Property(e => e.MetaTitleEng).HasMaxLength(70);
+
+                entity.Property(e => e.NameArb).HasMaxLength(150);
+
+                entity.Property(e => e.NameEng)
+                    .IsRequired()
+                    .HasMaxLength(150);
             });
 
             modelBuilder.Entity<MenuRolePermission>(entity =>
