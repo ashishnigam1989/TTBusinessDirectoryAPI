@@ -18,6 +18,7 @@ namespace TTBusinessAdminPanel.Controllers
             _logger = logger;
         }
 
+        //Dashboard
         public IActionResult Index()
         {
             return View();
@@ -37,6 +38,31 @@ namespace TTBusinessAdminPanel.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Country()
+        {
+            return View();
+        }
+
+        public IActionResult District()
+        {
+            return View();
+        }
+
+        public IActionResult Brand()
+        {
+            return View();
+        }
+
+        public IActionResult Category()
+        {
+            return View();
+        }
+
+        public IActionResult Industry()
+        {
+            return View();
         }
     }
 }
