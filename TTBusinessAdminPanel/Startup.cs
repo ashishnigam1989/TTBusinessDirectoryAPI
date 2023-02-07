@@ -1,3 +1,6 @@
+using ApplicationService.IServices;
+using ApplicationService.Services;
+using DatabaseService.DbEntities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +26,13 @@ namespace TTBusinessAdminPanel
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //Dependencies Mapping Start
+            services.AddScoped<BusinessDirectoryDBContext>();
+            services.AddScoped<IAccount, Account>();
+            services.AddScoped<IMaster, Master>();
+            services.AddDbContext<BusinessDirectoryDBContext>(ServiceLifetime.Scoped);
+            //Dependencies Mapping End
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
