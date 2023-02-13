@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace CommonService.RequestModel
@@ -7,11 +8,15 @@ namespace CommonService.RequestModel
     public class UserRequestModel
     {
         public long Id { get; set; }
+        [Required(ErrorMessage = "Role is requred")]
         public int RoleId { get; set; }
+        [Required(ErrorMessage = "Name is requred")]
         public string Name { get; set; }
+        [Required(ErrorMessage = "Surname is requred")]
         public string Surname { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
+        [Required(ErrorMessage = "EmailAddress is requred")]
         public string EmailAddress { get; set; }
         public bool IsEmailConfirmed { get; set; }
         public string EmailConfirmationCode { get; set; }
