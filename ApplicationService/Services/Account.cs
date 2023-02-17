@@ -65,35 +65,54 @@ namespace ApplicationService.Services
             return await Task.FromResult(menus);
         }
 
-        
-        public async Task<UserListModel> GetUsers(int page, int limit)
+        public async Task<UserListModel> GetUsers(int page, int limit, string searchValue)
         {
-            var usersobj = _dbContext.Users.Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur });
+            //var usersobj = _dbContext.Users
+            //    .Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur });
+
+            var usersobj = _dbContext.Users
+                .Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur)
+                => new { Users = u, UserRoles = ur })
+                .Join(_dbContext.Roles, x => x.UserRoles.RoleId, r => r.Id, (x, r)
+                => new { x.Users, x.UserRoles, Roles = r });
+
             int total = usersobj.CountAsync().Result;
-            var users= usersobj
+            var users = usersobj
                 .Select(s => new UserModel
                 {
-                    Id = s.u.Id,
-                    Name = s.u.Name,
-                    RoleId = s.ur.RoleId,
-                    Surname = s.u.Surname,
-                    EmailAddress = s.u.EmailAddress,
-                    Username=s.u.UserName,
-                    IsEmailConfirmed = s.u.IsEmailConfirmed,
-                    LastLoginTime = s.u.LastLoginTime,
-                    IsDeleted = s.u.IsDeleted,
-                    IsActive = s.u.IsActive,
-                    Mobile = s.u.Mobile
-                }).Distinct().OrderByDescending(o=>o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+                    Id = s.Users.Id,
+                    Name = s.Users.Name,
+                    RoleId = s.UserRoles.RoleId,
+                    Rolename = s.Roles.Name,
+                    Surname = s.Users.Surname,
+                    EmailAddress = s.Users.EmailAddress,
+                    Username = s.Users.UserName,
+                    IsEmailConfirmed = s.Users.IsEmailConfirmed,
+                    LastLoginTime = s.Users.LastLoginTime,
+                    IsDeleted = s.Users.IsDeleted,
+                    IsActive = s.Users.IsActive,
+                    Mobile = s.Users.Mobile
+                });
+
+            if (!string.IsNullOrEmpty(searchValue.ToLower()))
+            {
+                users = users.Where(m => m.Name.ToLower().Contains(searchValue)
+                                || m.EmailAddress.ToLower().Contains(searchValue)
+                                || m.Mobile.ToLower().Contains(searchValue)
+                                || m.Rolename.ToLower().Contains(searchValue));
+
+                total = users.Distinct().CountAsync().Result;
+            }
+            
+            var finalData = users.Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
             UserListModel uobj = new UserListModel
             {
                 Count = total,
-                UserList = users
+                UserList = finalData
             };
             return await Task.FromResult(uobj);
         }
-
         public async Task<bool> CreateUser(UserRequestModel userRequest)
         {
             bool result = false;
@@ -184,7 +203,6 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
         }
 
-
         public async Task<bool> RoleMenuPermission(RoleMenuMapping _rModel)
         {
             var rolemenus = _dbContext.MenuRolePermission.Where(w => w.RoleId == _rModel.RoleId).ToList();
@@ -228,7 +246,6 @@ namespace ApplicationService.Services
                 }).FirstOrDefault();
             return await Task.FromResult(udetail);
         }
-
 
         public async Task<bool> ApproveRejectUser(int userid)
         {

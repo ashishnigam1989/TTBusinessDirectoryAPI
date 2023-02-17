@@ -12,7 +12,7 @@ namespace ApplicationService.IServices
     {
         Task<UserModel> Login(LoginRequestModel login);
         Task<List<MenuModel>> GetMenus(int roleId);
-        Task<UserListModel> GetUsers(int page , int limit );
+        Task<UserListModel> GetUsers(int page, int limit, string searchValue);
         Task<bool> CreateUser(UserRequestModel userRequest);
         Task<bool> EditUser(UserRequestModel userRequest);
         Task<bool> RoleMenuPermission(RoleMenuMapping _rModel);

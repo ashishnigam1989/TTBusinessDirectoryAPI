@@ -36,19 +36,19 @@ namespace ApplicationService.Services
             return roles;
         }
 
-        public async Task<List<CountryModel>> GetCountries()
-        {
-            var countries = _dbContext.Country
-                .Select(s => new CountryModel
-                {
-                    CountryCode = s.CountryCode,
-                    Id = s.Id,
-                    CountryNameEng = s.CountryNameEng,
-                    CurrencyCode = s.CurrencyCode
-                }).ToListAsync().Result;
+        //public async Task<List<CountryModel>> GetCountries()
+        //{
+        //    var countries = _dbContext.Country
+        //        .Select(s => new CountryModel
+        //        {
+        //            CountryCode = s.CountryCode,
+        //            Id = s.Id,
+        //            CountryNameEng = s.CountryNameEng,
+        //            CurrencyCode = s.CurrencyCode
+        //        }).ToListAsync().Result;
 
-            return await Task.FromResult(countries);
-        }
+        //    return await Task.FromResult(countries);
+        //}
 
         public List<MenuModel> GetAllMenus()
         {

@@ -31,6 +31,7 @@ namespace TTBusinessAdminPanel
             services.AddScoped<BusinessDirectoryDBContext>();
             services.AddScoped<IAccount, Account>();
             services.AddScoped<IMaster, Master>();
+            services.AddScoped<ILocation, Location>();
             services.AddDbContext<BusinessDirectoryDBContext>(ServiceLifetime.Scoped);
             //Dependencies Mapping End
         }
@@ -56,7 +57,7 @@ namespace TTBusinessAdminPanel
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Account}/{action=Login}/{id?}");
             });
         }
     }

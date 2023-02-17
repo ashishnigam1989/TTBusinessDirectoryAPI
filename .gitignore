@@ -1,0 +1,11 @@
+/ApplicationService/bin
+/ApplicationService/obj
+/CommonService/bin
+/CommonService/obj
+/DatabaseService/bin
+/DatabaseService/obj
+/TTBusinessAdminPanel/bin
+/TTBusinessAdminPanel/obj
+/TTBusinessDirectoryAPI/bin
+/TTBusinessDirectoryAPI/obj
+/.vs

@@ -15,6 +15,7 @@ namespace ApplicationService
             CreateMap<Menus, MenuModel>().ReverseMap();
             CreateMap<MenuRolePermission, MenuModel>().ReverseMap();
             CreateMap<UserRequestModel, Users>().ReverseMap();
+            CreateMap<CountryModel, Country>().ReverseMap();
         }
     }
 }
