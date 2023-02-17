@@ -1,8 +1,199 @@
-﻿
+﻿@model CommonService.RequestModel.RoleMenuMapping
 @{
     ViewData["Title"] = "RoleMenuMap";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>RoleMenuMap</h1>
 
+<div class="block-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-7">
+            <h2>Role Menu Mapping</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li> 
+                <li class="breadcrumb-item active">Role Menu Mapping</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="header">
+                <h2>Role Menu Mapping</h2>
+                <ul class="header-dropdown m-r--5">
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more-vert"></i> </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a href="javascript:void(0);">Action</a></li>
+                            <li><a href="javascript:void(0);">Another action</a></li>
+                            <li><a href="javascript:void(0);">Something else here</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6" style="margin-left:35px;">
+                            <div class="form-group form-float">
+                                <div>
+                                    <select id="ddlRole" asp-for="RoleId" name="RoleId" class="show-tick" onchange="BindMenus(this);">
+                                        <option value="">Select Role</option>
+                                        @foreach (var role in ViewBag.Roles)
+                                        {
+                                            <option value="@role.Value">@role.Text</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <span asp-validation-for="RoleId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div>
+                                    <div>
+                                        <div style="height: 40px;width: 200px;margin-left: 40px;">
+                                            <input type="checkbox" id="chkselectAll" name="chkselectAll" onchange="SelectAll(this)">
+                                            <label for="chkselectAll">Selec All</label>
+                                        </div>
+                                        <ul id="rolechklist" style="column-count: 4; column-gap: normal; list-style: none">
+                                        </ul>
+                                    </div>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-raised btn-primary waves-effect" onclick="SaveRoleMenus()" type="submit">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $.validator.setDefaults({
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function (element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            }
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            BindMenus();
+        });
+        var menulist;
+        function BindMenus(role) {
+            menulist=[];
+            var roleid = role ? role.value:undefined;
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("BindMenus")',
+                dataType: 'json',
+                data: { id: roleid },
+                success: function (data) {
+                    menulist=data;
+                    AddCheckBoxes(false);
+                   
+                },
+                error: function (ex) {
+
+                }
+            });
+        }
+        function AddCheckBoxes(isAll) {
+
+            
+            if (isAll){
+                var isSelectAll = $('#chkselectAll').is(":checked");
+                for (var i = 0; i < menulist.length; i++) {
+                    menulist[i].isSelected = isSelectAll;
+                } 
+            }
+
+            var list = '';
+            $('#rolechklist').empty();
+            for (var i = 0; i < menulist.length; i++) {
+                var id = 'chk' + menulist[i].menuId;
+                if (menulist[i].isSelected) {
+                    list += ' <input type="checkbox" id = "' + id + '" name = "' + id + '" checked onchange="SelectMenus(' + menulist[i].menuId + ',this)" >'
+                }
+                else {
+                    list += ' <input type="checkbox" id = "' + id + '" name = "' + id + '" onchange="SelectMenus(' + menulist[i].menuId + ',this)"  >'
+                }
+
+                list += '<label for= "' + id + '" > ' + menulist[i].menuName + '</label>'
+            }
+            $('#rolechklist').append(list);
+        }
+        function SelectMenus(menuid,event){  
+            var foundIndex = menulist.findIndex(x => x.menuId == menuid);
+            if (event.checked) {
+                menulist[foundIndex].isSelected = true;
+            }
+            else {
+                menulist[foundIndex].isSelected = false;
+            } 
+        }
+        function SaveRoleMenus(){
+            var selectedmenuid=[];
+            var selected = menulist.filter(function (item) { return item.isSelected === true; });
+            for (var i = 0; i < selected.length; i++) {
+                selectedmenuid.push(selected[i].menuId);
+            }
+            var reqObj = {
+                RoleId: $('#ddlRole').val()? Number($('#ddlRole').val()):undefined,
+                Menus: selectedmenuid
+            };
+
+            debugger;
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AssignMenusToRole")',
+                dataType: 'json',
+                data: reqObj,
+                success: function (data) {
+                    if (data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'Role Menu Mapping Successful!!'
+                        })
+                    }
+                    else{
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Not Saved!!'
+                        })
+                    }
+                },
+                error: function (ex) {
+
+                }
+            });
+
+
+        }
+        function SelectAll(event)
+        {
+                   AddCheckBoxes(true);
+        }       
+
+    </script>
+}

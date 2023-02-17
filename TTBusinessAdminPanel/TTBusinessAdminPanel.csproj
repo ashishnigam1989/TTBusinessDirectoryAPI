@@ -13,4 +13,10 @@
     <ProjectReference Include="..\ApplicationService\ApplicationService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationService\ApplicationService.csproj" />
+    <ProjectReference Include="..\CommonService\CommonService.csproj" />
+    <ProjectReference Include="..\DatabaseService\DatabaseService.csproj" />
+  </ItemGroup>
+
 </Project>
