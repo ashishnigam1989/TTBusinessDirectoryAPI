@@ -1,6 +1,7 @@
 ﻿using ApplicationService.IServices;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
+using DatabaseService.DbEntities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -79,12 +80,13 @@ namespace TTBusinessAdminPanel.Controllers
             var user = _account.GetUserById(id).Result;
             if (user != null)
             {
-                umodel = new UserRequestModel() {
-                    Name=user.Name,
-                    Surname=user.Surname,
+                umodel = new UserRequestModel()
+                {
+                    Name = user.Name,
+                    Surname = user.Surname,
                     EmailAddress = user.EmailAddress,
-                    Mobile=user.Mobile,
-                    RoleId=user.RoleId
+                    Mobile = user.Mobile,
+                    RoleId = user.RoleId
                 };
             }
             BindRoles();
@@ -98,6 +100,7 @@ namespace TTBusinessAdminPanel.Controllers
 
         public IActionResult RoleMenuMap()
         {
+            BindRoles(); 
             return View();
         }
 
@@ -106,6 +109,28 @@ namespace TTBusinessAdminPanel.Controllers
             var r = _master.GetRoles();
             ViewBag.Roles = new SelectList(r, "Id", "DisplayName");
         }
+
+        [HttpGet]
+        public IActionResult BindMenus(int id)
+        {
+            var allmenus = _master.GetAllMenus();
+            var menus = _account.GetMenus(id).Result.Select(s => s.MenuId).ToList();
+            if (menus.Count > 0)
+                allmenus.Where(w => menus.Contains(w.MenuId)).ToList().ForEach(f => f.IsSelected = true);
+            return Json(allmenus);
+        }
+
+        [HttpPost]
+        public IActionResult AssignMenusToRole(RoleMenuMapping rolemenuRequest)
+        {
+            if (ModelState.IsValid && rolemenuRequest.RoleId!=0)
+            {
+                var result = _account.RoleMenuPermission(rolemenuRequest).Result;
+                return Json(result);
+            }
+            return null;
+        }
+
 
         private string RandomString(int size, bool lowerCase)
         {
