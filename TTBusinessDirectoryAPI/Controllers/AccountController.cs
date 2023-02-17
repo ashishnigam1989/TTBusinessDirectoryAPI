@@ -71,7 +71,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var users = _account.GetUsers(page, limit).Result;
+                var users = _account.GetUsers(page, limit, "").Result;
                 var total = users.Count;
                 getResults = new GetResults(true, "Get users list", users.UserList, total);
                 logger.Info("Get users list");

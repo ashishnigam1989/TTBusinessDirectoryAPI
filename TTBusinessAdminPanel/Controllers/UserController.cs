@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 
 namespace TTBusinessAdminPanel.Controllers
@@ -26,17 +28,55 @@ namespace TTBusinessAdminPanel.Controllers
 
         public IActionResult Index()
         {
-            UserListModel ulist = new UserListModel();
             try
             {
-                ulist = _account.GetUsers(0, 20).Result;
             }
             catch
             {
                 throw;
             }
 
-            return View(ulist);
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult LoadUser()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip/pageSize);
+                int recordsTotal = 0;
+                var allData = _account.GetUsers(pageNo, pageSize, searchValue).Result;
+                var userData = allData.UserList;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    userData = userData.OrderBy(o=>sortColumn + " " + sortColumnDirection).ToList() ;
+                }
+                //if (!string.IsNullOrEmpty(searchValue))
+                //{
+                //    userData = (List<UserModel>)userData.Where(m => m.Name.Contains(searchValue)
+                //                                //|| m.Rolename.Contains(searchValue)
+                //                                || m.EmailAddress.Contains(searchValue)
+                //                                || m.Mobile.Contains(searchValue)).ToList();
+                //}
+                recordsTotal = allData.Count;
+                //var data = userData.Skip(skip).Take(pageSize).ToList();
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = userData };
+                return Ok(jsonData);
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public IActionResult Add()

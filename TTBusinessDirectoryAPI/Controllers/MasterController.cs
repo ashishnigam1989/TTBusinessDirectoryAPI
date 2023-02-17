@@ -13,12 +13,14 @@ namespace TTBusinessDirectoryAPI.Controllers
     public class MasterController : ControllerBase
     {
         private IMaster _master;
+        private ILocation _location;
         protected Logger logger;
 
-        public MasterController(IMaster master)
+        public MasterController(IMaster master, ILocation location)
         {
             _master = master;
             logger = LogManager.GetLogger("Test");
+            _location = location;
         }
 
         [HttpGet]
@@ -48,7 +50,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var countries = _master.GetCountries().Result;
+                var countries = _location.GetCountries().Result;
                 var total = countries.Count;
                 getResults = new GetResults(true, "Get Countries", countries, total);
                 logger.Info("Get Countries");
