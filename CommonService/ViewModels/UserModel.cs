@@ -16,7 +16,7 @@ namespace CommonService.ViewModels
         public bool IsEmailConfirmed { get; set; }
         public DateTime? LastLoginTime { get; set; }
         public bool IsDeleted { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public string Mobile { get; set; }
     }
     public class UserListModel
