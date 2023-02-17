@@ -29,7 +29,7 @@ namespace CommonService.RequestModel
         public long? LastModifierUserId { get; set; }
         public DateTime CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public bool ShouldChangePasswordOnNextLogin { get; set; }
         public Guid? ProfilePictureId { get; set; }
         public string AuthenticationSource { get; set; }
