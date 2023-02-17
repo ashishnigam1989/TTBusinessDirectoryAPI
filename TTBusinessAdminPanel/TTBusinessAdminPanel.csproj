@@ -6,6 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.25" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationService\ApplicationService.csproj" />
   </ItemGroup>
 
   <ItemGroup>
