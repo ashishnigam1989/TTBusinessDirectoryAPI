@@ -1,4 +1,5 @@
-﻿using CommonService.RequestModel;
+﻿using CommonService.Enums;
+using CommonService.RequestModel;
 using CommonService.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,11 @@ namespace ApplicationService.IServices
     {
         Task<UserModel> Login(LoginRequestModel login);
         Task<List<MenuModel>> GetMenus(int roleId);
-        Task<UserListModel> GetUsers(int page, int limit, string searchValue);
+        Task<GetResults> GetUsers(int page, int limit, string searchValue);
         Task<bool> CreateUser(UserRequestModel userRequest);
         Task<bool> EditUser(UserRequestModel userRequest);
         Task<bool> RoleMenuPermission(RoleMenuMapping _rModel);
         Task<UserModel> GetUserById(int userid);
-        Task<bool> ApproveRejectUser(int userid);
+        Task<bool> ApproveRejectUser(UserApproveModel uModel);
     }
 }

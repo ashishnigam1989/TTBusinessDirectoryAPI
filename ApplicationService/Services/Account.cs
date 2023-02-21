@@ -1,5 +1,6 @@
 ﻿using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Enums;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
@@ -65,7 +66,7 @@ namespace ApplicationService.Services
             return await Task.FromResult(menus);
         }
 
-        public async Task<UserListModel> GetUsers(int page, int limit, string searchValue)
+        public async Task<GetResults> GetUsers(int page, int limit, string searchValue)
         {
             //var usersobj = _dbContext.Users
             //    .Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur });
@@ -106,10 +107,10 @@ namespace ApplicationService.Services
             
             var finalData = users.Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
-            UserListModel uobj = new UserListModel
+            GetResults uobj = new GetResults
             {
-                Count = total,
-                UserList = finalData
+                Total = total,
+                Data = finalData
             };
             return await Task.FromResult(uobj);
         }
@@ -133,7 +134,6 @@ namespace ApplicationService.Services
                     LastLoginTime = DateTime.Now,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    IsActive = true,
                     ShouldChangePasswordOnNextLogin = true,
                     TenantId = 1
 
@@ -153,7 +153,7 @@ namespace ApplicationService.Services
             {
                 userinfo.Name = userRequest.Name;
                 userinfo.EmailAddress = userRequest.EmailAddress;
-                userinfo.Password = userRequest.Password;
+             //   userinfo.Password = userRequest.Password;
                 userinfo.Surname = userRequest.Surname;
                 userinfo.UserName = userRequest.UserName;
                 userinfo.Mobile = userRequest.Mobile; 
@@ -161,7 +161,6 @@ namespace ApplicationService.Services
                 userinfo.PasswordResetCode = String.Empty;
                 userinfo.LastLoginTime = DateTime.Now; 
                 userinfo.LastModificationTime = DateTime.Now;
-                userinfo.IsActive = true;
                 userinfo.ShouldChangePasswordOnNextLogin = true;
                 userinfo.TenantId = 1;
 
@@ -247,15 +246,24 @@ namespace ApplicationService.Services
             return await Task.FromResult(udetail);
         }
 
-        public async Task<bool> ApproveRejectUser(int userid)
+        public async Task<bool> ApproveRejectUser(UserApproveModel uModel)
         {
-            var uinfo = _dbContext.Users.Where(w => w.Id == userid).FirstOrDefaultAsync().Result;
+            bool ischanged=false;
+            var uinfo = _dbContext.Users.Where(w => w.Id == uModel.UserId).FirstOrDefaultAsync().Result;
             if(uinfo!=null)
             {
-                uinfo.IsEmailConfirmed = uinfo.IsEmailConfirmed ? false : true;
+                if (uModel.Status == EnumStatus.Approve)
+                {
+                    uinfo.IsActive = true;
+                }
+                if (uModel.Status == EnumStatus.Reject)
+                {
+                    uinfo.IsActive = false;
+                }
             }
             await _dbContext.SaveChangesAsync();
-            return await Task.FromResult(uinfo.IsEmailConfirmed);
+            ischanged=true;
+            return await Task.FromResult(ischanged);
         }
     }
 }
