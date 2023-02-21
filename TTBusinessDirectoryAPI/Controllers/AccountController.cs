@@ -71,9 +71,8 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var users = _account.GetUsers(page, limit, "").Result;
-                var total = users.Count;
-                getResults = new GetResults(true, "Get users list", users.UserList, total);
+                getResults = _account.GetUsers(page, limit, "").Result;
+                getResults.IsSuccess=true;
                 logger.Info("Get users list");
             }
             catch (Exception ex)
@@ -163,14 +162,14 @@ namespace TTBusinessDirectoryAPI.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [Route("ApproveRejectUser")]
-        public async Task<GetResults> ApproveRejectUser(int userid)
+        public async Task<GetResults> ApproveRejectUser(UserApproveModel uModel)
         {
             GetResults getResults = new GetResults();
             try
             {
-                var status = _account.ApproveRejectUser(userid).Result;
+                var status = _account.ApproveRejectUser(uModel).Result;
                 var total = 1;
                 getResults = new GetResults(true, "Get status changed", status, total);
                 logger.Info("Get users list");

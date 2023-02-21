@@ -10,13 +10,13 @@ namespace CommonService.ViewModels
         {
             IsSuccess = isSuccess;
             Message = message;
-            Result = result;
+            Data = result;
             Total = total;
         }
 
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
-        public object Result { get; set; }
+        public object Data { get; set; }
         public int Total { get; set; }
     }
 

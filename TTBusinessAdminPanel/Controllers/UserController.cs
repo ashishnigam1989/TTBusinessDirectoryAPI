@@ -56,7 +56,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int pageNo = (skip/pageSize);
                 int recordsTotal = 0;
                 var allData = _account.GetUsers(pageNo, pageSize, searchValue).Result;
-                var userData = allData.UserList;
+                var userData =(List<UserModel>) allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
                     userData = userData.OrderBy(o=>sortColumn + " " + sortColumnDirection).ToList() ;
@@ -68,7 +68,7 @@ namespace TTBusinessAdminPanel.Controllers
                 //                                || m.EmailAddress.Contains(searchValue)
                 //                                || m.Mobile.Contains(searchValue)).ToList();
                 //}
-                recordsTotal = allData.Count;
+                recordsTotal = allData.Total;
                 //var data = userData.Skip(skip).Take(pageSize).ToList();
                 var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = userData };
                 return Ok(jsonData);
@@ -130,7 +130,7 @@ namespace TTBusinessAdminPanel.Controllers
                 };
             }
             BindRoles();
-            return View("Add", umodel);
+            return View(umodel);
         }
 
         public IActionResult Approve()
@@ -158,6 +158,13 @@ namespace TTBusinessAdminPanel.Controllers
             if (menus.Count > 0)
                 allmenus.Where(w => menus.Contains(w.MenuId)).ToList().ForEach(f => f.IsSelected = true);
             return Json(allmenus);
+        }
+
+        [HttpPost]
+        public IActionResult ApproveRejectUser(UserApproveModel uModel)
+        {
+            var isupdated =_account.ApproveRejectUser(uModel).Result; 
+            return Json(isupdated);
         }
 
         [HttpPost]

@@ -34,8 +34,8 @@
             </div>
         </div>
     </div>
-</div>
-
+</div> 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @section Scripts
 {
     <script>
@@ -60,14 +60,48 @@
                     { "data": "rolename", "name": "Role", "autoWidth": true },
                     { "data": "emailAddress", "name": "Email Address", "autoWidth": true },
                     { "data": "mobile", "name": "Mobile", "autoWidth": true },
-                    { "data": "isActive", "name": "Is Active", "autoWidth": true },
+                    { "data": "isActive", "name": "Is Active", "autoWidth": true, "render": function (data, row, d){ return d.isActive==true?"Approved":d.isActive==false?"Rejected":"pending"} },
                     
                     {
-                        "render": function (data,row) { return "<a href='#' class='btn btn-primary' onclick=DeleteCustomer('" + row.id+ "'); >Edit</a>";   }
-                    },
+                        "render": function (data,row,d) {
+                            return "<a href='/user/edit/" + d.id + "' class='btn btn-sm btn-raised bg-teal waves-effect' ><i class='material-icons'>mode_edit</i> Edit</a> <button onclick=Approve(" + d.id + ",'approve') class='btn btn-sm  btn-raised bg-green waves-effect' ><i class='material-icons'>check_circle</i> Approve</button> <button onclick=Approve(" + d.id + ",'reject') class='btn btn-sm btn-raised bg-cyan waves-effect' ><i class='material-icons'>block</i>Reject</button>";
+                        }
+                    }
                 ]
             });
-        });  
+        });
+
+        function Approve(id,status) {
+            var reqObj={
+                UserId: id,
+                Status:status
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ApproveRejectUser")',
+                dataType: 'json',
+                data: reqObj,
+                success: function (data) {
+                    if (data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'Status changed successfully!!'
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Not changed!!'
+                        })
+                    }
+                },
+                error: function (ex) {
+
+                }
+            });
+        }
     </script>
 }
 
