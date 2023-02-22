@@ -146,14 +146,14 @@ namespace TTBusinessAdminPanel.Controllers
 
         private void BindRoles()
         {
-            var r = _master.GetRoles();
+            var r = _master.GetRoles().Result;
             ViewBag.Roles = new SelectList(r, "Id", "DisplayName");
         }
 
         [HttpGet]
         public IActionResult BindMenus(int id)
         {
-            var allmenus = _master.GetAllMenus();
+            var allmenus = _master.GetAllMenus().Result;
             var menus = _account.GetMenus(id).Result.Select(s => s.MenuId).ToList();
             if (menus.Count > 0)
                 allmenus.Where(w => menus.Contains(w.MenuId)).ToList().ForEach(f => f.IsSelected = true);
