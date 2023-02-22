@@ -22,7 +22,7 @@ namespace ApplicationService.Services
             _mapper = mapper;
         }
 
-        public List<RoleModel> GetRoles()
+        public async Task<List<RoleModel>> GetRoles()
         {
             var roles = _dbContext.Roles
                 .Select(s => new RoleModel
@@ -33,24 +33,10 @@ namespace ApplicationService.Services
                 }).ToList();
 
 
-            return roles;
+            return await Task.FromResult(roles);
         }
 
-        //public async Task<List<CountryModel>> GetCountries()
-        //{
-        //    var countries = _dbContext.Country
-        //        .Select(s => new CountryModel
-        //        {
-        //            CountryCode = s.CountryCode,
-        //            Id = s.Id,
-        //            CountryNameEng = s.CountryNameEng,
-        //            CurrencyCode = s.CurrencyCode
-        //        }).ToListAsync().Result;
-
-        //    return await Task.FromResult(countries);
-        //}
-
-        public List<MenuModel> GetAllMenus()
+        public async Task<List<MenuModel>> GetAllMenus()
         {
             var menus = _dbContext.Menus.Select(s=>new MenuModel { 
                 MenuId= s.MenuId,
@@ -62,7 +48,7 @@ namespace ApplicationService.Services
                 IsActivated=s.IsActivated
             }).ToList();
 
-            return menus;
+            return await Task.FromResult(menus);
 
         }
     }

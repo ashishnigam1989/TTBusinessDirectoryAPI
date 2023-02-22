@@ -10,8 +10,7 @@ namespace ApplicationService.IServices
 {
     public interface IMaster
     {
-        List<RoleModel> GetRoles();
-        //Task<List<CountryModel>> GetCountries();
-        List<MenuModel> GetAllMenus();
+        Task<List<RoleModel>> GetRoles();
+        Task<List<MenuModel>> GetAllMenus();
     }
 }
