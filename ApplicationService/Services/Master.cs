@@ -1,5 +1,6 @@
 ﻿using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
 using Microsoft.EntityFrameworkCore;
@@ -51,5 +52,58 @@ namespace ApplicationService.Services
             return await Task.FromResult(menus);
 
         }
+
+        #region Brands
+        public async Task<GetResults> GetBrands(int page, int limit, string searchValue)
+        {
+            var brands = _dbContext.Brand.ToListAsync().Result;
+            var list = _mapper.Map<List<BrandModel>>(brands);
+            int total = list.Count();
+            if (!string.IsNullOrEmpty(searchValue.ToLower()))
+            {
+                list = (List<BrandModel>)list.Where(m => m.NameEng.Contains(searchValue));
+                total = list.Count();
+            }
+            var finalData = list.OrderByDescending(o => o.Id).Skip(limit * page).Take(limit);
+            GetResults uobj = new GetResults
+            {
+                Total = total,
+                Data = finalData
+            };
+            return await Task.FromResult(uobj);
+        }
+        public async Task<BrandModel> GetBrandById(int id)
+        {
+            var brand = _dbContext.Brand.SingleAsync(b=>b.Id == id).Result;
+            var finalData = _mapper.Map<BrandModel>(brand);
+            return await Task.FromResult(finalData);
+        }
+        public async Task<bool> AddBrand(BrandRequestModel brandRequest)
+        {
+            bool result = false;
+            var brandInfo = _dbContext.Brand.Where(w => w.NameEng.ToLower() == brandRequest.NameEng.ToLower()).FirstOrDefault();
+            if(brandInfo != null)
+            {
+                Brand brand = _mapper.Map<Brand>(brandInfo);
+                _dbContext.Brand.Add(brand);
+                var brandId = await _dbContext.SaveChangesAsync();
+                result = true;
+            }
+            return await Task.FromResult(result);
+        }
+        public async Task<bool> EditBrand(BrandRequestModel brandRequest)
+        {
+            bool result = false;
+            var brandInfo = _dbContext.Brand.Where(w => w.NameEng.ToLower() == brandRequest.NameEng.ToLower() && w.Id != brandRequest.Id).FirstOrDefault();
+            if (brandInfo != null)
+            {
+                var brand = _mapper.Map<Brand>(brandRequest);
+                _dbContext.Brand.Update(brand);
+                await _dbContext.SaveChangesAsync();
+                result = true;
+            }
+            return await Task.FromResult(result);
+        }
+        #endregion
     }
 }
