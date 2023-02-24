@@ -1,8 +1,298 @@
-﻿
+﻿@model CommonService.RequestModel.CompanyRequestModel
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="block-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-7">
+            <h2>Edit Company</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Company</a></li>
+                <li class="breadcrumb-item active">Edit Company</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="header">
+                <h2>Edit Company</h2>
+            </div>
+            <div class="body">
+                <form id="adduserform" asp-controller="User" asp-action="Add">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
+                                    <label class="form-label">NameEng</label>
+                                </div>
+                                <span asp-validation-for="NameEng" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="NameArb" type="text" class="form-control" name="NameArb" required>
+                                    <label class="form-label">NameArb</label>
+                                </div>
+                                <span asp-validation-for="NameArb" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="DomainName" type="email" class="form-control" name="DomainName" required>
+                                    <label class="form-label">Domain Name</label>
+                                </div>
+                                <span asp-validation-for="DomainName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="Address" type="text" class="form-control" name="Address" required>
+                                    <label class="form-label">Address</label>
+                                </div>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="PrimaryEmail" type="email" class="form-control" name="PrimaryEmail" required>
+                                    <label class="form-label">Primary Email</label>
+                                </div>
+                                <span asp-validation-for="PrimaryEmail" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="PrimaryPhone" type="text" class="form-control" name="PrimaryPhone" required>
+                                    <label class="form-label">Primary  Phone</label>
+                                </div>
+                                <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="PrimaryWebsite" type="email" class="form-control" name="PrimaryWebsite" required>
+                                    <label class="form-label">Primary Website</label>
+                                </div>
+                                <span asp-validation-for="PrimaryWebsite" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="PrimaryFax" type="text" class="form-control" name="PrimaryFax" required>
+                                    <label class="form-label">Primary  Fax</label>
+                                </div>
+                                <span asp-validation-for="PrimaryFax" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="FacebookUrl" type="email" class="form-control" name="FacebookUrl" required>
+                                    <label class="form-label">Facebook Url</label>
+                                </div>
+                                <span asp-validation-for="FacebookUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="LinkedInUrl" type="text" class="form-control" name="LinkedInUrl" required>
+                                    <label class="form-label">LinkedIn Url</label>
+                                </div>
+                                <span asp-validation-for="LinkedInUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="TwitterUrl" type="email" class="form-control" name="TwitterUrl" required>
+                                    <label class="form-label">Twitter Url</label>
+                                </div>
+                                <span asp-validation-for="TwitterUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="GooglePlusUrl" type="text" class="form-control" name="GooglePlusUrl" required>
+                                    <label class="form-label">GooglePlus Url</label>
+                                </div>
+                                <span asp-validation-for="GooglePlusUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="InstagramUrl" type="email" class="form-control" name="InstagramUrl" required>
+                                    <label class="form-label">Instagram Url</label>
+                                </div>
+                                <span asp-validation-for="InstagramUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="GooglePlaystoreUrl" type="text" class="form-control" name="GooglePlaystoreUrl" required>
+                                    <label class="form-label">Google Playstore Url</label>
+                                </div>
+                                <span asp-validation-for="GooglePlaystoreUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="WindowsStoreUrl" type="email" class="form-control" name="WindowsStoreUrl" required>
+                                    <label class="form-label">Windows Store Url</label>
+                                </div>
+                                <span asp-validation-for="WindowsStoreUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="BlackBerryStoreUrl" type="text" class="form-control" name="BlackBerryStoreUrl" required>
+                                    <label class="form-label">BlackBerry Store Url</label>
+                                </div>
+                                <span asp-validation-for="BlackBerryStoreUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="ShortDescriptionEng" type="email" class="form-control" name="ShortDescriptionEng" required>
+                                    <label class="form-label">Short Description Eng</label>
+                                </div>
+                                <span asp-validation-for="ShortDescriptionEng" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="ShortDescriptionArb" type="text" class="form-control" name="ShortDescriptionArb" required>
+                                    <label class="form-label">Short Description Arb</label>
+                                </div>
+                                <span asp-validation-for="ShortDescriptionArb" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="DescriptionEng" type="email" class="form-control" name="DescriptionEng" required>
+                                    <label class="form-label">Description Eng</label>
+                                </div>
+                                <span asp-validation-for="DescriptionEng" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="DescriptionArb" type="text" class="form-control" name="DescriptionArb" required>
+                                    <label class="form-label">Description Arb</label>
+                                </div>
+                                <span asp-validation-for="DescriptionArb" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div>
+
+                                    <input type="checkbox" asp-for="IsGreen" id="IsGreen" name="IsGreen">
+                                    <label for="IsGreen" class="form-label">IsGreen</label>
+                                </div>
+                                <span asp-validation-for="IsGreen" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div> 
+                                    <input type="checkbox" asp-for="HasOffers" name="HasOffers" id="HasOffers">
+                                    <label for="HasOffers" c class="form-label">HasOffers</label>
+                                </div>
+                                <span asp-validation-for="HasOffers" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div>
+
+                                    <input type="checkbox" asp-for="HasCoupons" id="HasCoupons" name="HasCoupons">
+                                    <label for="IsGreen" class="form-label">HasCoupons</label>
+                                </div>
+                                <span asp-validation-for="HasCoupons" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div>
+                                    <input type="checkbox" asp-for="HasVideos" name="HasVideos" id="HasVideos">
+                                    <label for="HasOffers" c class="form-label">HasVideos</label>
+                                </div>
+                                <span asp-validation-for="HasVideos" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-raised btn-primary waves-effect" type="submit">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $.validator.setDefaults({
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function (element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            }
+        });
+    </script>
+}

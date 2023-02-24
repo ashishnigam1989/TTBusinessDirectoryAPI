@@ -62,8 +62,9 @@ namespace TTBusinessDirectoryAPI
 
             //Dependencies Mapping Start
             services.AddScoped<BusinessDirectoryDBContext>();
-            services.AddScoped<IAccount, Account>();
-            services.AddScoped<IMaster, Master>();
+            services.AddScoped<IAccount, ApplicationService.Services.Account>();
+            services.AddScoped<IMaster, ApplicationService.Services.Master>();
+            services.AddScoped<ICompany, ApplicationService.Services.Company>();
             //Dependencies Mapping End
             services.AddDbContext<BusinessDirectoryDBContext>(ServiceLifetime.Scoped);
         }
