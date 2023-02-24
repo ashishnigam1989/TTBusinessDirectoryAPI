@@ -17,17 +17,17 @@ namespace CommonService.RequestModel
         public bool? IsVerified { get; set; }
         public Guid? VerifiedUserId { get; set; }
         public DateTime? VerifiedTime { get; set; }
-        public bool? IsGreen { get; set; }
+        public bool IsGreen { get; set; }
         public string FacebookUrl { get; set; }
         public string LinkedInUrl { get; set; }
         public string TwitterUrl { get; set; }
         public string GooglePlusUrl { get; set; }
         public string InstagramUrl { get; set; }
-        public bool? HasOffers { get; set; }
+        public bool HasOffers { get; set; }
         public DateTime? OfferUpdatedTime { get; set; }
-        public bool? HasCoupons { get; set; }
+        public bool HasCoupons { get; set; }
         public DateTime? CouponUpdatedTime { get; set; }
-        public bool? HasVideos { get; set; }
+        public bool HasVideos { get; set; }
         public string PrimaryGpsLocation { get; set; }
         public string DescriptionEng { get; set; }
         public string DescriptionArb { get; set; }

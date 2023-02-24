@@ -74,7 +74,7 @@ namespace TTBusinessAdminPanel.Controllers
                 return Ok(jsonData);
 
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
