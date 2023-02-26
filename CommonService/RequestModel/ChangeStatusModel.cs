@@ -5,9 +5,9 @@ using System.Text;
 
 namespace CommonService.RequestModel
 {
-    public class UserApproveModel
+    public class ChangeStatusModel
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public EnumStatus Status { get; set; }
     }
 }

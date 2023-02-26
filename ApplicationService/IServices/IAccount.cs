@@ -18,6 +18,6 @@ namespace ApplicationService.IServices
         Task<bool> EditUser(UserRequestModel userRequest);
         Task<bool> RoleMenuPermission(RoleMenuMapping _rModel);
         Task<UserModel> GetUserById(int userid);
-        Task<bool> ApproveRejectUser(UserApproveModel uModel);
+        Task<bool> ApproveRejectUser(ChangeStatusModel uModel);
     }
 }

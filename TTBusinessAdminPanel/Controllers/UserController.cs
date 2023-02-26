@@ -2,6 +2,7 @@
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -14,6 +15,7 @@ using System.Text;
 
 namespace TTBusinessAdminPanel.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
@@ -161,7 +163,7 @@ namespace TTBusinessAdminPanel.Controllers
         }
 
         [HttpPost]
-        public IActionResult ApproveRejectUser(UserApproveModel uModel)
+        public IActionResult ApproveRejectUser(ChangeStatusModel uModel)
         {
             var isupdated =_account.ApproveRejectUser(uModel).Result; 
             return Json(isupdated);

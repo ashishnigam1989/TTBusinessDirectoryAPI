@@ -1,7 +1,10 @@
 ﻿using ApplicationService.IServices;
 using CommonService.RequestModel;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace TTBusinessAdminPanel.Controllers
 {
@@ -30,6 +33,9 @@ namespace TTBusinessAdminPanel.Controllers
                 var user = _account.Login(login).Result;
                 if (user != null)
                 {
+                    var identity = new ClaimsIdentity(new[] {new Claim(ClaimTypes.Name, user.Name) }, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -39,6 +45,13 @@ namespace TTBusinessAdminPanel.Controllers
                 }
             }
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            var login = HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
         }
     }
 }

@@ -61,12 +61,78 @@
                     { "data": "primaryPhone", "name": "primaryPhone", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
-                            return "<a href='/company/edit/" + d.id + "' class='btn btn-sm btn-raised bg-teal waves-effect' ><i class='material-icons'>mode_edit</i> Edit</a> ";
+                          //  return "<a href='/company/edit/" + d.id + "' class='btn btn-sm btn-raised bg-teal waves-effect' ><i class='material-icons'>mode_edit</i> Edit</a> ";
+                            return "<a href='/company/edit/" + d.id + "' class='btn btn-sm btn-raised bg-teal waves-effect' ><i class='material-icons'>mode_edit</i> Edit</a> <button onclick=VerifyCompany(" + d.id + ") class='btn btn-sm  btn-raised bg-green waves-effect' ><i class='material-icons'>check_circle</i> Verify</button> <button onclick=DeleteCompany(" + d.id + ") class='btn btn-sm btn-raised bg-cyan waves-effect' ><i class='material-icons'>block</i>Delete</button>";
                         }
                     }
                 ]
             });
         });
+
+
+
+        function VerifyCompany(id) {
+            var reqObj = {
+                Id: id
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("VerifyCompany")',
+                dataType: 'json',
+                data: reqObj,
+                success: function (data) {
+                    if (data.isSuccess) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'Company Verified Successfully!!'
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Not changed!!'
+                        })
+                    }
+                },
+                error: function (ex) {
+
+                }
+            });
+        }
+
+        function DeleteCompany(id) {
+            var reqObj = {
+                Id: id
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteCompany")',
+                dataType: 'json',
+                data: reqObj,
+                success: function (data) {
+                    if (data.isSuccess) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'Company Deleted Successfully!!'
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Not changed!!'
+                        })
+                    }
+                },
+                error: function (ex) {
+
+                }
+            });
+        }
+
     </script>
 }
 
