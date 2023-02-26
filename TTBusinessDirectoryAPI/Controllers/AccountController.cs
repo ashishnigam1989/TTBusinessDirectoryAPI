@@ -164,7 +164,7 @@ namespace TTBusinessDirectoryAPI.Controllers
 
         [HttpPost]
         [Route("ApproveRejectUser")]
-        public async Task<GetResults> ApproveRejectUser(UserApproveModel uModel)
+        public async Task<GetResults> ApproveRejectUser(ChangeStatusModel uModel)
         {
             GetResults getResults = new GetResults();
             try

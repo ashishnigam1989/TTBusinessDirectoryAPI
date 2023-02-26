@@ -246,10 +246,10 @@ namespace ApplicationService.Services
             return await Task.FromResult(udetail);
         }
 
-        public async Task<bool> ApproveRejectUser(UserApproveModel uModel)
+        public async Task<bool> ApproveRejectUser(ChangeStatusModel uModel)
         {
             bool ischanged=false;
-            var uinfo = _dbContext.Users.Where(w => w.Id == uModel.UserId).FirstOrDefaultAsync().Result;
+            var uinfo = _dbContext.Users.Where(w => w.Id == uModel.Id).FirstOrDefaultAsync().Result;
             if(uinfo!=null)
             {
                 if (uModel.Status == EnumStatus.Approve)

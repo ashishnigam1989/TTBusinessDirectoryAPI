@@ -1,8 +1,10 @@
 using ApplicationService.IServices;
 using ApplicationService.Services;
 using DatabaseService.DbEntities;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +27,8 @@ namespace TTBusinessAdminPanel
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddMvc();
             services.AddControllersWithViews();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //Dependencies Mapping Start
@@ -32,7 +36,7 @@ namespace TTBusinessAdminPanel
             services.AddScoped<IAccount, Account>();
             services.AddScoped<IMaster, Master>();
             services.AddScoped<ILocation, Location>();
-            services.AddScoped<ICompany, ApplicationService.Services.Company>();
+            services.AddScoped<ICompanies, ApplicationService.Services.Companies>();
             services.AddDbContext<BusinessDirectoryDBContext>(ServiceLifetime.Scoped);
             //Dependencies Mapping End
 
@@ -54,7 +58,7 @@ namespace TTBusinessAdminPanel
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
