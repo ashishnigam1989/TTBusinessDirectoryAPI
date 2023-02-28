@@ -78,21 +78,6 @@
 </div>
 
 @section scripts {
-    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-    <script>
-        $.validator.setDefaults({
-            highlight: function (element) {
-                $(element).closest('.form-group').addClass('has-error');
-            },
-            unhighlight: function (element) {
-                $(element).closest('.form-group').removeClass('has-error');
-            }
-        });
-    </script>
-
-
-
     <script>
         $(document).ready(function () {
             BindMenus();
@@ -117,8 +102,6 @@
             });
         }
         function AddCheckBoxes(isAll) {
-
-            
             if (isAll){
                 var isSelectAll = $('#chkselectAll').is(":checked");
                 for (var i = 0; i < menulist.length; i++) {
@@ -186,8 +169,6 @@
 
                 }
             });
-
-
         }
         function SelectAll(event)
         {
