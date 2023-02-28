@@ -10,6 +10,7 @@ namespace DatabaseService.DbEntities
     public partial class Company
     {
         public long Id { get; set; }
+        public int CountryId { get; set; }
         public string NameEng { get; set; }
         public string NameArb { get; set; }
         public string ShortDescriptionEng { get; set; }
