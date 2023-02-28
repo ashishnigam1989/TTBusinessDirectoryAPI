@@ -55,6 +55,7 @@ namespace DatabaseService.DbEntities
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=185.182.184.243;Database=BusinessDirectoryDB;User Id=businessdir;Password=BusinessDir@123;");
             }
         }
@@ -156,6 +157,8 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.BlackBerryStoreUrl).HasMaxLength(250);
 
                 entity.Property(e => e.BrochureLink).HasMaxLength(150);
+
+                entity.Property(e => e.CountryId).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.CouponUpdatedTime).HasColumnType("datetime");
 
