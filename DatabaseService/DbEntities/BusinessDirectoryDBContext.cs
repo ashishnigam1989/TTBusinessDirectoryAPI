@@ -40,9 +40,14 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<CompanyVouchers> CompanyVouchers { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
+        public virtual DbSet<EventPassType> EventPassType { get; set; }
+        public virtual DbSet<EventRegion> EventRegion { get; set; }
+        public virtual DbSet<EventType> EventType { get; set; }
         public virtual DbSet<FreeListing> FreeListing { get; set; }
         public virtual DbSet<FreeListingDetails> FreeListingDetails { get; set; }
         public virtual DbSet<Industry> Industry { get; set; }
+        public virtual DbSet<InsightType> InsightType { get; set; }
+        public virtual DbSet<Insights> Insights { get; set; }
         public virtual DbSet<MenuRolePermission> MenuRolePermission { get; set; }
         public virtual DbSet<Menus> Menus { get; set; }
         public virtual DbSet<Region> Region { get; set; }
@@ -55,7 +60,6 @@ namespace DatabaseService.DbEntities
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=185.182.184.243;Database=BusinessDirectoryDB;User Id=businessdir;Password=BusinessDir@123;");
             }
         }
@@ -584,6 +588,36 @@ namespace DatabaseService.DbEntities
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<EventPassType>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.PassTypeName)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<EventRegion>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.RegionName)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<EventType>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.EventTypeDesc)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<FreeListing>(entity =>
             {
                 entity.Property(e => e.CompanyAddress)
@@ -674,6 +708,80 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.NameEng)
                     .IsRequired()
                     .HasMaxLength(150);
+            });
+
+            modelBuilder.Entity<InsightType>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.InsigtTypeDesc)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Insights>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.EndTime)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EventAddress)
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EventInfo)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EventLocationUrl)
+                    .HasColumnName("EventLocationURL")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EventUrl)
+                    .HasColumnName("EventURL")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsertedOn).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.InsightContent)
+                    .HasColumnName("Insight_Content")
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsightId)
+                    .HasColumnName("InsightID")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.InsightImage)
+                    .HasColumnName("Insight_Image")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsightTitle)
+                    .IsRequired()
+                    .HasColumnName("Insight_Title")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IpAddress)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MainLevelId).HasColumnName("Main_LevelID");
+
+                entity.Property(e => e.StartDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.StartTime)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdatedOn).HasColumnType("smalldatetime");
             });
 
             modelBuilder.Entity<MenuRolePermission>(entity =>
