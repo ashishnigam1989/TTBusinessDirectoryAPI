@@ -39,19 +39,13 @@ namespace ApplicationService.Services
                 PrimaryPhone = s.PrimaryPhone,
                 id = s.Id
             }).Distinct().OrderByDescending(o => o.id).Skip(limit * page).Take(limit).ToListAsync().Result;
-            if (string.IsNullOrEmpty(searchValue))
-            {
-                total = _dbContext.Company.Where(w => w.IsDeleted == false).CountAsync().Result;
-            }
-            else
-            {
-                total = _dbContext.Company.Where(w => w.IsDeleted == false).Where(w =>
-                                        !string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
-                                        !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb ||
-                                        !string.IsNullOrEmpty(searchValue) ? w.PrimaryEmail.ToLower().Contains(searchValue.ToLower()) : w.PrimaryEmail == w.PrimaryEmail ||
-                                        !string.IsNullOrEmpty(searchValue) ? w.PrimaryPhone.ToLower().Contains(searchValue.ToLower()) : w.PrimaryPhone == w.PrimaryPhone
-                                        ).CountAsync().Result;
-            }
+
+            total = _dbContext.Company.Where(w => w.IsDeleted == false).Where(w =>
+                                    !string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
+                                    !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb ||
+                                    !string.IsNullOrEmpty(searchValue) ? w.PrimaryEmail.ToLower().Contains(searchValue.ToLower()) : w.PrimaryEmail == w.PrimaryEmail ||
+                                    !string.IsNullOrEmpty(searchValue) ? w.PrimaryPhone.ToLower().Contains(searchValue.ToLower()) : w.PrimaryPhone == w.PrimaryPhone
+                                    ).CountAsync().Result;
 
             GetResults uobj = new GetResults
             {
