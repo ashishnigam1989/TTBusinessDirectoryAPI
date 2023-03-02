@@ -4,6 +4,7 @@ using CommonService.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,13 @@ namespace TTBusinessAdminPanel.Controllers
     [Authorize]
     public class CompanyController : Controller
     {
-        private readonly ILogger<CompanyController> _logger;
+        private Logger _logger;
+
         private ICompanies _company;
 
-        public CompanyController(ILogger<CompanyController> logger, ICompanies company)
+        public CompanyController(ICompanies company)
         {
-            _logger = logger;
+            _logger = LogManager.GetLogger("Company");
             _company = company;
         }
 
@@ -30,27 +32,33 @@ namespace TTBusinessAdminPanel.Controllers
         }
         public IActionResult GetAllCompany()
         {
-            _logger.LogInformation("GetAllComapnies");
-
-            var draw = Request.Form["draw"].FirstOrDefault();
-            var start = Request.Form["start"].FirstOrDefault();
-            var length = Request.Form["length"].FirstOrDefault();
-            var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
-            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-            var searchValue = Request.Form["search[value]"].FirstOrDefault();
-            int pageSize = length != null ? Convert.ToInt32(length) : 0;
-            int skip = start != null ? Convert.ToInt32(start) : 0;
-            int pageNo = (skip / pageSize);
-            int recordsTotal = 0;
-            var allData = _company.GetAllCompanies(pageNo, pageSize, searchValue).Result;
-            var cData = (List<CompanyModel>)allData.Data;
-            if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+            try
             {
-                cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanies(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
             }
-            recordsTotal = allData.Total;
-            var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
-            return Ok(jsonData);
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
         }
         public IActionResult Add(CompanyRequestModel reqmodel)
         {
@@ -58,16 +66,24 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 _company.CreateUpdateCompany(reqmodel);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-
+                _logger.Error(ex);
             }
             return View();
         }
         public IActionResult Edit(int id)
         {
-           var company= _company.GetCompanyById(id).Result;
-            CompanyRequestModel cmodel = (CompanyRequestModel)company.Data;
+            CompanyRequestModel cmodel=new CompanyRequestModel();
+            try
+            {
+                var company = _company.GetCompanyById(id).Result;
+                cmodel = (CompanyRequestModel)company.Data;
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
             return View(cmodel);
         }
 
