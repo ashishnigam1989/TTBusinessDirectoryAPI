@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,24 @@ namespace TTBusinessAdminPanel
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+        //    var logger = NLogBuilder.ConfigureNLog("Nlog.config").GetCurrentClassLogger();
+           CreateHostBuilder(args).Build().Run();
+           
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            }).ConfigureLogging((hcontext,logging) => {
+                logging.AddConfiguration(hcontext.Configuration.GetSection("Logging"));
+                logging.AddConsole();
+              //  logging.AddDebug();
+              //  logging.AddEventSourceLogger();
+               // logging.AddNLogWeb();
+            })
+            ;
+
     }
 }

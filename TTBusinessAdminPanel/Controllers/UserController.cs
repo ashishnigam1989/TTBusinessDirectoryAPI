@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +19,20 @@ namespace TTBusinessAdminPanel.Controllers
     [Authorize]
     public class UserController : Controller
     {
-        private readonly ILogger<UserController> _logger;
+        private Logger _logger;
+
         private IAccount _account;
 
         private IMaster _master;
-        public UserController(ILogger<UserController> logger, IAccount account, IMaster master)
+        public UserController( IAccount account, IMaster master)
         {
-            _logger = logger;
+            _logger = LogManager.GetLogger("User");
             _account = account;
             _master = master;
         }
 
         public IActionResult Index()
         {
-            try
-            {
-            }
-            catch
-            {
-                throw;
-            }
-
             return View();
         }
 
@@ -63,23 +57,16 @@ namespace TTBusinessAdminPanel.Controllers
                 {
                     userData = userData.OrderBy(o=>sortColumn + " " + sortColumnDirection).ToList() ;
                 }
-                //if (!string.IsNullOrEmpty(searchValue))
-                //{
-                //    userData = (List<UserModel>)userData.Where(m => m.Name.Contains(searchValue)
-                //                                //|| m.Rolename.Contains(searchValue)
-                //                                || m.EmailAddress.Contains(searchValue)
-                //                                || m.Mobile.Contains(searchValue)).ToList();
-                //}
                 recordsTotal = allData.Total;
-                //var data = userData.Skip(skip).Take(pageSize).ToList();
                 var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = userData };
                 return Ok(jsonData);
 
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                _logger.Error(ex);  
             }
+            return Ok(null);
         }
 
         public IActionResult Add()
@@ -109,9 +96,9 @@ namespace TTBusinessAdminPanel.Controllers
                     return View();
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                _logger.Error(ex);
             }
             return RedirectToAction("Add", "User");
         }
@@ -119,19 +106,26 @@ namespace TTBusinessAdminPanel.Controllers
         public IActionResult Edit(int id)
         {
             UserRequestModel umodel = new UserRequestModel();
-            var user = _account.GetUserById(id).Result;
-            if (user != null)
+            try
             {
-                umodel = new UserRequestModel()
+                var user = _account.GetUserById(id).Result;
+                if (user != null)
                 {
-                    Name = user.Name,
-                    Surname = user.Surname,
-                    EmailAddress = user.EmailAddress,
-                    Mobile = user.Mobile,
-                    RoleId = user.RoleId
-                };
+                    umodel = new UserRequestModel()
+                    {
+                        Name = user.Name,
+                        Surname = user.Surname,
+                        EmailAddress = user.EmailAddress,
+                        Mobile = user.Mobile,
+                        RoleId = user.RoleId
+                    };
+                }
+                BindRoles();
             }
-            BindRoles();
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
             return View(umodel);
         }
 
@@ -148,38 +142,68 @@ namespace TTBusinessAdminPanel.Controllers
 
         private void BindRoles()
         {
-            var r = _master.GetRoles().Result;
-            ViewBag.Roles = new SelectList(r, "Id", "DisplayName");
+            try
+            {
+                List<RoleModel> roles = new List<RoleModel>();
+                roles = _master.GetRoles().Result;
+                ViewBag.Roles = new SelectList(roles, "Id", "DisplayName");
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
         }
 
         [HttpGet]
         public IActionResult BindMenus(int id)
         {
-            var allmenus = _master.GetAllMenus().Result;
-            var menus = _account.GetMenus(id).Result.Select(s => s.MenuId).ToList();
-            if (menus.Count > 0)
-                allmenus.Where(w => menus.Contains(w.MenuId)).ToList().ForEach(f => f.IsSelected = true);
+            List<MenuModel> allmenus = new List<MenuModel>();
+            try
+            {
+                allmenus = _master.GetAllMenus().Result;
+                var menus = _account.GetMenus(id).Result.Select(s => s.MenuId).ToList();
+                if (menus.Count > 0)
+                    allmenus.Where(w => menus.Contains(w.MenuId)).ToList().ForEach(f => f.IsSelected = true);
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
             return Json(allmenus);
         }
 
         [HttpPost]
         public IActionResult ApproveRejectUser(ChangeStatusModel uModel)
         {
-            var isupdated =_account.ApproveRejectUser(uModel).Result; 
+            bool isupdated = false;
+            try
+            {
+                isupdated = _account.ApproveRejectUser(uModel).Result;
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
             return Json(isupdated);
         }
 
         [HttpPost]
         public IActionResult AssignMenusToRole(RoleMenuMapping rolemenuRequest)
         {
-            if (ModelState.IsValid && rolemenuRequest.RoleId!=0)
+            try
             {
-                var result = _account.RoleMenuPermission(rolemenuRequest).Result;
-                return Json(result);
+                if (ModelState.IsValid && rolemenuRequest.RoleId != 0)
+                {
+                    var result = _account.RoleMenuPermission(rolemenuRequest).Result;
+                    return Json(result);
+                }
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
             }
             return null;
         }
-
 
         private string RandomString(int size, bool lowerCase)
         {
