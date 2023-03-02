@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TTBusinessDirectoryAPI.Extensions;
 
 namespace TTBusinessAdminPanel
 {
@@ -56,7 +58,8 @@ namespace TTBusinessAdminPanel
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-
+            var logger = LogManager.GetLogger("Global");
+            app.ConfigureExceptionHandler(logger);
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
