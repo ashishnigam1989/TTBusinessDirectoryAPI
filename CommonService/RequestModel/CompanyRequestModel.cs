@@ -14,7 +14,7 @@ namespace CommonService.RequestModel
         public string PrimaryPhone { get; set; }
         public string PrimaryEmail { get; set; }
         public string PrimaryWebsite { get; set; }
-        public bool? IsVerified { get; set; }
+        public bool IsVerified { get; set; }
         public Guid? VerifiedUserId { get; set; }
         public DateTime? VerifiedTime { get; set; }
         public bool IsGreen { get; set; }
@@ -53,7 +53,7 @@ namespace CommonService.RequestModel
         public long? LastModifierUserId { get; set; }
         public DateTime CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
-        public bool? IsPublished { get; set; }
+        public bool IsPublished { get; set; }
         public string DomainName { get; set; }
         public string PrimaryMobile { get; set; }
         public string Address { get; set; }
@@ -62,6 +62,6 @@ namespace CommonService.RequestModel
         public long TotalProfileViews { get; set; }
         public string Iso { get; set; }
         public DateTime? EstablishmentDate { get; set; }
-        public bool? IsFeatured { get; set; }
+        public bool IsFeatured { get; set; }
     }
 }

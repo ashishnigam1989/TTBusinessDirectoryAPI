@@ -1,8 +1,498 @@
-﻿
+﻿@model CommonService.RequestModel.CompanyRequestModel
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Add</h1>
+<div class="block-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-7">
+            <h2>Add Company</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Company</a></li>
+                <li class="breadcrumb-item active">Add Company</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="header">
+                <h2>Add Company Details</h2> 
+            </div>
+            <div class="body">
+                <form id="wizard_with_validation" asp-controller="Company" asp-action="AddEditCompany">
+                    <h3>Basic Info</h3>
+                    <fieldset> 
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
+                                        <label class="form-label">NameEng</label>
+                                    </div>
+                                    <span asp-validation-for="NameEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="NameArb" type="text" class="form-control" name="NameArb">
+                                        <label class="form-label">NameArb</label>
+                                    </div>
+                                    <span asp-validation-for="NameArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line" style="padding-bottom:12px">
+                                        <div class="dz-message">
+                                            <div class="drag-icon-cph"> 
+                                                <p> <i class="material-icons">touch_app</i>Click to upload Logo.</p>
+                                            </div>
+                                        </div>
+                                        <div class="fallback">
+                                            <input name="file" type="file" multiple />
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="Logo" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="UniqueName" type="text" class="form-control" name="UniqueName">
+                                        <label class="form-label">Unique Name</label>
+                                    </div>
+                                    <span asp-validation-for="UniqueName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="PrimaryEmail" type="email" class="form-control" name="PrimaryEmail" required>
+                                        <label class="form-label">Primary Email</label>
+                                    </div>
+                                    <span asp-validation-for="PrimaryEmail" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                          
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="PrimaryPhone" type="text" class="form-control" name="PrimaryPhone" required>
+                                        <label class="form-label">Primary  Phone</label>
+                                    </div>
+                                    <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="Address" type="text" class="form-control" name="Address" required>
+                                        <label class="form-label">Address</label>
+                                    </div>
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="PrimaryWebsite" type="text" class="form-control" name="PrimaryWebsite">
+                                        <label class="form-label">Primary Website</label>
+                                    </div>
+                                    <span asp-validation-for="PrimaryWebsite" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="PrimaryFax" type="text" class="form-control" name="PrimaryFax">
+                                        <label class="form-label">Primary  Fax</label>
+                                    </div>
+                                    <span asp-validation-for="PrimaryFax" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="Pobox" type="text" class="form-control" name="Pobox" id="Pobox">
+                                        <label class="form-label">P.O. Box</label>
+                                    </div>
+                                    <span asp-validation-for="Pobox" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="EstablishmentDate" type="date" class="form-control" name="EstablishmentDate">
+                                        <label class="form-label">Establishment Date</label>
+                                    </div>
+                                    <span asp-validation-for="EstablishmentDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="PrimaryGpsLocation" type="text" class="form-control" name="PrimaryGpsLocation" id="PrimaryGpsLocation">
+                                        <label class="form-label">Primary GPS Location</label>
+                                    </div>
+                                    <span asp-validation-for="PrimaryGpsLocation" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="Iso" type="text" class="form-control" name="Iso">
+                                        <label class="form-label">ISO</label>
+                                    </div>
+                                    <span asp-validation-for="Iso" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+
+                                        <div>
+                                            <select name="CountryId" class="show-tick">
+                                                <option value="0">Select Country</option>
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+
+                                        <div>
+                                            <select asp-for="RegionId" name="RegionId" class="show-tick">
+                                                <option value="0">Select Region</option>
+                                            </select>
+                                        </div>
+                                        <span asp-validation-for="RegionId" class="text-danger"></span>
+
+                                    </div>
+                                    <span asp-validation-for="RegionId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group form-float">
+                                    <div>
+
+                                        <input type="checkbox" asp-for="IsGreen" id="IsGreen" name="IsGreen">
+                                        <label for="IsGreen" class="form-label">IsGreen</label>
+                                    </div>
+                                    <span asp-validation-for="IsGreen" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="HasOffers" name="HasOffers" id="HasOffers">
+                                        <label for="HasOffers"  class="form-label">HasOffers</label>
+                                    </div>
+                                    <span asp-validation-for="HasOffers" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="HasCoupons" id="HasCoupons" name="HasCoupons">
+                                        <label for="HasCoupons" class="form-label">HasCoupons</label>
+                                    </div>
+                                    <span asp-validation-for="HasCoupons" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="HasVideos" name="HasVideos" id="HasVideos">
+                                        <label for="HasVideos" class="form-label">HasVideos</label>
+                                    </div>
+                                    <span asp-validation-for="HasVideos" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="IsFeatured" id="IsFeatured" name="IsFeatured">
+                                        <label for="IsFeatured" class="form-label">IsFeatured</label>
+                                    </div>
+                                    <span asp-validation-for="IsFeatured" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="IsVerified" id="IsVerified" name="IsVerified">
+                                        <label for="IsVerified" class="form-label">IsVerified</label>
+                                    </div>
+                                    <span asp-validation-for="IsVerified" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                        <label for="IsPublished" class="form-label">Is Published</label>
+                                    </div>
+                                    <span asp-validation-for="IsPublished" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <h3>Details</h3>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="ShortDescriptionEng" type="text" class="form-control" name="ShortDescriptionEng">
+                                        <label class="form-label">Short Description Eng</label>
+                                    </div>
+                                    <span asp-validation-for="ShortDescriptionEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="ShortDescriptionArb" type="text" class="form-control" name="ShortDescriptionArb">
+                                        <label class="form-label">Short Description Arb</label>
+                                    </div>
+                                    <span asp-validation-for="ShortDescriptionArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="DescriptionEng" type="text" class="form-control" name="DescriptionEng">
+                                        <label class="form-label">Description Eng</label>
+                                    </div>
+                                    <span asp-validation-for="DescriptionEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="DescriptionArb" type="text" class="form-control" name="DescriptionArb">
+                                        <label class="form-label">Description Arb</label>
+                                    </div>
+                                    <span asp-validation-for="DescriptionArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <h3>Social Media</h3>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="FacebookUrl" type="email" class="form-control" name="FacebookUrl">
+                                        <label class="form-label">Facebook Url</label>
+                                    </div>
+                                    <span asp-validation-for="FacebookUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="LinkedInUrl" type="text" class="form-control" name="LinkedInUrl">
+                                        <label class="form-label">LinkedIn Url</label>
+                                    </div>
+                                    <span asp-validation-for="LinkedInUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="TwitterUrl" type="email" class="form-control" name="TwitterUrl">
+                                        <label class="form-label">Twitter Url</label>
+                                    </div>
+                                    <span asp-validation-for="TwitterUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="GooglePlusUrl" type="text" class="form-control" name="GooglePlusUrl">
+                                        <label class="form-label">GooglePlus Url</label>
+                                    </div>
+                                    <span asp-validation-for="GooglePlusUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="InstagramUrl" type="email" class="form-control" name="InstagramUrl">
+                                        <label class="form-label">Instagram Url</label>
+                                    </div>
+                                    <span asp-validation-for="InstagramUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="GooglePlaystoreUrl" type="text" class="form-control" name="GooglePlaystoreUrl">
+                                        <label class="form-label">Google Playstore Url</label>
+                                    </div>
+                                    <span asp-validation-for="GooglePlaystoreUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="WindowsStoreUrl" type="email" class="form-control" name="WindowsStoreUrl">
+                                        <label class="form-label">Windows Store Url</label>
+                                    </div>
+                                    <span asp-validation-for="WindowsStoreUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="BlackBerryStoreUrl" type="text" class="form-control" name="BlackBerryStoreUrl">
+                                        <label class="form-label">BlackBerry Store Url</label>
+                                    </div>
+                                    <span asp-validation-for="BlackBerryStoreUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="AppleStoreUrl" type="email" class="form-control" name="AppleStoreUrl">
+                                        <label class="form-label">AppleStoreUrl</label>
+                                    </div>
+                                    <span asp-validation-for="AppleStoreUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="BrochureLink" type="text" class="form-control" name="BrochureLink">
+                                        <label class="form-label">Brochure Link</label>
+                                    </div>
+                                    <span asp-validation-for="BrochureLink" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                    
+                    <h3>SEO</h3>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="MetaTitle" type="text" class="form-control" name="MetaTitle">
+                                        <label class="form-label">Meta Title</label>
+                                    </div>
+                                    <span asp-validation-for="MetaTitle" class="text-danger"></span>
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="MetaDescription" type="text" class="form-control" name="MetaDescription">
+                                        <label class="form-label">Meta Description</label>
+                                    </div>
+                                    <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="MetaKeywords" type="text" class="form-control" name="MetaKeywords">
+                                        <label class="form-label">Meta Keywords</label>
+                                    </div>
+                                    <span asp-validation-for="MetaKeywords" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </fieldset>
+
+                    <h3>Other</h3>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="TradeLicenceNumber" type="text" class="form-control" name="TradeLicenceNumber">
+                                        <label class="form-label">Trade Licence Number</label>
+                                    </div>
+                                    <span asp-validation-for="TradeLicenceNumber" class="text-danger"></span>
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="DomainName" type="text" class="form-control" name="DomaiName">
+                                        <label class="form-label">Domai Name</label>
+                                    </div>
+                                    <span asp-validation-for="DomainName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="ThemeColor" type="color" class="form-control" name="ThemeColor">
+                                        <label class="form-label">Theme Color</label>
+                                    </div>
+                                    <span asp-validation-for="ThemeColor" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </fieldset> 
+                    <button class="btn btn-raised btn-primary waves-effect" type="submit">SUBMIT</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

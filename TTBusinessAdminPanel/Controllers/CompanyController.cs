@@ -60,7 +60,11 @@ namespace TTBusinessAdminPanel.Controllers
             }
             return Ok(null);
         }
-        public IActionResult Add(CompanyRequestModel reqmodel)
+        public IActionResult Add()
+        {
+            return View();
+        }
+        public IActionResult AddEditCompany(CompanyRequestModel reqmodel)
         {
             try
             {
@@ -70,7 +74,7 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 _logger.Error(ex);
             }
-            return View();
+            return View("Index");
         }
         public IActionResult Edit(int id)
         {

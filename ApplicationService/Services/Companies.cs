@@ -68,7 +68,7 @@ namespace ApplicationService.Services
                 PrimaryPhone = s.PrimaryPhone,
                 PrimaryEmail = s.PrimaryEmail,
                 PrimaryWebsite = s.PrimaryWebsite,
-                IsVerified = s.IsVerified,
+                IsVerified = s.IsVerified.HasValue?s.IsVerified.Value:false,
                 VerifiedUserId = s.VerifiedUserId,
                 VerifiedTime = s.VerifiedTime,
                 IsGreen = s.IsGreen.HasValue ? s.IsGreen.Value : false,
@@ -107,7 +107,7 @@ namespace ApplicationService.Services
                 LastModifierUserId = s.LastModifierUserId,
                 CreationTime = s.CreationTime,
                 CreatorUserId = s.CreatorUserId,
-                IsPublished = s.IsPublished,
+                IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
                 DomainName = s.DomainName,
                 PrimaryMobile = s.PrimaryMobile,
                 Address = s.Address,
@@ -116,8 +116,9 @@ namespace ApplicationService.Services
                 TotalProfileViews = s.TotalProfileViews,
                 Iso = s.Iso,
                 EstablishmentDate = s.EstablishmentDate,
-                IsFeatured = s.IsFeatured
-
+                IsFeatured = s.IsFeatured.HasValue?s.IsFeatured.Value:false,
+                
+                
             }).FirstOrDefaultAsync().Result;
 
             GetResults uobj = new GetResults
@@ -149,9 +150,9 @@ namespace ApplicationService.Services
                     GooglePlusUrl = creqmodel.GooglePlusUrl,
                     InstagramUrl = creqmodel.InstagramUrl,
                     HasOffers = creqmodel.HasOffers,
-                    OfferUpdatedTime = creqmodel.OfferUpdatedTime,
+                    //OfferUpdatedTime = creqmodel.OfferUpdatedTime,
                     HasCoupons = creqmodel.HasCoupons,
-                    CouponUpdatedTime = creqmodel.CouponUpdatedTime,
+                    //CouponUpdatedTime = creqmodel.CouponUpdatedTime,
                     HasVideos = creqmodel.HasVideos,
                     PrimaryGpsLocation = creqmodel.PrimaryGpsLocation,
                     DescriptionEng = creqmodel.DescriptionEng,
@@ -172,9 +173,9 @@ namespace ApplicationService.Services
                     BrochureLink = creqmodel.BrochureLink,
                     ThemeColor = creqmodel.ThemeColor,
                     IsDeleted = false,
-                    CreationTime = creqmodel.CreationTime,
+                    CreationTime =DateTime.Now,
                     CreatorUserId = creqmodel.CreatorUserId,
-                    IsPublished = false,
+                    IsPublished = creqmodel.IsPublished,
                     DomainName = creqmodel.DomainName,
                     PrimaryMobile = creqmodel.PrimaryMobile,
                     Address = creqmodel.Address,
@@ -183,7 +184,8 @@ namespace ApplicationService.Services
                     TotalProfileViews = creqmodel.TotalProfileViews,
                     Iso = creqmodel.Iso,
                     EstablishmentDate = creqmodel.EstablishmentDate,
-                    IsFeatured = creqmodel.IsFeatured
+                    IsFeatured = creqmodel.IsFeatured,
+                    IsVerified=creqmodel.IsVerified
 
                 };
                 _dbContext.Company.Add(cobj);
@@ -236,7 +238,7 @@ namespace ApplicationService.Services
                 cdetail.IsDeleted = false;
                 cdetail.LastModificationTime = DateTime.Now;
                 cdetail.LastModifierUserId = creqmodel.LastModifierUserId;
-                cdetail.IsPublished = false;
+                cdetail.IsPublished = creqmodel.IsPublished;
                 cdetail.DomainName = creqmodel.DomainName;
                 cdetail.PrimaryMobile = creqmodel.PrimaryMobile;
                 cdetail.Address = creqmodel.Address;
@@ -245,16 +247,24 @@ namespace ApplicationService.Services
                 cdetail.TotalProfileViews = creqmodel.TotalProfileViews;
                 cdetail.Iso = creqmodel.Iso;
                 cdetail.EstablishmentDate = creqmodel.EstablishmentDate;
-                cdetail.IsFeatured = false;
-
+                cdetail.IsFeatured = creqmodel.IsFeatured;
+                cdetail.IsVerified = creqmodel.IsVerified;
                 gobj = new GetResults()
                 {
                     IsSuccess = true,
                     Message = "Company Updated Successfully"
                 };
             }
+            try
+            {
 
-            _dbContext.SaveChanges();
+                var i = _dbContext.SaveChanges();
+            }
+            catch
+                {
+                throw;
+
+                }
 
             return await Task.FromResult(gobj);
         }
