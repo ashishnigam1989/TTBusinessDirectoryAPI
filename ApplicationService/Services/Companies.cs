@@ -68,7 +68,7 @@ namespace ApplicationService.Services
                 PrimaryPhone = s.PrimaryPhone,
                 PrimaryEmail = s.PrimaryEmail,
                 PrimaryWebsite = s.PrimaryWebsite,
-                IsVerified = s.IsVerified.HasValue?s.IsVerified.Value:false,
+                IsVerified = s.IsVerified.HasValue ? s.IsVerified.Value : false,
                 VerifiedUserId = s.VerifiedUserId,
                 VerifiedTime = s.VerifiedTime,
                 IsGreen = s.IsGreen.HasValue ? s.IsGreen.Value : false,
@@ -107,7 +107,7 @@ namespace ApplicationService.Services
                 LastModifierUserId = s.LastModifierUserId,
                 CreationTime = s.CreationTime,
                 CreatorUserId = s.CreatorUserId,
-                IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                 DomainName = s.DomainName,
                 PrimaryMobile = s.PrimaryMobile,
                 Address = s.Address,
@@ -116,9 +116,9 @@ namespace ApplicationService.Services
                 TotalProfileViews = s.TotalProfileViews,
                 Iso = s.Iso,
                 EstablishmentDate = s.EstablishmentDate,
-                IsFeatured = s.IsFeatured.HasValue?s.IsFeatured.Value:false,
-                
-                
+                IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false,
+
+
             }).FirstOrDefaultAsync().Result;
 
             GetResults uobj = new GetResults
@@ -173,7 +173,7 @@ namespace ApplicationService.Services
                     BrochureLink = creqmodel.BrochureLink,
                     ThemeColor = creqmodel.ThemeColor,
                     IsDeleted = false,
-                    CreationTime =DateTime.Now,
+                    CreationTime = DateTime.Now,
                     CreatorUserId = creqmodel.CreatorUserId,
                     IsPublished = creqmodel.IsPublished,
                     DomainName = creqmodel.DomainName,
@@ -185,7 +185,7 @@ namespace ApplicationService.Services
                     Iso = creqmodel.Iso,
                     EstablishmentDate = creqmodel.EstablishmentDate,
                     IsFeatured = creqmodel.IsFeatured,
-                    IsVerified=creqmodel.IsVerified
+                    IsVerified = creqmodel.IsVerified
 
                 };
                 _dbContext.Company.Add(cobj);
@@ -261,10 +261,10 @@ namespace ApplicationService.Services
                 var i = _dbContext.SaveChanges();
             }
             catch
-                {
+            {
                 throw;
 
-                }
+            }
 
             return await Task.FromResult(gobj);
         }
@@ -318,5 +318,150 @@ namespace ApplicationService.Services
             }
             return await Task.FromResult(gobj);
         }
+
+        #region Categories
+
+        public async Task<GetResults> GetAllCategories(int page, int limit, string searchValue)
+        {
+            List<CategoriesViewModel> listcategory = _dbContext.Category.Where(w => w.IsDeleted == false && (
+           (!string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
+            !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb)))
+                .Select(s => new CategoriesViewModel
+                {
+                    Id = s.Id,
+                    NameEng = s.NameEng,
+                    NameArb = s.NameArb,
+                    Unspsccode = s.Unspsccode,
+                    IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                    IsDeleted = s.IsDeleted,
+                    DeleterUserId = s.DeleterUserId,
+                    DeletionTime = s.DeletionTime,
+                    LastModificationTime = s.LastModificationTime,
+                    LastModifierUserId = s.LastModifierUserId,
+                    CreationTime = s.CreationTime,
+                    CreatorUserId = s.CreatorUserId,
+                    Keywords = s.Keywords,
+                    SuggestionHits = s.SuggestionHits,
+                    Slug = s.Slug,
+                    SeoEnabled = s.SeoEnabled,
+                    MetaTitleEng = s.MetaTitleEng,
+                    MetaDescriptionEng = s.MetaDescriptionEng,
+                    PageContentEng = s.PageContentEng,
+                    MetaTitleArb = s.MetaTitleArb,
+                    MetaDescriptionArb = s.MetaDescriptionArb,
+                    PageContentArb = s.PageContentArb,
+                    IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false
+
+                }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+            int total = _dbContext.Category.Where(w => w.IsDeleted == false && (
+                                  !string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
+                                  !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb)
+                                  ).CountAsync().Result;
+
+            GetResults result = new GetResults
+            {
+                Data = listcategory,
+                Total = total
+            };
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> CreateUpdateCategory(CategoriesRequestModel crModel)
+        {
+            GetResults resp = new GetResults();
+            var cdata = _dbContext.Category.Where(w => w.Id == crModel.Id).FirstOrDefaultAsync().Result;
+            if (cdata == null)
+            {
+                Category crobj = new Category()
+                { 
+                    NameEng = crModel.NameEng,
+                    NameArb = crModel.NameArb,
+                    Unspsccode = crModel.Unspsccode,
+                    IsPublished = crModel.IsPublished,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = crModel.CreatorUserId,
+                    Keywords = crModel.Keywords,
+                    SuggestionHits = crModel.SuggestionHits,
+                    Slug = crModel.Slug,
+                    SeoEnabled = crModel.SeoEnabled,
+                    MetaTitleEng = crModel.MetaTitleEng,
+                    MetaDescriptionEng = crModel.MetaDescriptionEng,
+                    PageContentEng = crModel.PageContentEng,
+                    MetaTitleArb = crModel.MetaTitleArb,
+                    MetaDescriptionArb = crModel.MetaDescriptionArb,
+                    PageContentArb = crModel.PageContentArb,
+                    IsFeatured = crModel.IsFeatured
+                };
+                _dbContext.Category.Add(crobj);
+                await _dbContext.SaveChangesAsync();
+                resp.Message = "Category Added.";
+                resp.IsSuccess = true;
+
+            }
+            else
+            {
+                cdata.NameEng = crModel.NameEng;
+                cdata.NameArb = crModel.NameArb;
+                cdata.Unspsccode = crModel.Unspsccode;
+                cdata.IsPublished = crModel.IsPublished;
+                cdata.LastModificationTime = DateTime.Now;
+                cdata.LastModifierUserId = crModel.LastModifierUserId;
+                cdata.Keywords = crModel.Keywords;
+                cdata.SuggestionHits = crModel.SuggestionHits;
+                cdata.Slug = crModel.Slug;
+                cdata.SeoEnabled = crModel.SeoEnabled;
+                cdata.MetaTitleEng = crModel.MetaTitleEng;
+                cdata.MetaDescriptionEng = crModel.MetaDescriptionEng;
+                cdata.PageContentEng = crModel.PageContentEng;
+                cdata.MetaTitleArb = crModel.MetaTitleArb;
+                cdata.MetaDescriptionArb = crModel.MetaDescriptionArb;
+                cdata.PageContentArb = crModel.PageContentArb;
+                cdata.IsFeatured = crModel.IsFeatured;
+                await _dbContext.SaveChangesAsync();
+                resp.Message = "Category Added.";
+                resp.IsSuccess = true;
+            }
+
+            return await Task.FromResult(resp);
+        }
+        public async Task<GetResults> GetCategoryById(int id)
+        {
+           CategoriesViewModel category = _dbContext.Category.Where(w =>w.Id==id && w.IsDeleted == false)
+              .Select(s => new CategoriesViewModel
+              {
+                  Id = s.Id,
+                  NameEng = s.NameEng,
+                  NameArb = s.NameArb,
+                  Unspsccode = s.Unspsccode,
+                  IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                  IsDeleted = s.IsDeleted,
+                  DeleterUserId = s.DeleterUserId,
+                  DeletionTime = s.DeletionTime,
+                  LastModificationTime = s.LastModificationTime,
+                  LastModifierUserId = s.LastModifierUserId,
+                  CreationTime = s.CreationTime,
+                  CreatorUserId = s.CreatorUserId,
+                  Keywords = s.Keywords,
+                  SuggestionHits = s.SuggestionHits,
+                  Slug = s.Slug,
+                  SeoEnabled = s.SeoEnabled,
+                  MetaTitleEng = s.MetaTitleEng,
+                  MetaDescriptionEng = s.MetaDescriptionEng,
+                  PageContentEng = s.PageContentEng,
+                  MetaTitleArb = s.MetaTitleArb,
+                  MetaDescriptionArb = s.MetaDescriptionArb,
+                  PageContentArb = s.PageContentArb,
+                  IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false
+
+              }).FirstOrDefaultAsync().Result;
+            GetResults result = new GetResults
+            {
+                Data = category,
+                Total = 1
+            };
+            return await Task.FromResult(result);
+        }
+        #endregion
     }
 }

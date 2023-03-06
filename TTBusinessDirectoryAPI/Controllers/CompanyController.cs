@@ -6,6 +6,7 @@ using NLog;
 using System.Threading.Tasks;
 using System;
 using CommonService.RequestModel;
+using DatabaseService.DbEntities;
 
 namespace TTBusinessDirectoryAPI.Controllers
 {
@@ -107,6 +108,64 @@ namespace TTBusinessDirectoryAPI.Controllers
             {
                 var result = _company.VerifyCompany(cModel.Id).Result;
                 logger.Info(result.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetAllCategories")]
+        public async Task<GetResults> GetAllCategories(int page = 0, int limit = 10)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = _company.GetAllCategories(page, limit, "").Result;
+                getResults.IsSuccess = true;
+                getResults.Message = "Category List";
+                logger.Info(" getResults.Message");
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpPost]
+        [Route("CreateUpdateCategory")]
+        public async Task<GetResults> CreateUpdateCategory(CategoriesRequestModel cRequest)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                var result = _company.CreateUpdateCategory(cRequest).Result;
+                logger.Info(result.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetCategoryById")]
+        public async Task<GetResults> GetCategoryById(int categoryid)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = _company.GetCategoryById(categoryid).Result;
+                getResults.IsSuccess = true;
+                getResults.Message = "Category Details found";
+                logger.Info(getResults.Message);
             }
             catch (Exception ex)
             {

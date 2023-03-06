@@ -8,11 +8,11 @@
 <div class="block-header">
     <div class="row">
         <div class="col-lg-12 col-md-6 col-sm-7">
-            <h2>Add Category</h2>
+            <h2>Edit Category</h2>
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
                 <li class="breadcrumb-item"><a href="javascript:void(0);">Company</a></li>
-                <li class="breadcrumb-item active">Add Category</li>
+                <li class="breadcrumb-item active">Edit Category</li>
             </ul>
         </div>
     </div>
@@ -22,16 +22,18 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="header">
-                <h2>Add Category Details</h2>
+                <h2>Edit Category Details</h2>
             </div>
             <div class="body">
                 <form id="wizard_with_validation" asp-controller="Company" asp-action="AddEditCategory">
                     <h3>Basic Info</h3>
                     <fieldset>
                         <div class="row">
+                            <input type="hidden" id="Id" name="Id" asp-for="Id" />
                             <div class="col-md-6">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
+
                                         <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
                                         <label class="form-label">NameEng</label>
                                     </div>
@@ -40,18 +42,18 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input asp-for="NameArb" type="text" class="form-control" name="NameArb">
                                         <label class="form-label">NameArb</label>
                                     </div>
                                     <span asp-validation-for="NameArb" class="text-danger"></span>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input asp-for="Unspsccode" type="text" class="form-control" name="Unspsccode">
                                         <label class="form-label">UNSPSC Code</label>
                                     </div>
@@ -60,11 +62,11 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input type="email" class="form-control" name="PrimaryEmail">
                                         <label class="form-label">Search Term</label>
                                     </div>
-                                    <span  class="text-danger"></span>
+                                    <span class="text-danger"></span>
                                 </div>
                             </div>
 
@@ -105,7 +107,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input asp-for="MetaTitleEng" type="text" class="form-control" name="MetaTitleEng">
                                         <label class="form-label">Meta Title Eng</label>
                                     </div>
@@ -116,7 +118,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input asp-for="MetaDescriptionEng" type="text" class="form-control" name="MetaDescriptionEng">
                                         <label class="form-label">MetaDescriptionEng</label>
                                     </div>
@@ -127,7 +129,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input asp-for="MetaTitleArb" type="text" class="form-control" name="MetaTitleArb">
                                         <label class="form-label">MetaTitle  Arb</label>
                                     </div>
@@ -138,7 +140,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input asp-for="MetaDescriptionArb" type="text" class="form-control" name="MetaDescriptionArb">
                                         <label class="form-label">MetaDescription Arb</label>
                                     </div>
@@ -149,7 +151,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-float">
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input asp-for="Keywords" type="text" class="form-control" name="Keywords">
                                         <label class="form-label">Keywords</label>
                                     </div>
