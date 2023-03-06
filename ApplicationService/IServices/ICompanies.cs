@@ -14,5 +14,8 @@ namespace ApplicationService.IServices
         Task<GetResults> CreateUpdateCompany(CompanyRequestModel creqmodel);
         Task<GetResults> DeleteCompany(int id);
         Task<GetResults> VerifyCompany(int id);
+        public Task<GetResults> GetAllCategories(int page, int limit, string searchValue);
+        public Task<GetResults> CreateUpdateCategory(CategoriesRequestModel crModel);
+        public Task<GetResults> GetCategoryById(int id);
     }
 }
