@@ -145,7 +145,7 @@ namespace TTBusinessAdminPanel.Controllers
             try
             {
                 List<RoleModel> roles = new List<RoleModel>();
-                roles = _master.GetRoles().Result;
+                roles = _master.GetMasterRoles().Result;
                 ViewBag.Roles = new SelectList(roles, "Id", "DisplayName");
             }
             catch(Exception ex)

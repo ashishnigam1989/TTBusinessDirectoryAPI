@@ -23,9 +23,35 @@ namespace ApplicationService.Services
             _mapper = mapper;
         }
 
-        public async Task<List<RoleModel>> GetRoles()
+        public async Task<GetResults> GetRoles(int page, int limit, string searchValue)
+        {
+            int total = 0;
+            List<RoleModel> rolelist = _dbContext.Roles.Where(w =>
+           (!string.IsNullOrEmpty(searchValue) ? w.Name.ToLower().Contains(searchValue.ToLower()) : w.Name == w.Name) && w.IsDeleted == false
+            ).Select(s => new RoleModel
+            {
+                Name = s.Name,
+                DisplayName = s.DisplayName,
+                Id = s.Id
+            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+            total = _dbContext.Roles.Where(w => w.IsDeleted == false).Where(w =>
+                                    !string.IsNullOrEmpty(searchValue) ? w.Name.ToLower().Contains(searchValue.ToLower()) : w.Name == w.Name
+                                    ).CountAsync().Result;
+
+            GetResults uobj = new GetResults
+            {
+                Total = total,
+                Data = rolelist
+            };
+            return await Task.FromResult(uobj);
+
+        }
+
+        public async Task<List<RoleModel>> GetMasterRoles()
         {
             var roles = _dbContext.Roles
+                .Where(w=>w.IsDeleted == false)
                 .Select(s => new RoleModel
                 {
                     Name = s.Name,

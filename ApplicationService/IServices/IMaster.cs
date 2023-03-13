@@ -10,7 +10,8 @@ namespace ApplicationService.IServices
 {
     public interface IMaster
     {
-        Task<List<RoleModel>> GetRoles();
+        Task<GetResults> GetRoles(int page, int limit, string searchValue);
+        Task<List<RoleModel>> GetMasterRoles();
         Task<List<MenuModel>> GetAllMenus();
 
         #region Brands

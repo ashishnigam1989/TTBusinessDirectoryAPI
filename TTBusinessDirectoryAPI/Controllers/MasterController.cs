@@ -30,7 +30,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var roles = _master.GetRoles().Result;
+                var roles = _master.GetMasterRoles().Result;
                 var total = roles.Count;
                 getResults = new GetResults(true, "Get Roles", roles, total);
                 logger.Info("Get Roles");

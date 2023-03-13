@@ -56,7 +56,6 @@ namespace TTBusinessAdminPanel.Controllers
             return View();
         }
 
-        [HttpPost]
         public IActionResult Logout()
         {
             try { 
@@ -66,7 +65,7 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 _logger.Error(ex);
             }
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", "Account");
         }
     }
 }

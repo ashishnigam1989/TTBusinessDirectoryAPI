@@ -36,7 +36,7 @@
     <!-- Overlay For Sidebars -->
     <div class="overlay"></div>
     <!-- #Float icon -->
-    <ul id="f-menu" class="mfb-component--br mfb-zoomin" data-mfb-toggle="hover">
+    @*<ul id="f-menu" class="mfb-component--br mfb-zoomin" data-mfb-toggle="hover">
         <li class="mfb-component__wrap"> <a href="#" class="mfb-component__button--main"> <i class="mfb-component__main-icon--resting zmdi zmdi-plus"></i> <i class="mfb-component__main-icon--active zmdi zmdi-close"></i> </a>
             <ul class="mfb-component__list">
                 <li> <a href="mail-inbox.html" data-mfb-label="Inbox" class="mfb-component__button--child bg-blue"> <i class="zmdi zmdi-email mfb-component__child-icon"></i> </a> </li>
@@ -44,25 +44,25 @@
                 <li> <a href="blog.html" data-mfb-label="Blogger" class="mfb-component__button--child bg-purple"> <i class="zmdi zmdi-blogger mfb-component__child-icon"></i> </a> </li>
             </ul>
         </li>
-    </ul>
+    </ul>*@
 
     <!-- Search  -->
-    <div class="search-bar">
+    @*<div class="search-bar">
         <div class="search-icon"> <i class="zmdi zmdi-search"></i> </div>
         <input type="text" placeholder="Search...">
         <div class="close-search"> <i class="zmdi zmdi-close"></i> </div>
-    </div>
+    </div>*@
     
     <!-- Top Bar -->
     <nav class="navbar">
         <div class="col-12">
             <div class="navbar-header">            
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="index.html">TT Business Panel</a>
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">TT Business Panel</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="zmdi zmdi-search"></i></a></li>            
-                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" ><i class="zmdi zmdi-notifications"></i>
+                @*<li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="zmdi zmdi-search"></i></a></li>  *@          
+                @*<li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" ><i class="zmdi zmdi-notifications"></i>
                     <div class="notify"><span class="heartbit"></span><span class="point"></span></div>
                     </a>
                     <ul class="dropdown-menu">
@@ -122,8 +122,8 @@
                         </li>
                         <li class="footer"> <a href="javascript:void(0);">View All Notifications</a> </li>
                     </ul>
-                </li>
-                <li class="dropdown hidden-sm-down"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" ><i class="zmdi zmdi-flag"></i>
+                </li>*@
+                @*<li class="dropdown hidden-sm-down"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" ><i class="zmdi zmdi-flag"></i>
                     <div class="notify"><span class="heartbit"></span><span class="point"></span></div>
                     </a>
                     <ul class="dropdown-menu slideDown">
@@ -164,9 +164,9 @@
                         </li>
                         <li class="footer"> <a href="javascript:void(0);">View All Tasks</a> </li>
                     </ul>
-                </li>
+                </li>*@
                 <li><a href="@Url.Action("Logout","Account")" class="mega-menu" data-close="true"><i class="zmdi zmdi-power"></i></a></li>
-                <li><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="zmdi zmdi-settings zmdi-hc-spin"></i></a></li>
+                @*<li><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="zmdi zmdi-settings zmdi-hc-spin"></i></a></li>*@
             </ul>
         </div>
     </nav>
@@ -175,19 +175,19 @@
     <aside id="leftsidebar" class="sidebar"> 
         <!-- User Info -->
         <div class="user-info">
-            <div class="image"> <img src="assets/images/random-avatar1.jpg" width="48" height="48" alt="User" /> </div>
+            @*<div class="image"> <img src="~/assets/images/random-avatar1.jpg" width="48" height="48" alt="User" /> </div>*@
             <div class="info-container">
                 <div class="name" data-toggle="dropdown">John Doe</div>
                 <div class="email">john.doe@example.com</div>
                 <div class="btn-group user-helper-dropdown"> <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                     <ul class="dropdown-menu pull-right">
-                        <li><a href="profile.html"><i class="material-icons">person</i>Profile</a></li>
-                        <li class="divider"></li>
+                        <li><a href="@Url.Action("Profile","Home")"><i class="material-icons">person</i>Profile</a></li>
+                        @*<li class="divider"></li>
                         <li><a href="javascript:void(0);"><i class="material-icons">group</i>Followers</a></li>
                         <li><a href="javascript:void(0);"><i class="material-icons">shopping_cart</i>Sales</a></li>
                         <li><a href="javascript:void(0);"><i class="material-icons">favorite</i>Likes</a></li>
-                        <li class="divider"></li>
-                        <li><a href="sign-in.html"><i class="material-icons">input</i>Sign Out</a></li>
+                        <li class="divider"></li>*@
+                        <li><a href="@Url.Action("Logout","Account")"><i class="material-icons">input</i>Sign Out</a></li>
                     </ul>
                 </div>
             </div>
