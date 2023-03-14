@@ -61,12 +61,44 @@
                     {
                         "render": function (data, row, d) {
                              // return "";
-                            return "<a href='/company/EditCategory/" + d.id + "' class='btn btn-sm btn-raised bg-teal waves-effect' ><i class='material-icons'>mode_edit</i> Edit</a> <button onclick=VerifyCompany(" + d.id + ") class='btn btn-sm  btn-raised bg-green waves-effect' ><i class='material-icons'>check_circle</i> Verify</button> <button onclick=DeleteCompany(" + d.id + ") class='btn btn-sm btn-raised bg-cyan waves-effect' ><i class='material-icons'>block</i>Delete</button>";
+                            return "<a href='/company/EditCategory/" + d.id + "' class='btn btn-sm btn-raised bg-teal waves-effect' ><i class='material-icons'>mode_edit</i> Edit</a> <button onclick=DeleteCategory(" + d.id + ") class='btn btn-sm btn-raised bg-cyan waves-effect' ><i class='material-icons'>block</i>Delete</button>";
                         }
                     }
                 ]
             });
         });
+
+        function DeleteCategory(id) {
+            var reqObj = {
+                Id: id
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteCategory")',
+                dataType: 'json',
+                data: reqObj,
+                success: function (data) {
+                    if (data.isSuccess) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'Category Deleted Successfully!!'
+                        })
+                        location.reload(true);
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Not changed!!'
+                        })
+                    }
+                },
+                error: function (ex) {
+
+                }
+            });
+        }
 
     </script>
 }

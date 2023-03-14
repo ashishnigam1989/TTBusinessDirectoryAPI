@@ -174,5 +174,23 @@ namespace TTBusinessDirectoryAPI.Controllers
             }
             return await Task.FromResult(getResults);
         }
+
+        [HttpGet]
+        [Route("DeleteCategory")]
+        public async Task<GetResults> DeleteCategory(int categoryid)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = _company.DeleteCategory(categoryid).Result;
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
     }
 }

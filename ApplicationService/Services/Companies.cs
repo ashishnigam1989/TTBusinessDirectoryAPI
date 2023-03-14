@@ -462,6 +462,28 @@ namespace ApplicationService.Services
             };
             return await Task.FromResult(result);
         }
+
+        public async Task<GetResults> DeleteCategory(int id)
+        {
+            GetResults result = new GetResults();
+            var category = _dbContext.Category.Where(w => w.Id == id).FirstOrDefaultAsync().Result;
+            if(category!=null)
+            {
+                category.IsDeleted = true;
+                category.DeletionTime = DateTime.Now;
+                _dbContext.SaveChanges();
+                result.IsSuccess = true;
+                result.Message = "Category deleted.";
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = "Category not found.";
+            }
+           
+            return await Task.FromResult(result);
+        }
+
         #endregion
     }
 }

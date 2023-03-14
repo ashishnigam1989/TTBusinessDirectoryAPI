@@ -17,5 +17,6 @@ namespace ApplicationService.IServices
         public Task<GetResults> GetAllCategories(int page, int limit, string searchValue);
         public Task<GetResults> CreateUpdateCategory(CategoriesRequestModel crModel);
         public Task<GetResults> GetCategoryById(int id);
+        public Task<GetResults> DeleteCategory(int id);
     }
 }
