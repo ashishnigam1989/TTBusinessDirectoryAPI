@@ -178,6 +178,20 @@ namespace TTBusinessAdminPanel.Controllers
             return View(cmodel);
         }
 
+        public IActionResult DeleteCategory(int id)
+        {
+            GetResults cmodel = new GetResults();
+            try
+            {
+                 cmodel = _company.DeleteCategory(id).Result;                
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Json(cmodel);
+        }
+
         //View/Add/Delete
         public IActionResult Brand()
         {
