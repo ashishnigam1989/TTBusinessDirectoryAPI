@@ -58,8 +58,6 @@ namespace ApplicationService.Services
                     Id = s.Id,
                     DisplayName = s.DisplayName
                 }).ToList();
-
-
             return await Task.FromResult(roles);
         }
 

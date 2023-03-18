@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonService", "CommonServ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationService", "ApplicationService\ApplicationService.csproj", "{FB095D63-CDB2-4652-9279-E086AE41995B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTBusinessAdminPanel", "TTBusinessAdminPanel\TTBusinessAdminPanel.csproj", "{075459E2-12D6-4C58-8698-06BDA1CD4F4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTBusinessAdminPanel", "TTBusinessAdminPanel\TTBusinessAdminPanel.csproj", "{075459E2-12D6-4C58-8698-06BDA1CD4F4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

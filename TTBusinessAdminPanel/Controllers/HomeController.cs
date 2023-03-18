@@ -1,6 +1,8 @@
 ﻿using ApplicationService.IServices;
 using CommonService.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using NLog;
 using System;
@@ -12,15 +14,18 @@ using TTBusinessAdminPanel.Models;
 
 namespace TTBusinessAdminPanel.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private Logger _logger;
         private IMaster _master;
+        private ILocation _location;
 
-        public HomeController(IMaster master)
+        public HomeController(IMaster master, ILocation location)
         {
             _logger = LogManager.GetLogger("Home");
             _master = master;
+            _location = location;
         }
 
         //Dashboard
@@ -34,7 +39,7 @@ namespace TTBusinessAdminPanel.Controllers
             return View();
         }
 
-        //View 
+        #region Roles
         public IActionResult Role()
         {
             return View();
@@ -70,22 +75,97 @@ namespace TTBusinessAdminPanel.Controllers
             }
             return Ok(null);
         }
+        #endregion
 
-        //View 
+        #region Countries
         public IActionResult Country()
         {
             return View();
         }
+        public IActionResult GetCountries()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _location.GetCountries(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CountryModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+        }
+        #endregion
 
         #region Region
-        //View/Add/Edit
         public IActionResult Region()
         {
             return View();
         }
+        public IActionResult GetRegions()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _location.GetRegions(pageNo, pageSize, searchValue).Result;
+                var cData = (List<RegionModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+        }
 
+        private void BindCountry()
+        {
+            try
+            {
+                List<CountryModel> countries = new List<CountryModel>();
+                countries = _location.GetMasterCountries().Result;
+                ViewBag.countries = new SelectList(countries, "Id", "CountryNameEng");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
         public IActionResult RegionAdd()
         {
+            BindCountry();
             return View();
         }
 

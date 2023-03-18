@@ -9,13 +9,17 @@ namespace ApplicationService.IServices
 {
     public interface ILocation
     {
-        Task<List<CountryModel>> GetCountries();
+        #region Country
+        Task<List<CountryModel>> GetMasterCountries();
+        Task<GetResults> GetCountries(int page, int limit, string searchValue);
+        #endregion
 
         #region Regions
-        Task<bool> AddRegion(RegionRequestModel regionRequest);
-        Task<bool> EditRegion(RegionRequestModel regionRequest);
-        Task<RegionModel> GetRegionById(int regionId);
-        Task<List<RegionModel>> GetRegions(int countryId);
+        Task<GetResults> AddUpdateRegion(RegionRequestModel regionRequest);
+        Task<GetResults> DeleteRegion(int id);
+        Task<GetResults> GetRegionById(int regionId);
+        Task<List<RegionModel>> GetMasterRegions(int countryId);
+        Task<GetResults> GetRegions(int page, int limit, string searchValue);
         #endregion
     }
 }
