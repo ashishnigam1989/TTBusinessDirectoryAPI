@@ -10,6 +10,7 @@ namespace CommonService.ViewModels
         public string NameEng { get; set; }
         public string NameArb { get; set; }
         public int CountryId { get; set; }
+        public string CountryNameEng { get; set; }
         public bool IsDeleted { get; set; }
         public long? DeleterUserId { get; set; }
         public DateTime? DeletionTime { get; set; }
