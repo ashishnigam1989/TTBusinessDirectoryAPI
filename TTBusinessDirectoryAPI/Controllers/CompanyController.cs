@@ -192,5 +192,85 @@ namespace TTBusinessDirectoryAPI.Controllers
             }
             return await Task.FromResult(getResults);
         }
+
+        //////
+
+        [HttpGet]
+        [Route("GetAllBrands")]
+        public async Task<GetResults> GetAllBrands(int page = 0, int limit = 10)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = _company.GetAllBrands(page, limit, "").Result;
+                getResults.IsSuccess = true;
+                getResults.Message = "Brand List";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpPost]
+        [Route("AddUpdateBrand")]
+        public async Task<GetResults> AddUpdateBrand(BrandRequestModel bRequest)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                var result = _company.AddUpdateBrand(bRequest).Result;
+                logger.Info(result.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetBrandById")]
+        public async Task<GetResults> GetBrandById(int brandid)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = _company.GetBrandById(brandid).Result;
+                getResults.IsSuccess = true;
+                getResults.Message = "Brand Details found";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("DeleteBrand")]
+        public async Task<GetResults> DeleteBrand(int brandid)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = _company.DeleteBrand(brandid).Result;
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+
     }
 }

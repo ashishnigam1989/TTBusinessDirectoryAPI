@@ -39,6 +39,7 @@ namespace TTBusinessAdminPanel
             services.AddScoped<IMaster, Master>();
             services.AddScoped<ILocation, Location>();
             services.AddScoped<ICompanies, ApplicationService.Services.Companies>();
+            services.AddScoped<IOffers, ApplicationService.Services.Offers>();
             services.AddDbContext<BusinessDirectoryDBContext>(ServiceLifetime.Scoped);
             //Dependencies Mapping End
 
