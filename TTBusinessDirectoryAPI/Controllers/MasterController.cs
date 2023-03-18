@@ -50,7 +50,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var countries = _location.GetCountries().Result;
+                var countries = _location.GetMasterCountries().Result;
                 var total = countries.Count;
                 getResults = new GetResults(true, "Get Countries", countries, total);
                 logger.Info("Get Countries");
