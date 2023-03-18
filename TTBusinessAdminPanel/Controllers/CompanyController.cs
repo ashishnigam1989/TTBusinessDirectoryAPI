@@ -91,6 +91,16 @@ namespace TTBusinessAdminPanel.Controllers
             }
             return View(cmodel);
         }
+        public IActionResult VerifyCompany(ChangeStatusModel cModel)
+        {
+            var resp = _company.VerifyCompany(cModel.Id).Result;
+            return Json(resp);
+        }
+        public IActionResult DeleteCompany(ChangeStatusModel cModel)
+        {
+            var resp = _company.DeleteCompany(cModel.Id).Result;
+            return Json(resp);
+        }
 
         //View/Add/Delete
         public IActionResult Category()
@@ -142,34 +152,37 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 var company = _company.GetCategoryById(id).Result;
                var s = (CategoriesViewModel)company.Data;
-                cmodel = new CategoriesRequestModel()
+                if (s != null)
                 {
-                    Id = s.Id,
-                    NameEng = s.NameEng,
-                    NameArb = s.NameArb,
-                    Unspsccode = s.Unspsccode,
-                    IsPublished = s.IsPublished,
-                    IsDeleted = s.IsDeleted,
-                    DeleterUserId = s.DeleterUserId,
-                    DeletionTime = s.DeletionTime,
-                    LastModificationTime = s.LastModificationTime,
-                    LastModifierUserId = s.LastModifierUserId,
-                    CreationTime = s.CreationTime,
-                    CreatorUserId = s.CreatorUserId,
-                    Keywords = s.Keywords,
-                    SuggestionHits = s.SuggestionHits,
-                    Slug = s.Slug,
-                    SeoEnabled = s.SeoEnabled,
-                    MetaTitleEng = s.MetaTitleEng,
-                    MetaDescriptionEng = s.MetaDescriptionEng,
-                    PageContentEng = s.PageContentEng,
-                    MetaTitleArb = s.MetaTitleArb,
-                    MetaDescriptionArb = s.MetaDescriptionArb,
-                    PageContentArb = s.PageContentArb,
-                    IsFeatured = s.IsFeatured,
+                    cmodel = new CategoriesRequestModel()
+                    {
+                        Id = s.Id,
+                        NameEng = s.NameEng,
+                        NameArb = s.NameArb,
+                        Unspsccode = s.Unspsccode,
+                        IsPublished = s.IsPublished,
+                        IsDeleted = s.IsDeleted,
+                        DeleterUserId = s.DeleterUserId,
+                        DeletionTime = s.DeletionTime,
+                        LastModificationTime = s.LastModificationTime,
+                        LastModifierUserId = s.LastModifierUserId,
+                        CreationTime = s.CreationTime,
+                        CreatorUserId = s.CreatorUserId,
+                        Keywords = s.Keywords,
+                        SuggestionHits = s.SuggestionHits,
+                        Slug = s.Slug,
+                        SeoEnabled = s.SeoEnabled,
+                        MetaTitleEng = s.MetaTitleEng,
+                        MetaDescriptionEng = s.MetaDescriptionEng,
+                        PageContentEng = s.PageContentEng,
+                        MetaTitleArb = s.MetaTitleArb,
+                        MetaDescriptionArb = s.MetaDescriptionArb,
+                        PageContentArb = s.PageContentArb,
+                        IsFeatured = s.IsFeatured,
 
 
-                };
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -197,21 +210,104 @@ namespace TTBusinessAdminPanel.Controllers
         {
             return View();
         }
+        public IActionResult GetAllBrand()
+        {
+            var draw = Request.Form["draw"].FirstOrDefault();
+            var start = Request.Form["start"].FirstOrDefault();
+            var length = Request.Form["length"].FirstOrDefault();
+            var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+            int pageSize = length != null ? Convert.ToInt32(length) : 0;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+            int pageNo = (skip / pageSize);
+            int recordsTotal = 0;
+            var allData = _company.GetAllBrands(pageNo, pageSize, searchValue).Result;
+            var cData = (List<BrandModel>)allData.Data;
+            if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+            {
+                cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+            }
+            recordsTotal = allData.Total;
+            var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+            return Ok(jsonData);
+        }
         public IActionResult BrandAdd()
         {
             return View();
         }
+        public IActionResult AddEditBrand(BrandRequestModel breqmodel)
+        {
+            try
+            {
+                _company.AddUpdateBrand(breqmodel);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return View("Brand");
+        }
+        public IActionResult EditBrand(int id)
+        {
+            BrandRequestModel bmodel = new BrandRequestModel();
+            try
+            {
+                var brand = _company.GetBrandById(id).Result;
+                var bobj = (BrandModel)brand.Data;
+                if (bobj != null)
+                {
+                    bmodel = new BrandRequestModel()
+                    {
+                        Id = bobj.Id,
+                        NameEng = bobj.NameEng,
+                        NameArb = bobj.NameArb,
+                        SortOrder = bobj.SortOrder,
+                        Logo = bobj.Logo,
+                        IsDeleted = bobj.IsDeleted,
+                        DeleterUserId = bobj.DeleterUserId,
+                        DeletionTime = bobj.DeletionTime,
+                        LastModificationTime = bobj.LastModificationTime,
+                        LastModifierUserId = bobj.LastModifierUserId,
+                        CreationTime = bobj.CreationTime,
+                        CreatorUserId = bobj.CreatorUserId,
+                        IsPublished = bobj.IsPublished,
+                        Slug = bobj.Slug,
+                        SeoEnabled = bobj.SeoEnabled,
+                        MetaTitleEng = bobj.MetaTitleEng,
+                        KeywordsEng = bobj.KeywordsEng,
+                        MetaDescriptionEng = bobj.MetaDescriptionEng,
+                        PageContentEng = bobj.PageContentEng,
+                        MetaTitleArb = bobj.MetaTitleArb,
+                        KeywordsArb = bobj.KeywordsArb,
+                        MetaDescriptionArb = bobj.MetaDescriptionArb,
+                        PageContentArb = bobj.PageContentArb
 
-        public IActionResult VerifyCompany(ChangeStatusModel cModel)
-        {
-            var resp = _company.VerifyCompany(cModel.Id).Result;
-            return Json(resp);
+
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return View(bmodel);
         }
-        public IActionResult DeleteCompany(ChangeStatusModel cModel)
+        public IActionResult DeleteBrand(int id)
         {
-            var resp = _company.DeleteCompany(cModel.Id).Result;
-            return Json(resp);
+            GetResults bmodel = new GetResults();
+            try
+            {
+                bmodel = _company.DeleteBrand(id).Result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Json(bmodel);
         }
+
+
 
 
 
