@@ -210,8 +210,9 @@
                 </li>
                 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-account"></i><span>User Management</span> </a>
                     <ul class="ml-menu">
-                        <li><a href="@Url.Action("Add", "User")">Add User</a></li>
                         <li><a href="@Url.Action("Index", "User")">View Users</a></li>
+                        <li><a href="@Url.Action("Add", "User")">Add User</a></li>
+                        <li><a href="@Url.Action("Approve", "User")">Approve User</a></li>
                         <li> <a href="@Url.Action("RoleMenuMap", "User")">Menu Role Mapping</a></li>
                     </ul>
                 </li>
@@ -225,7 +226,7 @@
                 
                 <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-image"></i><span>Company</span> </a>
                     <ul class="ml-menu">
-                        <li> <a href="@Url.Action("Index", "Company")">Company List</a> </li>
+                        <li> <a href="@Url.Action("Index", "Company")">All Companies</a> </li>
                         <li> <a href="@Url.Action("Category", "Company")">Categories</a> </li>
                         <li> <a href="@Url.Action("Brand", "Company")">Brands</a> </li>
                         <li> <a href="@Url.Action("Offer", "Company")">Offers</a> </li>
@@ -235,11 +236,11 @@
                         <li> <a href="@Url.Action("Gallery", "Company")">Gallery</a> </li>
                         <li> <a href="@Url.Action("Link", "Company")">Links</a> </li>
                         <li> <a href="@Url.Action("Package", "Company")">Packages</a> </li>
-                        <li> <a href="@Url.Action("ReviewLike", "Company")">ReviewLikes</a> </li>
                         <li> <a href="@Url.Action("Video", "Company")">Videos</a> </li>
                         <li> <a href="@Url.Action("Voucher", "Company")">Vouchers</a> </li>
                         <li> <a href="@Url.Action("NewsArticle", "Company")">NewsArticles</a> </li>
                         <li> <a href="@Url.Action("Event", "Company")">Events</a> </li>
+                        <li> <a href="@Url.Action("ReviewLike", "Company")">ReviewLikes</a> </li>
                     </ul>
                 </li>
                 
@@ -464,6 +465,7 @@
     <!-- Jquery DataTable Plugin Js --> 
     <script src="~/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/datatables/js/dataTables.bootstrap4.min.js"></script>
+    @await Component.InvokeAsync("Notyf")
     @RenderSection("Scripts", required: false)
 </body>
 </html>
