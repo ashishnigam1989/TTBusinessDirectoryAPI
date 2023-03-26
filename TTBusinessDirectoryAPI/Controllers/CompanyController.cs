@@ -31,7 +31,27 @@ namespace TTBusinessDirectoryAPI.Controllers
                 getResults = _company.GetAllCompanies(page,limit,"").Result;
                 getResults.IsSuccess = true;
                 getResults.Message = "Company List";
-                logger.Info("Get Menus");
+                logger.Info("Get Companies");
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetAllCompanies")]
+        public async Task<GetResults> GetAllCompanies()
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = _company.GetAllCompanies().Result;
+                getResults.IsSuccess = true;
+                getResults.Message = "Company List";
+                logger.Info("Get Companies");
             }
             catch (Exception ex)
             {
