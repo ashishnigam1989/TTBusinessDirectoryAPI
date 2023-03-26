@@ -16,10 +16,12 @@ namespace TTBusinessDirectoryAPI.Controllers
     {
         private ICompanies _company;
         protected Logger logger;
-        public CompanyController(ICompanies company)
+        private IMaster _master;
+        public CompanyController(ICompanies company, IMaster master)
         {
             _company = company;
             logger = LogManager.GetLogger("Company");
+            _master = master;
         }
         [HttpGet]
         [Route("GetAllCompanies")]
@@ -144,7 +146,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = _company.GetAllCategories(page, limit, "").Result;
+                getResults = _master.GetAllCategories(page, limit, "").Result;
                 getResults.IsSuccess = true;
                 getResults.Message = "Category List";
                 logger.Info(" getResults.Message");
@@ -164,7 +166,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var result = _company.CreateUpdateCategory(cRequest).Result;
+                var result = _master.CreateUpdateCategory(cRequest).Result;
                 logger.Info(result.Message);
             }
             catch (Exception ex)
@@ -182,7 +184,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = _company.GetCategoryById(categoryid).Result;
+                getResults = _master.GetCategoryById(categoryid).Result;
                 getResults.IsSuccess = true;
                 getResults.Message = "Category Details found";
                 logger.Info(getResults.Message);
@@ -202,7 +204,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = _company.DeleteCategory(categoryid).Result;
+                getResults = _master.DeleteCategory(categoryid).Result;
                 logger.Info(getResults.Message);
             }
             catch (Exception ex)
@@ -222,7 +224,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = _company.GetAllBrands(page, limit, "").Result;
+                getResults = _master.GetAllBrands(page, limit, "").Result;
                 getResults.IsSuccess = true;
                 getResults.Message = "Brand List";
                 logger.Info(getResults.Message);
@@ -242,7 +244,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var result = _company.AddUpdateBrand(bRequest).Result;
+                var result = _master.AddUpdateBrand(bRequest).Result;
                 logger.Info(result.Message);
             }
             catch (Exception ex)
@@ -260,7 +262,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = _company.GetBrandById(brandid).Result;
+                getResults = _master.GetBrandById(brandid).Result;
                 getResults.IsSuccess = true;
                 getResults.Message = "Brand Details found";
                 logger.Info(getResults.Message);
@@ -280,7 +282,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = _company.DeleteBrand(brandid).Result;
+                getResults = _master.DeleteBrand(brandid).Result;
                 logger.Info(getResults.Message);
             }
             catch (Exception ex)

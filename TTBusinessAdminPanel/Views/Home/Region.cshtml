@@ -10,6 +10,10 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="col-lg-10 col-md-10 col-sm-10 float-left">
                 <h2>Regions</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">Masters</li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Region", "Home")">Regions</a></li>
+                </ul>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2 float-right">
                 <ul class="breadcrumb">
@@ -58,19 +62,58 @@
                     "searchable": false
                 }],
                 "columns": [
-                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "id", "name": "id", "autoWidth": true },
                     { "data": "nameEng", "name": "nameEng", "autoWidth": true },
                     { "data": "countryNameEng", "name": "countryNameEng", "autoWidth": true },
                     {
                         "render": function(data, row, d) {
-                            return "<a href='~/Home/EditRegion/" + d.Id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " + 
-                            "<a href='#' onclick=DeleteCompany(" + d.Id + ") class='icon' title='Delete'><i class='zmdi zmdi-delete'></i></a>";
+                            return "<a href='/Home/RegionEdit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " + 
+                            "<a href='#' onclick=DeleteRegion(" + d.id + ") class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a>";
                         }
                     }
                 ]
             });
         });
 
+        function DeleteRegion(id) {
+            var reqObj = {
+                Id: id
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteRegion")',
+                dataType: 'json',
+                data: reqObj,
+                success: function (data) {
+                    if (data.isSuccess) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'Region Deleted Successfully!!'
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                              location.reload(true);
+                          } else if (result.isDenied) {
+                          }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Not changed!!'
+                        })
+                    }
+                },
+                error: function (ex) {
+                    Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'some error occurred !!!'
+                        })
+                }
+            });
+        }
     </script>
 }
 

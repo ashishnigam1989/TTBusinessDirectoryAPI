@@ -1,5 +1,7 @@
 using ApplicationService.IServices;
 using ApplicationService.Services;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
 using DatabaseService.DbEntities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -43,8 +45,8 @@ namespace TTBusinessAdminPanel
             services.AddDbContext<BusinessDirectoryDBContext>(ServiceLifetime.Scoped);
             //Dependencies Mapping End
 
-
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,12 +60,14 @@ namespace TTBusinessAdminPanel
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
             app.UseStaticFiles();
             var logger = LogManager.GetLogger("Global");
             app.ConfigureExceptionHandler(logger);
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseNotyf();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

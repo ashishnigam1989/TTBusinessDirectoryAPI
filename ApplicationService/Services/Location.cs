@@ -71,35 +71,63 @@ namespace ApplicationService.Services
             var region = _dbContext.Region.Where(w => w.Id == regionRequest.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
             if (region == null)
             {
-                Region cobj = new Region()
+                var regionValid = _dbContext.Region.Where(w => w.NameEng == regionRequest.NameEng && w.CountryId == regionRequest.CountryId && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+                if (regionValid == null)
                 {
-                    NameEng = regionRequest.NameEng,
-                    CountryId = regionRequest.CountryId,
-                    IsDeleted = false,
-                    CreationTime = DateTime.Now,
-                    CreatorUserId = regionRequest.CreatorUserId,
+                    Region cobj = new Region()
+                    {
+                        NameEng = regionRequest.NameEng,
+                        NameArb = regionRequest.NameEng,
+                        CountryId = regionRequest.CountryId,
+                        SortOrder = 99,
+                        IsDeleted = false,
+                        CreationTime = DateTime.Now,
+                        CreatorUserId = regionRequest.CreatorUserId,
 
-                };
-                _dbContext.Region.Add(cobj);
+                    };
+                    _dbContext.Region.Add(cobj);
 
-                gobj = new GetResults()
+                    gobj = new GetResults()
+                    {
+                        IsSuccess = true,
+                        Message = "Region Saved Successfully"
+                    };
+                }
+                else
                 {
-                    IsSuccess = true,
-                    Message = "Region Saved Successfully"
-                };
+                    gobj = new GetResults()
+                    {
+                        IsSuccess = false,
+                        Message = regionRequest.NameEng + " is already exists !!!"
+                    };
+                }
             }
             else
             {
-                region.NameEng = regionRequest.NameEng;
-                region.CountryId = regionRequest.CountryId;
-                region.IsDeleted = false;
-                region.LastModificationTime = DateTime.Now;
-                region.LastModifierUserId = regionRequest.LastModifierUserId;
-                gobj = new GetResults()
+                var regionValid = _dbContext.Region.Where(w => w.NameEng == regionRequest.NameEng && w.CountryId == regionRequest.CountryId && w.Id != regionRequest.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+                if(regionValid == null)
                 {
-                    IsSuccess = true,
-                    Message = "Region Updated Successfully"
-                };
+                    region.NameEng = regionRequest.NameEng;
+                    region.NameArb = regionRequest.NameEng;
+                    region.CountryId = regionRequest.CountryId;
+                    region.SortOrder = 99;
+                    region.IsDeleted = false;
+                    region.LastModificationTime = DateTime.Now;
+                    region.LastModifierUserId = regionRequest.LastModifierUserId;
+                    gobj = new GetResults()
+                    {
+                        IsSuccess = true,
+                        Message = "Region Updated Successfully"
+                    };
+                }
+                else
+                {
+                    gobj = new GetResults()
+                    {
+                        IsSuccess = false,
+                        Message = regionRequest.NameEng + " is already exists !!!"
+                    };
+                }
             }
             try
             {
@@ -212,6 +240,7 @@ namespace ApplicationService.Services
             };
             return await Task.FromResult(uobj);
         }
+
         #endregion
     }
 }

@@ -1,8 +1,57 @@
-﻿
+﻿@model CommonService.RequestModel.RegionRequestModel
 @{
     ViewData["Title"] = "RegionEdit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>RegionEdit</h1>
+<div class="block-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-7">
+            <h2>Edit Region</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">Masters</li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Region", "Home")">Regions</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("RegionEdit", "Home")">Edit Region</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="body">
+                <form id="addregionform" asp-controller="Home" asp-action="RegionEdit">
+                    <div class="row">
+                        <input type="hidden" id="Id" name="Id" asp-for="Id" />
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
+                                    <label class="form-label">Region</label>
+                                </div>
+                                <span asp-validation-for="NameEng" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div> 
+                                <select asp-for="CountryId" name="CountryId" class="show-tick">
+                                    <option value="">Select Country</option>
+                                    @foreach (var country in ViewBag.Countries)
+                                    {
+                                        <option value="@country.Value">@country.Text</option>
+                                    }
+                                     
+                                </select>
+                                </div>
+                                <span asp-validation-for="CountryId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
 
+                    <button class="btn btn-raised btn-primary waves-effect" type="submit">UPDATE</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
