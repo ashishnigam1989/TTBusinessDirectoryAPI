@@ -77,55 +77,354 @@ namespace ApplicationService.Services
 
         }
 
-        #region Brands
-        public async Task<GetResults> GetBrands(int page, int limit, string searchValue)
+        #region Categories
+
+        public async Task<GetResults> GetAllCategories(int page, int limit, string searchValue)
         {
-            var brands = _dbContext.Brand.ToListAsync().Result;
-            var list = _mapper.Map<List<BrandModel>>(brands);
-            int total = list.Count();
-            if (!string.IsNullOrEmpty(searchValue.ToLower()))
+            List<CategoriesViewModel> listcategory = _dbContext.Category.Where(w => w.IsDeleted == false && (
+           (!string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
+            !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb)))
+                .Select(s => new CategoriesViewModel
+                {
+                    Id = s.Id,
+                    NameEng = s.NameEng,
+                    NameArb = s.NameArb,
+                    Unspsccode = s.Unspsccode,
+                    IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                    IsDeleted = s.IsDeleted,
+                    DeleterUserId = s.DeleterUserId,
+                    DeletionTime = s.DeletionTime,
+                    LastModificationTime = s.LastModificationTime,
+                    LastModifierUserId = s.LastModifierUserId,
+                    CreationTime = s.CreationTime,
+                    CreatorUserId = s.CreatorUserId,
+                    Keywords = s.Keywords,
+                    SuggestionHits = s.SuggestionHits,
+                    Slug = s.Slug,
+                    SeoEnabled = s.SeoEnabled,
+                    MetaTitleEng = s.MetaTitleEng,
+                    MetaDescriptionEng = s.MetaDescriptionEng,
+                    PageContentEng = s.PageContentEng,
+                    MetaTitleArb = s.MetaTitleArb,
+                    MetaDescriptionArb = s.MetaDescriptionArb,
+                    PageContentArb = s.PageContentArb,
+                    IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false
+
+                }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+            int total = _dbContext.Category.Where(w => w.IsDeleted == false && (
+                                  !string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
+                                  !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb)
+                                  ).CountAsync().Result;
+
+            GetResults result = new GetResults
             {
-                list = (List<BrandModel>)list.Where(m => m.NameEng.Contains(searchValue));
-                total = list.Count();
-            }
-            var finalData = list.OrderByDescending(o => o.Id).Skip(limit * page).Take(limit);
-            GetResults uobj = new GetResults
-            {
-                Total = total,
-                Data = finalData
+                Data = listcategory,
+                Total = total
             };
-            return await Task.FromResult(uobj);
+            return await Task.FromResult(result);
+
         }
-        public async Task<BrandModel> GetBrandById(int id)
+        public async Task<GetResults> CreateUpdateCategory(CategoriesRequestModel crModel)
         {
-            var brand = _dbContext.Brand.SingleAsync(b=>b.Id == id).Result;
-            var finalData = _mapper.Map<BrandModel>(brand);
-            return await Task.FromResult(finalData);
-        }
-        public async Task<bool> AddBrand(BrandRequestModel brandRequest)
-        {
-            bool result = false;
-            var brandInfo = _dbContext.Brand.Where(w => w.NameEng.ToLower() == brandRequest.NameEng.ToLower()).FirstOrDefault();
-            if(brandInfo != null)
+            GetResults resp = new GetResults();
+            var cdata = _dbContext.Category.Where(w => w.Id == crModel.Id).FirstOrDefaultAsync().Result;
+            if (cdata == null)
             {
-                Brand brand = _mapper.Map<Brand>(brandInfo);
-                _dbContext.Brand.Add(brand);
-                var brandId = await _dbContext.SaveChangesAsync();
-                result = true;
+                var validCategory = _dbContext.Category.Where(w => w.NameEng == crModel.NameEng && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+                if(validCategory == null)
+                {
+                    Category crobj = new Category()
+                    {
+                        NameEng = crModel.NameEng,
+                        NameArb = crModel.NameArb,
+                        Unspsccode = crModel.Unspsccode,
+                        IsPublished = crModel.IsPublished,
+                        CreationTime = DateTime.Now,
+                        CreatorUserId = crModel.CreatorUserId,
+                        Keywords = crModel.Keywords,
+                        SuggestionHits = crModel.SuggestionHits,
+                        Slug = crModel.Slug,
+                        SeoEnabled = crModel.SeoEnabled,
+                        MetaTitleEng = crModel.MetaTitleEng,
+                        MetaDescriptionEng = crModel.MetaDescriptionEng,
+                        PageContentEng = crModel.PageContentEng,
+                        MetaTitleArb = crModel.MetaTitleArb,
+                        MetaDescriptionArb = crModel.MetaDescriptionArb,
+                        PageContentArb = crModel.PageContentArb,
+                        IsFeatured = crModel.IsFeatured
+                    };
+                    _dbContext.Category.Add(crobj);
+                    await _dbContext.SaveChangesAsync();
+                    resp.Message = "Category Added Successfully.";
+                    resp.IsSuccess = true;
+                }
+                else
+                {
+                    resp.Message = crModel.NameEng + " is already exists !!!";
+                    resp.IsSuccess = false;
+                }
             }
+            else
+            {
+                var validCategory = _dbContext.Category.Where(w => w.NameEng == crModel.NameEng && w.Id != crModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+                if (validCategory == null)
+                {
+                    cdata.NameEng = crModel.NameEng;
+                    cdata.NameArb = crModel.NameArb;
+                    cdata.Unspsccode = crModel.Unspsccode;
+                    cdata.IsPublished = crModel.IsPublished;
+                    cdata.LastModificationTime = DateTime.Now;
+                    cdata.LastModifierUserId = crModel.LastModifierUserId;
+                    cdata.Keywords = crModel.Keywords;
+                    cdata.SuggestionHits = crModel.SuggestionHits;
+                    cdata.Slug = crModel.Slug;
+                    cdata.SeoEnabled = crModel.SeoEnabled;
+                    cdata.MetaTitleEng = crModel.MetaTitleEng;
+                    cdata.MetaDescriptionEng = crModel.MetaDescriptionEng;
+                    cdata.PageContentEng = crModel.PageContentEng;
+                    cdata.MetaTitleArb = crModel.MetaTitleArb;
+                    cdata.MetaDescriptionArb = crModel.MetaDescriptionArb;
+                    cdata.PageContentArb = crModel.PageContentArb;
+                    cdata.IsFeatured = crModel.IsFeatured;
+                    await _dbContext.SaveChangesAsync();
+                    resp.Message = "Category Updated Successfully.";
+                    resp.IsSuccess = true;
+                }
+                else
+                {
+                    resp.Message = crModel.NameEng + " is already exists !!!";
+                    resp.IsSuccess = false;
+                }
+            }
+
+            return await Task.FromResult(resp);
+        }
+        public async Task<GetResults> GetCategoryById(int id)
+        {
+            CategoriesViewModel category = _dbContext.Category.Where(w => w.Id == id && w.IsDeleted == false)
+               .Select(s => new CategoriesViewModel
+               {
+                   Id = s.Id,
+                   NameEng = s.NameEng,
+                   NameArb = s.NameArb,
+                   Unspsccode = s.Unspsccode,
+                   IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                   IsDeleted = s.IsDeleted,
+                   DeleterUserId = s.DeleterUserId,
+                   DeletionTime = s.DeletionTime,
+                   LastModificationTime = s.LastModificationTime,
+                   LastModifierUserId = s.LastModifierUserId,
+                   CreationTime = s.CreationTime,
+                   CreatorUserId = s.CreatorUserId,
+                   Keywords = s.Keywords,
+                   SuggestionHits = s.SuggestionHits,
+                   Slug = s.Slug,
+                   SeoEnabled = s.SeoEnabled,
+                   MetaTitleEng = s.MetaTitleEng,
+                   MetaDescriptionEng = s.MetaDescriptionEng,
+                   PageContentEng = s.PageContentEng,
+                   MetaTitleArb = s.MetaTitleArb,
+                   MetaDescriptionArb = s.MetaDescriptionArb,
+                   PageContentArb = s.PageContentArb,
+                   IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false
+
+               }).FirstOrDefaultAsync().Result;
+            GetResults result = new GetResults
+            {
+                Data = category,
+                Total = 1
+            };
             return await Task.FromResult(result);
         }
-        public async Task<bool> EditBrand(BrandRequestModel brandRequest)
+        public async Task<GetResults> DeleteCategory(int id)
         {
-            bool result = false;
-            var brandInfo = _dbContext.Brand.Where(w => w.NameEng.ToLower() == brandRequest.NameEng.ToLower() && w.Id != brandRequest.Id).FirstOrDefault();
-            if (brandInfo != null)
+            GetResults result = new GetResults();
+            var category = _dbContext.Category.Where(w => w.Id == id).FirstOrDefaultAsync().Result;
+            if (category != null)
             {
-                var brand = _mapper.Map<Brand>(brandRequest);
-                _dbContext.Brand.Update(brand);
-                await _dbContext.SaveChangesAsync();
-                result = true;
+                category.IsDeleted = true;
+                category.DeletionTime = DateTime.Now;
+                _dbContext.SaveChanges();
+                result.IsSuccess = true;
+                result.Message = "Category deleted.";
             }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = "Category not found.";
+            }
+
+            return await Task.FromResult(result);
+        }
+
+        #endregion
+
+        #region Brand
+        public async Task<GetResults> GetAllBrands(int page, int limit, string searchValue)
+        {
+            var brandlist = _dbContext.Brand.Where(w => (string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
+            !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb) && w.IsDeleted == false
+            ).Select(s => new BrandModel
+            {
+                Id = s.Id,
+                NameEng = s.NameEng,
+                NameArb = s.NameArb,
+                Logo = s.Logo
+            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+            int total = _dbContext.Brand.Where(w => (string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
+                                !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb) && w.IsDeleted == false
+                                ).CountAsync().Result;
+
+            GetResults result = new GetResults()
+            {
+                Total = total,
+                IsSuccess = true,
+                Data = brandlist,
+                Message = "Brand list found"
+            };
+
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetBrandById(int brandid)
+        {
+            BrandModel brand = _dbContext.Brand.Where(w => w.Id == brandid && w.IsDeleted == false).Select(s => new BrandModel
+            {
+                Id = s.Id,
+                NameEng = s.NameEng,
+                NameArb = s.NameArb,
+                SortOrder = s.SortOrder,
+                Logo = s.Logo,
+                IsDeleted = s.IsDeleted,
+                DeleterUserId = s.DeleterUserId,
+                DeletionTime = s.DeletionTime,
+                LastModificationTime = s.LastModificationTime,
+                LastModifierUserId = s.LastModifierUserId,
+                CreationTime = s.CreationTime,
+                CreatorUserId = s.CreatorUserId,
+                IsPublished = s.IsPublished,
+                Slug = s.Slug,
+                SeoEnabled = s.SeoEnabled,
+                MetaTitleEng = s.MetaTitleEng,
+                KeywordsEng = s.KeywordsEng,
+                MetaDescriptionEng = s.MetaDescriptionEng,
+                PageContentEng = s.PageContentEng,
+                MetaTitleArb = s.MetaTitleArb,
+                KeywordsArb = s.KeywordsArb,
+                MetaDescriptionArb = s.MetaDescriptionArb,
+                PageContentArb = s.PageContentArb,
+
+            }).FirstOrDefaultAsync().Result;
+
+            GetResults result = new GetResults()
+            {
+                IsSuccess = true,
+                Message = "Brand found",
+                Data = brand,
+                Total = 1
+            };
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> AddUpdateBrand(BrandRequestModel breqmodel)
+        {
+            GetResults result = new GetResults();
+            var brandobj = _dbContext.Brand.Where(w => w.Id == breqmodel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (brandobj == null)
+            {
+                var validBrand = _dbContext.Brand.Where(w => w.NameEng == breqmodel.NameEng && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+                if(validBrand == null)
+                {
+                    Brand bobj = new Brand()
+                    {
+                        NameEng = breqmodel.NameEng,
+                        NameArb = breqmodel.NameArb,
+                        SortOrder = breqmodel.SortOrder,
+                        Logo = breqmodel.Logo,
+                        IsDeleted = breqmodel.IsDeleted,
+                        DeleterUserId = breqmodel.DeleterUserId,
+                        DeletionTime = breqmodel.DeletionTime,
+                        CreationTime = DateTime.Now,
+                        CreatorUserId = breqmodel.CreatorUserId,
+                        IsPublished = breqmodel.IsPublished,
+                        Slug = breqmodel.Slug,
+                        SeoEnabled = breqmodel.SeoEnabled,
+                        MetaTitleEng = breqmodel.MetaTitleEng,
+                        KeywordsEng = breqmodel.KeywordsEng,
+                        MetaDescriptionEng = breqmodel.MetaDescriptionEng,
+                        PageContentEng = breqmodel.PageContentEng,
+                        MetaTitleArb = breqmodel.MetaTitleArb,
+                        KeywordsArb = breqmodel.KeywordsArb,
+                        MetaDescriptionArb = breqmodel.MetaDescriptionArb,
+                        PageContentArb = breqmodel.PageContentArb
+                    };
+                    _dbContext.Brand.Add(bobj);
+                    await _dbContext.SaveChangesAsync();
+                    result.Message = "Brand added successfully";
+                    result.IsSuccess = true;
+                }
+                else
+                {
+                    result.Message = breqmodel.NameEng + " is already exists !!!";
+                    result.IsSuccess = false;
+                }
+            }
+            else
+            {
+                var validBrand = _dbContext.Brand.Where(w => w.NameEng == breqmodel.NameEng && w.Id != breqmodel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+                if (validBrand == null)
+                {
+                    brandobj.NameEng = breqmodel.NameEng;
+                    brandobj.NameArb = breqmodel.NameArb;
+                    brandobj.SortOrder = breqmodel.SortOrder;
+                    brandobj.Logo = breqmodel.Logo;
+                    brandobj.IsDeleted = breqmodel.IsDeleted;
+                    brandobj.DeleterUserId = breqmodel.DeleterUserId;
+                    brandobj.DeletionTime = breqmodel.DeletionTime;
+                    brandobj.LastModificationTime = breqmodel.LastModificationTime;
+                    brandobj.LastModifierUserId = breqmodel.LastModifierUserId;
+                    brandobj.IsPublished = breqmodel.IsPublished;
+                    brandobj.Slug = breqmodel.Slug;
+                    brandobj.SeoEnabled = breqmodel.SeoEnabled;
+                    brandobj.MetaTitleEng = breqmodel.MetaTitleEng;
+                    brandobj.KeywordsEng = breqmodel.KeywordsEng;
+                    brandobj.MetaDescriptionEng = breqmodel.MetaDescriptionEng;
+                    brandobj.PageContentEng = breqmodel.PageContentEng;
+                    brandobj.MetaTitleArb = breqmodel.MetaTitleArb;
+                    brandobj.KeywordsArb = breqmodel.KeywordsArb;
+                    brandobj.MetaDescriptionArb = breqmodel.MetaDescriptionArb;
+                    brandobj.PageContentArb = breqmodel.PageContentArb;
+                    result.Message = "Brand updated successfully";
+                    await _dbContext.SaveChangesAsync();
+                    result.IsSuccess = true;
+                }
+                else
+                {
+                    result.Message = breqmodel.NameEng + " is already exists !!!";
+                    result.IsSuccess = false;
+                }
+            }
+            
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> DeleteBrand(int brandid)
+        {
+            GetResults result = new GetResults();
+            Brand brand = _dbContext.Brand.Where(w => w.Id == brandid && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+
+            if (brand != null)
+            {
+                brand.IsDeleted = true;
+                brand.DeletionTime = DateTime.Now;
+                result.Message = "Brand deleted";
+            }
+            else
+            {
+                result.Message = "No brand found";
+            }
+
+            await _dbContext.SaveChangesAsync();
+            result.IsSuccess = true;
             return await Task.FromResult(result);
         }
         #endregion

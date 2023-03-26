@@ -1,4 +1,5 @@
 ﻿using ApplicationService.IServices;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
@@ -20,15 +21,15 @@ namespace TTBusinessAdminPanel.Controllers
     public class UserController : Controller
     {
         private Logger _logger;
-
         private IAccount _account;
-
         private IMaster _master;
-        public UserController( IAccount account, IMaster master)
+        private readonly INotyfService _notyfService;
+        public UserController( IAccount account, IMaster master, INotyfService notyfService)
         {
             _logger = LogManager.GetLogger("User");
             _account = account;
             _master = master;
+            _notyfService = notyfService;
         }
 
         public IActionResult Index()
@@ -65,13 +66,22 @@ namespace TTBusinessAdminPanel.Controllers
             catch(Exception ex)
             {
                 _logger.Error(ex);  
+
             }
             return Ok(null);
         }
 
         public IActionResult Add()
         {
-            BindRoles();
+            try
+            {
+                BindRoles();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
             return View();
         }
 
@@ -88,19 +98,25 @@ namespace TTBusinessAdminPanel.Controllers
                     var isadded = _account.CreateUser(userRequest).Result;
                     if (isadded)
                     {
+                        _notyfService.Success("User added successfully !!!");
                         return RedirectToAction("Index", "User");
+                    }
+                    else
+                    {
+                        _notyfService.Error("User creation failed !!!");
                     }
                 }
                 else
                 {
-                    return View();
+                    _notyfService.Error("Validation Error !!!");
                 }
             }
             catch(Exception ex)
             {
                 _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
             }
-            return RedirectToAction("Add", "User");
+            return View(userRequest);
         }
 
         public IActionResult Edit(int id)

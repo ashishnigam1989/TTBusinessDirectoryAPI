@@ -7,18 +7,21 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using NLog;
 using System;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace TTBusinessAdminPanel.Controllers
 {
     public class AccountController : Controller
     {
         private Logger _logger;
-
         private IAccount _account;
-        public AccountController(IAccount account)
+        private readonly INotyfService _notyfService;
+
+        public AccountController(IAccount account, INotyfService notyfService)
         {
             _logger = LogManager.GetLogger("Account");
             _account = account;
+            _notyfService = notyfService;
         }
 
         public IActionResult Login()
@@ -40,18 +43,24 @@ namespace TTBusinessAdminPanel.Controllers
                         var identity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Name) }, CookieAuthenticationDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);
                         HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                        _notyfService.Success("Login Successful !!!");
                         return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        //  login.LoginMessage = "User does not exists!!!";
+                        _notyfService.Error("Invalid User/Password !!!");
                         return View(login);
                     }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
                 }
             }
             catch(Exception ex)
             {
                 _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
             }
             return View();
         }
@@ -65,6 +74,7 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 _logger.Error(ex);
             }
+            _notyfService.Success("Logout Successful !!!");
             return RedirectToAction("Login", "Account");
         }
     }
