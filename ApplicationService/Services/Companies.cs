@@ -1,4 +1,4 @@
-﻿using ApplicationService.IServices;
+using ApplicationService.IServices;
 using AutoMapper;
 using CommonService.RequestModel;
 using CommonService.ViewModels;

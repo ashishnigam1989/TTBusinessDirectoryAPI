@@ -14,6 +14,5 @@ namespace ApplicationService.IServices
         Task<GetResults> CreateUpdateCompany(CompanyRequestModel creqmodel);
         Task<GetResults> DeleteCompany(int id);
         Task<GetResults> VerifyCompany(int id);
-        
     }
 }
