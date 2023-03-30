@@ -99,13 +99,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<BrandCategory>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
@@ -141,13 +137,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CategoryIndustry>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
@@ -235,8 +227,6 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyBanners>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.ArabicUrl).HasColumnName("ArabicURL");
 
                 entity.Property(e => e.BannerExpiryDate).HasColumnType("datetime");
@@ -249,67 +239,47 @@ namespace DatabaseService.DbEntities
 
                 entity.Property(e => e.EnglishUrl).HasColumnName("EnglishURL");
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<CompanyBrand>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<CompanyCategory>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<CompanyDynamicMenu>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<CompanyGalleryAttachment>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<CompanyLinks>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.ArabicUrl)
                     .HasColumnName("ArabicURL")
                     .HasMaxLength(250);
@@ -322,8 +292,6 @@ namespace DatabaseService.DbEntities
                     .HasColumnName("EnglishURL")
                     .HasMaxLength(250);
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.LinkNameArb).HasMaxLength(250);
@@ -335,13 +303,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyOffers>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Image).HasMaxLength(150);
 
@@ -368,26 +332,18 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyPackage>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<CompanyProduct>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Image).HasMaxLength(150);
 
@@ -420,22 +376,14 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyReviewLike>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<CompanyService>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Image).HasMaxLength(150);
 
@@ -462,13 +410,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyUsers>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -477,8 +421,6 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyVideos>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.ArabicUrl)
                     .HasColumnName("ArabicURL")
                     .HasMaxLength(250);
@@ -491,8 +433,6 @@ namespace DatabaseService.DbEntities
                     .HasColumnName("EnglishURL")
                     .HasMaxLength(250);
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.VideoNameArb).HasMaxLength(250);
@@ -502,13 +442,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyVouchers>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -590,7 +526,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<EventPassType>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.PassTypeId);
+
+                entity.Property(e => e.PassTypeId).ValueGeneratedNever();
 
                 entity.Property(e => e.PassTypeName)
                     .IsRequired()
@@ -600,7 +538,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<EventRegion>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.RegionId);
+
+                entity.Property(e => e.RegionId).ValueGeneratedNever();
 
                 entity.Property(e => e.RegionName)
                     .IsRequired()
@@ -610,7 +550,7 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<EventType>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.EventTypeId).ValueGeneratedNever();
 
                 entity.Property(e => e.EventTypeDesc)
                     .IsRequired()
@@ -683,15 +623,11 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<Industry>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Icon).HasMaxLength(50);
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -712,7 +648,7 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<InsightType>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.InsightTypeId).ValueGeneratedNever();
 
                 entity.Property(e => e.InsigtTypeDesc)
                     .IsRequired()
@@ -722,7 +658,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<Insights>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.InsightId);
+
+                entity.Property(e => e.InsightId).HasColumnName("InsightID");
 
                 entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
 
@@ -753,10 +691,6 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.InsightContent)
                     .HasColumnName("Insight_Content")
                     .IsUnicode(false);
-
-                entity.Property(e => e.InsightId)
-                    .HasColumnName("InsightID")
-                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.InsightImage)
                     .HasColumnName("Insight_Image")
