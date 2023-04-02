@@ -6,10 +6,10 @@ namespace CommonService.RequestModel
 {
     public class CompanyCategoryRequestModel
     {
-        public long Id { get; set; }
+        public long? Id { get; set; }
         public long CompanyId { get; set; }
         public long CategoryId { get; set; }
-        public bool? IsPublished { get; set; }
+        public bool IsPublished { get; set; }
         public bool IsDeleted { get; set; }
         public long? DeleterUserId { get; set; }
         public DateTime? DeletionTime { get; set; }

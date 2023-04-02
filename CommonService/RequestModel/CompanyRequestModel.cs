@@ -63,5 +63,6 @@ namespace CommonService.RequestModel
         public string Iso { get; set; }
         public DateTime? EstablishmentDate { get; set; }
         public bool IsFeatured { get; set; }
+        public int CountryId { get; set; }
     }
 }

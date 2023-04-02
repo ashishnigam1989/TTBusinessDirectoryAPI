@@ -5,6 +5,7 @@ using CommonService.RequestModel;
 using CommonService.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationService.IServices
 {
@@ -19,6 +20,8 @@ namespace ApplicationService.IServices
         public Task<GetResults> CreateUpdateCategory(CategoriesRequestModel crModel);
         public Task<GetResults> GetCategoryById(int id);
         public Task<GetResults> DeleteCategory(int id);
+        public Task<GetResults> GetMasterCategories();
+
         #endregion
 
         #region Brands
@@ -26,6 +29,7 @@ namespace ApplicationService.IServices
         public Task<GetResults> GetBrandById(int brandid);
         public Task<GetResults> AddUpdateBrand(BrandRequestModel breqmodel);
         public Task<GetResults> DeleteBrand(int brandid);
+        Task<GetResults> GetMasterBrand();
         #endregion
     }
 }

@@ -18,5 +18,8 @@ namespace CommonService.ViewModels
         public DateTime CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
         public bool IsPublished { get; set; }
+
+        public string Company { get; set; }
+        public string Brand { get; set; }
     }
 }

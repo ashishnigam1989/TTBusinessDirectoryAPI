@@ -258,6 +258,25 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
         }
 
+        public async Task<GetResults> GetMasterCategories()
+        {
+            List<CategoriesViewModel> listcategory = _dbContext.Category.Where(w => w.IsDeleted == false)
+                .Select(s => new CategoriesViewModel
+                {
+                    Id = s.Id,
+                    NameEng = s.NameEng,
+                }).Distinct().OrderByDescending(o => o.Id).Take(10).ToListAsync().Result;
+
+
+            GetResults result = new GetResults
+            {
+                Data = listcategory,
+                Total = listcategory.Count
+            };
+            return await Task.FromResult(result);
+
+        }
+
         #endregion
 
         #region Brand
@@ -426,6 +445,25 @@ namespace ApplicationService.Services
             await _dbContext.SaveChangesAsync();
             result.IsSuccess = true;
             return await Task.FromResult(result);
+        }
+
+        public async Task<GetResults> GetMasterBrand()
+        {
+            List<BrandModel> listcategory = _dbContext.Brand.Where(w => w.IsDeleted == false)
+                .Select(s => new BrandModel
+                {
+                    Id = s.Id,
+                    NameEng = s.NameEng,
+                }).Distinct().OrderByDescending(o => o.Id).Take(10).ToListAsync().Result;
+
+
+            GetResults result = new GetResults
+            {
+                Data = listcategory,
+                Total = listcategory.Count
+            };
+            return await Task.FromResult(result);
+
         }
         #endregion
     }

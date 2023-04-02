@@ -6,6 +6,7 @@ using DatabaseService.DbEntities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TTBusinessAdminPanel.Extensions;
 using TTBusinessDirectoryAPI.Extensions;
 
 namespace TTBusinessAdminPanel
@@ -31,6 +33,11 @@ namespace TTBusinessAdminPanel
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             services.AddMvc();
             services.AddControllersWithViews();
@@ -50,7 +57,7 @@ namespace TTBusinessAdminPanel
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHttpContextAccessor accessor)
         {
             if (env.IsDevelopment())
             {
@@ -60,7 +67,7 @@ namespace TTBusinessAdminPanel
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            Helper.Help(accessor);
             app.UseStaticFiles();
             var logger = LogManager.GetLogger("Global");
             app.ConfigureExceptionHandler(logger);
@@ -68,6 +75,7 @@ namespace TTBusinessAdminPanel
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseNotyf();
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

@@ -69,9 +69,12 @@
                     { "data": "primaryPhone", "name": "primaryPhone", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
-                            return "<a href='/Company/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " + 
-                            "<a href='#' onclick=VerifyCompany(" + d.id + ",'approve') class='icon' style='color:green' title='Approve'><i class='zmdi zmdi-assignment-check'></i></a> | " + 
-                            "<a href='#' onclick=DeleteCompany(" + d.id + ") class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a>";
+                            var btns = "<a href='/Company/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | "+
+                                "<a href='#' onclick=DeleteCompany(" + d.id + ") class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a>";
+                            if (d.isVerified!=true) {
+                            btns+=" | <a href='#' onclick=VerifyCompany(" + d.id + ",'approve') class='icon' style='color:green' title='Verify'><i class='zmdi zmdi-assignment-check'></i></a>" ;
+                            } 
+                            return btns;
                         }
                     }
                 ]

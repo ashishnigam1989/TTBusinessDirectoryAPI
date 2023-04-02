@@ -8,6 +8,8 @@ using System.Security.Claims;
 using NLog;
 using System;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using System.Collections.Generic;
+using TTBusinessAdminPanel.Extensions;
 
 namespace TTBusinessAdminPanel.Controllers
 {
@@ -40,7 +42,14 @@ namespace TTBusinessAdminPanel.Controllers
                     var user = _account.Login(login).Result;
                     if (user != null)
                     {
-                        var identity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Name) }, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claims = new List<Claim>();
+                        claims.Add(new Claim(ClaimTypes.Name, user.Name));
+                        claims.Add(new Claim(ClaimTypes.Email, user.EmailAddress));
+                        claims.Add(new Claim(ClaimTypes.Role, user.RoleId.ToString()));
+                        claims.Add(new Claim(ClaimTypes.PrimarySid, user.Id.ToString()));
+                        Helper.SetUserSession(user);
+
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);
                         HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
                         _notyfService.Success("Login Successful !!!");

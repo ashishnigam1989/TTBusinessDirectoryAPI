@@ -72,6 +72,7 @@ namespace CommonService.ViewModels
         public string NameArb { get; set; }
         public string PrimaryPhone { get; set; }
         public string PrimaryEmail { get; set; }
-        
+        public bool? IsVerified { get; set; }
+
     }
 }

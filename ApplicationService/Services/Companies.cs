@@ -1,6 +1,7 @@
 using ApplicationService.IServices;
 using AutoMapper;
 using CommonService.RequestModel;
+using CommonService.ViewModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace ApplicationService.Services
             _dbContext = dBContext;
             _mapper = mapper;
         }
+        #region Company
         public async Task<GetResults> GetAllCompanies(int page, int limit, string searchValue)
         {
             int total = 0;
@@ -37,6 +39,7 @@ namespace ApplicationService.Services
                 NameArb = s.NameArb,
                 PrimaryEmail = s.PrimaryEmail,
                 PrimaryPhone = s.PrimaryPhone,
+                IsVerified = s.IsVerified,
                 id = s.Id
             }).Distinct().OrderByDescending(o => o.id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
@@ -135,7 +138,7 @@ namespace ApplicationService.Services
             if (cdetail == null)
             {
                 var validCompany = _dbContext.Company.Where(w => w.NameEng == creqmodel.NameEng && w.IsDeleted == false).FirstOrDefaultAsync().Result;
-                if(validCompany == null)
+                if (validCompany == null)
                 {
                     Company cobj = new Company()
                     {
@@ -198,7 +201,7 @@ namespace ApplicationService.Services
                         Message = "Company Saved Successfully"
                     };
                 }
-               else
+                else
                 {
                     gobj = new GetResults()
                     {
@@ -339,5 +342,214 @@ namespace ApplicationService.Services
             }
             return await Task.FromResult(gobj);
         }
+
+        public async Task<GetResults> GetMasterCompanies()
+        {
+            List<CompanyModel> companylist = _dbContext.Company.Where(w => w.IsDeleted == false).Select(s => new CompanyModel
+            {
+                NameEng = s.NameEng,
+                id = s.Id
+            }).Distinct().OrderByDescending(o => o.id).Take(10).ToListAsync().Result;
+
+
+            GetResults uobj = new GetResults
+            {
+                Total = companylist.Count,
+                Data = companylist
+            };
+            return await Task.FromResult(uobj);
+
+        }
+        #endregion
+
+        #region CompanyBrand
+        public async Task<GetResults> AddEditCompanyBrand(CompanyBrandRequestModel cbModel)
+        {
+            GetResults result = new GetResults();
+            var cbObj = _dbContext.CompanyBrand.Where(w => w.Id == cbModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (cbObj == null)
+            {
+                CompanyBrand cc = new CompanyBrand()
+                {
+                    CompanyId = cbModel.CompanyId,
+                    BrandId = cbModel.BrandId,
+                    IsPublished = cbModel.IsPublished,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = cbModel.CreatorUserId
+                };
+                _dbContext.CompanyBrand.Add(cc);
+                result.Message = "Company Brand Added.";
+            }
+            else
+            {
+                cbObj.CompanyId = cbModel.CompanyId;
+                cbObj.BrandId = cbModel.BrandId;
+                cbObj.IsPublished = cbModel.IsPublished;
+                cbObj.LastModificationTime = DateTime.Now;
+                cbObj.LastModifierUserId = cbModel.LastModifierUserId;
+                result.Message = "Company Brand Updated.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyBrand(int Id)
+        {
+            GetResults result = new GetResults();
+            var cbObj = _dbContext.CompanyBrand.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (cbObj != null)
+            {
+                cbObj.IsDeleted = true;
+                cbObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Brand Deleted.";
+                result.IsSuccess = true;
+            }
+            _dbContext.SaveChanges();
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyBrand(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var cbList = _dbContext.CompanyBrand.Join(_dbContext.Company, cb => cb.CompanyId, cmny => cmny.Id, (cb, cmny) => new { cb, cmny })
+                            .Join(_dbContext.Brand, ccat => ccat.cb.BrandId, brnd => brnd.Id, (ccat, brnd) => new { ccat, brnd }).
+                            Where(w => w.ccat.cb.IsDeleted == false && (
+                            (!string.IsNullOrEmpty(searchValue) ? w.ccat.cmny.NameEng.Contains(searchValue) : w.ccat.cmny.NameEng == w.ccat.cmny.NameEng)
+                            || (!string.IsNullOrEmpty(searchValue) ? w.brnd.NameEng.Contains(searchValue) : w.brnd.NameEng == w.brnd.NameEng)
+                            )).
+                            Select(s => new CompanyBrandViewModel
+                            {
+                                Id = s.ccat.cb.Id,
+                                Company = s.ccat.cmny.NameEng,
+                                Brand = s.brnd.NameEng
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+
+            var tot = _dbContext.CompanyBrand.Join(_dbContext.Company, cb => cb.CompanyId, cmny => cmny.Id, (cb, cmny) => new { cb, cmny })
+                            .Join(_dbContext.Brand, ccat => ccat.cb.BrandId, brnd => brnd.Id, (ccat, brnd) => new { ccat, brnd }).
+                            Where(w => w.ccat.cb.IsDeleted == false && (
+                            (!string.IsNullOrEmpty(searchValue) ? w.ccat.cmny.NameEng.Contains(searchValue) : w.ccat.cmny.NameEng == w.ccat.cmny.NameEng)
+                            || (!string.IsNullOrEmpty(searchValue) ? w.brnd.NameEng.Contains(searchValue) : w.brnd.NameEng == w.brnd.NameEng)
+                            )).CountAsync().Result;
+
+            result.IsSuccess = true;
+            result.Message = "Company Brand List.";
+            result.Data = cbList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyBrandById(int id)
+        {
+            GetResults result = new GetResults();
+            var cb = _dbContext.CompanyBrand.Where(w => w.Id == id && w.IsDeleted == false)
+                                                   .Select(s => new CompanyBrandRequestModel
+                                                   {
+                                                       Id = s.Id,
+                                                       BrandId = s.BrandId,
+                                                       CompanyId = s.CompanyId,
+                                                       IsPublished = s.IsPublished
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Brand Found.";
+            result.Data = cb;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
+
+        #region CompanyCategory
+        public async Task<GetResults> AddEditCompanyCategory(CompanyCategoryRequestModel ccModel)
+        {
+            GetResults result = new GetResults();
+            var ccObj = _dbContext.CompanyCategory.Where(w => w.Id == ccModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (ccObj == null)
+            {
+                CompanyCategory cc = new CompanyCategory()
+                {
+                    CompanyId = ccModel.CompanyId,
+                    CategoryId = ccModel.CategoryId,
+                    IsPublished = ccModel.IsPublished,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = ccModel.CreatorUserId
+                };
+                _dbContext.CompanyCategory.Add(cc);
+                result.Message = "Company Category Added.";
+            }
+            else
+            {
+                ccObj.CompanyId = ccModel.CompanyId;
+                ccObj.CategoryId = ccModel.CategoryId;
+                ccObj.IsPublished = ccModel.IsPublished;
+                ccObj.LastModificationTime = DateTime.Now;
+                ccObj.LastModifierUserId = ccModel.LastModifierUserId;
+                result.Message = "Company Category Updated.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyCategory(int Id)
+        {
+            GetResults result = new GetResults();
+            var ccObj = _dbContext.CompanyCategory.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (ccObj != null)
+            {
+                ccObj.IsDeleted = true;
+                ccObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Category Deleted.";
+                result.IsSuccess = true;
+            }
+            _dbContext.SaveChanges();
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyCategory(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var ccList = _dbContext.CompanyCategory.Join(_dbContext.Company, cc => cc.CompanyId, cmny => cmny.Id, (cc, cmny) => new { cc, cmny })
+                            .Join(_dbContext.Category, ccat => ccat.cc.CategoryId, cat => cat.Id, (ccat, cat) => new { ccat, cat }).
+                            Where(w => w.ccat.cc.IsDeleted == false && (
+                            (!string.IsNullOrEmpty(searchValue) ? w.ccat.cmny.NameEng.Contains(searchValue) : w.ccat.cmny.NameEng == w.ccat.cmny.NameEng)
+                            || (!string.IsNullOrEmpty(searchValue) ? w.cat.NameEng.Contains(searchValue) : w.cat.NameEng == w.cat.NameEng))).
+                            Select(s => new CompanyCategoryViewModel
+                            {
+                                Id = s.ccat.cc.Id,
+                                Company = s.ccat.cmny.NameEng,
+                                Category = s.cat.NameEng
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+            var tot = _dbContext.CompanyCategory.Join(_dbContext.Company, cc => cc.CompanyId, cmny => cmny.Id, (cc, cmny) => new { cc, cmny })
+                           .Join(_dbContext.Category, ccat => ccat.cc.CategoryId, cat => cat.Id, (ccat, cat) => new { ccat, cat }).
+                           Where(w => w.ccat.cc.IsDeleted == false && (
+                           (!string.IsNullOrEmpty(searchValue) ? w.ccat.cmny.NameEng.Contains(searchValue) : w.ccat.cmny.NameEng == w.ccat.cmny.NameEng)
+                           || (!string.IsNullOrEmpty(searchValue) ? w.cat.NameEng.Contains(searchValue) : w.cat.NameEng == w.cat.NameEng))).CountAsync().Result;
+
+
+            result.IsSuccess = true;
+            result.Message = "Company Category List.";
+            result.Data = ccList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyCategoryById(int id)
+        {
+            GetResults result = new GetResults();
+            var ccList = _dbContext.CompanyCategory.Where(w => w.Id == id && w.IsDeleted == false)
+                                                   .Select(s => new CompanyCategoryRequestModel
+                                                   {
+                                                       Id = s.Id,
+                                                       CategoryId = s.CategoryId,
+                                                       CompanyId = s.CompanyId,
+                                                       IsPublished =s.IsPublished.HasValue?s.IsPublished.Value:false
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Company Found.";
+            result.Data = ccList;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
     }
 }

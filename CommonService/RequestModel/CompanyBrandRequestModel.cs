@@ -6,7 +6,7 @@ namespace CommonService.RequestModel
 {
     public class CompanyBrandRequestModel
     {
-        public long Id { get; set; }
+        public long? Id { get; set; }
         public int BrandId { get; set; }
         public long CompanyId { get; set; }
         public int? SortOrder { get; set; }

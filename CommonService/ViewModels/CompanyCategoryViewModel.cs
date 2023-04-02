@@ -17,5 +17,7 @@ namespace CommonService.ViewModel
         public long? LastModifierUserId { get; set; }
         public DateTime CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
+        public string Company { get; set; }
+        public string Category { get; set; }
     }
 }
