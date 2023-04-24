@@ -37,5 +37,6 @@ namespace CommonService.ViewModels
         public string OfferShortDescriptionEng { get; set; }
         public string OfferShortDescriptionArb { get; set; }
         public decimal OldPrice { get; set; }
+        public string Company { get; set; }
     }
 }

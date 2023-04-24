@@ -27,5 +27,17 @@ namespace ApplicationService.IServices
         Task<GetResults> GetCompanyCategoryById(int id);
         Task<GetResults> DeleteCompanyCategory(int Id);
         Task<GetResults> AddEditCompanyCategory(CompanyCategoryRequestModel ccModel);
+
+
+        Task<GetResults> AddEditCompanyProduct(CompanyProductRequestModel cpModel);
+        Task<GetResults> DeleteCompanyProduct(int Id); 
+        Task<GetResults> GetCompanyProductById(int id);
+        Task<GetResults> GetAllCompanyProduct(int page, int limit, string searchValue);
+
+
+        Task<GetResults> AddEditCompanyService(CompanyServiceRequestModel csModel);
+        Task<GetResults> DeleteCompanyService(int Id);
+        Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyServiceById(int id);
     }
 }

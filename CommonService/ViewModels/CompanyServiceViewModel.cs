@@ -33,5 +33,6 @@ namespace CommonService.ViewModels
         public DateTime? OfferEndDate { get; set; }
         public string OfferShortDescriptionEng { get; set; }
         public string OfferShortDescriptionArb { get; set; }
+        public string Company { get; set; }
     }
 }
