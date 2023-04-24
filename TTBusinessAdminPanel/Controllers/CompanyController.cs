@@ -132,6 +132,11 @@ namespace TTBusinessAdminPanel.Controllers
             var resp = _company.DeleteCompany(cModel.Id).Result;
             return Json(resp);
         }
+        private void BindCompany()
+        {
+            var Companies = (List<CompanyModel>)_company.GetMasterCompanies().Result.Data;
+            ViewBag.Companies = new SelectList(Companies, "id", "NameEng");
+        }
 
         private void BindCountries()
         {
@@ -166,9 +171,7 @@ namespace TTBusinessAdminPanel.Controllers
         #region CompanyBrand
         private void BindCompanyAndBrand()
         {
-            var Companies = (List<CompanyModel>)_company.GetMasterCompanies().Result.Data;
-            ViewBag.Companies = new SelectList(Companies, "id", "NameEng");
-
+            BindCompany();
             var brands = (List<BrandModel>)_master.GetMasterBrand().Result.Data;
             ViewBag.Brands = new SelectList(brands, "Id", "NameEng");
 
@@ -409,18 +412,319 @@ namespace TTBusinessAdminPanel.Controllers
             return View("Category");
         }
         #endregion
-        public IActionResult Offer()
-        {
-            return View();
-        }
+
+        #region CompanyProduct
         public IActionResult Product()
         {
             return View();
         }
+        public IActionResult GetAllCompanyProducts()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyProduct(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyProductViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyProduct()
+        {
+            BindCompany();
+            BindCountries();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyProduct(CompanyProductRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyProduct(reqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Product", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            } 
+            return View("AddCompanyProduct", reqmodel);
+        }
+        public IActionResult EditCompanyProduct(int id)
+        {
+            CompanyProductRequestModel cmodel = new CompanyProductRequestModel();
+            try
+            {
+                BindCompany();
+                BindCountries();
+                var company = _company.GetCompanyProductById(id).Result;
+                var s = (CompanyProductViewModel)company.Data;
+                cmodel = new CompanyProductRequestModel
+                {
+                    Id = s.Id,
+                    NameEng = s.NameEng,
+                    NameArb = s.NameArb,
+                    CompanyId = s.CompanyId,
+                    ShortDescriptionEng = s.ShortDescriptionEng,
+                    ShortDescriptionArb = s.ShortDescriptionArb,
+                    DescriptionEng = s.DescriptionEng,
+                    DescriptionArb = s.DescriptionArb,
+                    PartNumber = s.PartNumber,
+                    WarrantyEng = s.WarrantyEng,
+                    WarrantyArb = s.WarrantyArb,
+                    Image = s.Image,
+                    SortOrder = s.SortOrder,
+                    IsPublished = s.IsPublished,
+                    HasOffers = s.HasOffers,
+                    IsDeleted = s.IsDeleted,
+                    DeleterUserId = s.DeleterUserId,
+                    DeletionTime = s.DeletionTime,
+                    LastModificationTime = s.LastModificationTime,
+                    LastModifierUserId = s.LastModifierUserId,
+                    CreationTime = s.CreationTime,
+                    CreatorUserId = s.CreatorUserId,
+                    Price = s.Price,
+                    OffersDescriptionEng = s.OffersDescriptionEng,
+                    OffersDescriptionArb = s.OffersDescriptionArb,
+                    CountryId = s.CountryId,
+                    OfferStartDate = s.OfferStartDate,
+                    OfferEndDate = s.OfferEndDate,
+                    OfferShortDescriptionEng = s.OfferShortDescriptionEng,
+                    OfferShortDescriptionArb = s.OfferShortDescriptionArb,
+                    OldPrice = s.OldPrice
+
+                };
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyProduct(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyProduct(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("Product", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("Product");
+        }
+
+        #endregion
+
+        #region CompanyServices
         public IActionResult Service()
         {
             return View();
         }
+        public IActionResult GetAllCompanyServices()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyService(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyServiceViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyService()
+        {
+            BindCompany();  
+            return View();
+        }
+        public IActionResult AddUpdateCompanyService(CompanyServiceRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyService(reqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Service", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyService", reqmodel);
+        }
+
+        public IActionResult EditCompanyService(int id)
+        {
+            CompanyServiceRequestModel cmodel = new CompanyServiceRequestModel();
+            try
+            { 
+                BindCompany();
+                if (id > 0)
+                {
+                   
+                    var company = _company.GetCompanyServiceById(id).Result;
+                    var s = (CompanyServiceViewModel)company.Data;
+                    cmodel = new CompanyServiceRequestModel
+                    {
+                        Id = s.Id,
+                        NameEng = s.NameEng,
+                        NameArb = s.NameArb,
+                        CompanyId = s.CompanyId,
+                        ShortDescriptionEng = s.ShortDescriptionEng,
+                        ShortDescriptionArb = s.ShortDescriptionArb,
+                        DescriptionEng = s.DescriptionEng,
+                        DescriptionArb = s.DescriptionArb,
+                        Image = s.Image,
+                        OldPrice = s.OldPrice,
+                        Price = s.Price,
+                        SortOrder = s.SortOrder,
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                        HasOffers = s.HasOffers.HasValue ? s.HasOffers.Value : false,
+                        OffersDescriptionEng = s.OffersDescriptionEng,
+                        OffersDescriptionArb = s.OffersDescriptionArb,
+                        IsDeleted = s.IsDeleted,
+                        DeleterUserId = s.DeleterUserId,
+                        DeletionTime = s.DeletionTime,
+                        LastModificationTime = s.LastModificationTime,
+                        LastModifierUserId = s.LastModifierUserId,
+                        CreationTime = s.CreationTime,
+                        CreatorUserId = s.CreatorUserId,
+                        OfferStartDate = s.OfferStartDate,
+                        OfferEndDate = s.OfferEndDate,
+                        OfferShortDescriptionEng = s.OfferShortDescriptionEng,
+                        OfferShortDescriptionArb = s.OfferShortDescriptionArb
+
+
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyService(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyService(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("Service", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("Product");
+        }
+
+        #endregion
+
+        public IActionResult Offer()
+        {
+            return View();
+        }
+      
         public IActionResult Banner()
         {
             return View();

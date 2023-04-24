@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -547,6 +548,313 @@ namespace ApplicationService.Services
             result.IsSuccess = true;
             result.Message = "Company Found.";
             result.Data = ccList;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
+
+        #region CompanyProduct
+        public async Task<GetResults> AddEditCompanyProduct(CompanyProductRequestModel cpModel)
+        {
+            GetResults result = new GetResults();
+            var cpObj = _dbContext.CompanyProduct.Where(w => w.Id == cpModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (cpObj == null)
+            {
+                CompanyProduct cp = new CompanyProduct()
+                {
+                    NameEng = cpModel.NameEng,
+                    NameArb = cpModel.NameArb,
+                    CompanyId = cpModel.CompanyId,
+                    ShortDescriptionEng = cpModel.ShortDescriptionEng,
+                    ShortDescriptionArb = cpModel.ShortDescriptionArb,
+                    DescriptionEng = cpModel.DescriptionEng,
+                    DescriptionArb = cpModel.DescriptionArb,
+                    PartNumber = cpModel.PartNumber,
+                    WarrantyEng = cpModel.WarrantyEng,
+                    WarrantyArb = cpModel.WarrantyArb,
+                    Image = cpModel.Image,
+                    SortOrder = cpModel.SortOrder,
+                    IsPublished = cpModel.IsPublished,
+                    HasOffers = cpModel.HasOffers,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = cpModel.CreatorUserId,
+                    Price = cpModel.Price,
+                    OffersDescriptionEng = cpModel.OffersDescriptionEng,
+                    OffersDescriptionArb = cpModel.OffersDescriptionArb,
+                    CountryId = cpModel.CountryId,
+                    OfferStartDate = cpModel.OfferStartDate,
+                    OfferEndDate = cpModel.OfferEndDate,
+                    OfferShortDescriptionEng = cpModel.OfferShortDescriptionEng,
+                    OfferShortDescriptionArb = cpModel.OfferShortDescriptionArb,
+                    OldPrice = cpModel.OldPrice,
+
+                };
+                _dbContext.CompanyProduct.Add(cp);
+                result.Message = "Company Product Added.";
+            }
+            else
+            {
+                cpObj.NameEng = cpModel.NameEng;
+                cpObj.NameArb = cpModel.NameArb;
+                cpObj.CompanyId = cpModel.CompanyId;
+                cpObj.ShortDescriptionEng = cpModel.ShortDescriptionEng;
+                cpObj.ShortDescriptionArb = cpModel.ShortDescriptionArb;
+                cpObj.DescriptionEng = cpModel.DescriptionEng;
+                cpObj.DescriptionArb = cpModel.DescriptionArb;
+                cpObj.PartNumber = cpModel.PartNumber;
+                cpObj.WarrantyEng = cpModel.WarrantyEng;
+                cpObj.WarrantyArb = cpModel.WarrantyArb;
+                cpObj.Image = cpModel.Image;
+                cpObj.SortOrder = cpModel.SortOrder;
+                cpObj.IsPublished = cpModel.IsPublished;
+                cpObj.HasOffers = cpModel.HasOffers;
+                cpObj.LastModificationTime = DateTime.Now;
+                cpObj.LastModifierUserId = cpModel.LastModifierUserId;
+                cpObj.Price = cpModel.Price;
+                cpObj.OffersDescriptionEng = cpModel.OffersDescriptionEng;
+                cpObj.OffersDescriptionArb = cpModel.OffersDescriptionArb;
+                cpObj.CountryId = cpModel.CountryId;
+                cpObj.OfferStartDate = cpModel.OfferStartDate;
+                cpObj.OfferEndDate = cpModel.OfferEndDate;
+                cpObj.OfferShortDescriptionEng = cpModel.OfferShortDescriptionEng;
+                cpObj.OfferShortDescriptionArb = cpModel.OfferShortDescriptionArb;
+                cpObj.OldPrice = cpModel.OldPrice;
+
+                result.Message = "Company Product Updated.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyProduct(int Id)
+        {
+            GetResults result = new GetResults();
+            var cpObj = _dbContext.CompanyProduct.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (cpObj != null)
+            {
+                cpObj.IsDeleted = true;
+                cpObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Product Deleted.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyProduct(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var cpList = _dbContext.CompanyProduct.Join(_dbContext.Company, cp => cp.CompanyId, cmny => cmny.Id, (cp, cmny) => new { cp, cmny }).
+                            Where(w => w.cp.IsDeleted == false && (
+                            (!string.IsNullOrEmpty(searchValue) ? w.cmny.NameEng.Contains(searchValue) : w.cmny.NameEng == w.cmny.NameEng))).
+                            Select(s => new CompanyProductViewModel
+                            {
+                                Id = s.cp.Id,
+                                Company = s.cmny.NameEng,
+                                NameEng = s.cp.NameEng,
+                                NameArb = s.cp.NameArb,
+                                PartNumber=s.cp.PartNumber
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+
+            var tot = _dbContext.CompanyProduct.Join(_dbContext.Company, cp => cp.CompanyId, cmny => cmny.Id, (cp, cmny) => new { cp, cmny }).
+                           Where(w => w.cp.IsDeleted == false).
+                          CountAsync().Result;
+
+            result.IsSuccess = true;
+            result.Message = "Company Product List.";
+            result.Data = cpList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyProductById(int id)
+        {
+            GetResults result = new GetResults();
+            var cb = _dbContext.CompanyProduct.Where(w => w.Id == id && w.IsDeleted == false)
+                                                   .Select(s => new CompanyProductViewModel
+                                                   {
+                                                       Id = s.Id,
+                                                       NameEng = s.NameEng,
+                                                       NameArb = s.NameArb,
+                                                       CompanyId = s.CompanyId,
+                                                       ShortDescriptionEng = s.ShortDescriptionEng,
+                                                       ShortDescriptionArb = s.ShortDescriptionArb,
+                                                       DescriptionEng = s.DescriptionEng,
+                                                       DescriptionArb = s.DescriptionArb,
+                                                       PartNumber = s.PartNumber,
+                                                       WarrantyEng = s.WarrantyEng,
+                                                       WarrantyArb = s.WarrantyArb,
+                                                       Image = s.Image,
+                                                       SortOrder = s.SortOrder,
+                                                       IsPublished = s.IsPublished,
+                                                       HasOffers = s.HasOffers,
+                                                       IsDeleted = s.IsDeleted,
+                                                       DeleterUserId = s.DeleterUserId,
+                                                       DeletionTime = s.DeletionTime,
+                                                       LastModificationTime = s.LastModificationTime,
+                                                       LastModifierUserId = s.LastModifierUserId,
+                                                       CreationTime = s.CreationTime,
+                                                       CreatorUserId = s.CreatorUserId,
+                                                       Price = s.Price,
+                                                       OffersDescriptionEng = s.OffersDescriptionEng,
+                                                       OffersDescriptionArb = s.OffersDescriptionArb,
+                                                       CountryId = s.CountryId,
+                                                       OfferStartDate = s.OfferStartDate,
+                                                       OfferEndDate = s.OfferEndDate,
+                                                       OfferShortDescriptionEng = s.OfferShortDescriptionEng,
+                                                       OfferShortDescriptionArb = s.OfferShortDescriptionArb,
+                                                       OldPrice = s.OldPrice
+
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Company Product Found.";
+            result.Data = cb;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
+
+        #region CompanyServices
+        public async Task<GetResults> AddEditCompanyService(CompanyServiceRequestModel csModel)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyService.Where(w => w.Id == csModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj == null)
+            {
+                CompanyService cs = new CompanyService()
+                {
+                    NameEng = csModel.NameEng,
+                    NameArb = csModel.NameArb,
+                    CompanyId = csModel.CompanyId,
+                    ShortDescriptionEng = csModel.ShortDescriptionEng,
+                    ShortDescriptionArb = csModel.ShortDescriptionArb,
+                    DescriptionEng = csModel.DescriptionEng,
+                    DescriptionArb = csModel.DescriptionArb,
+                    Image = csModel.Image,
+                    OldPrice = csModel.OldPrice.HasValue?csModel.OldPrice.Value:0,
+                    Price = csModel.Price.HasValue? csModel.Price.Value:0,
+                    SortOrder = csModel.SortOrder,
+                    IsPublished = csModel.IsPublished,
+                    HasOffers = csModel.HasOffers,
+                    OffersDescriptionEng = csModel.OffersDescriptionEng,
+                    OffersDescriptionArb = csModel.OffersDescriptionArb,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = csModel.CreatorUserId,
+                    OfferStartDate = csModel.OfferStartDate,
+                    OfferEndDate = csModel.OfferEndDate,
+                    OfferShortDescriptionEng = csModel.OfferShortDescriptionEng,
+                    OfferShortDescriptionArb = csModel.OfferShortDescriptionArb
+
+                };
+                _dbContext.CompanyService.Add(cs);
+                result.Message = "Company Service Added.";
+            }
+            else
+            {
+                csObj.NameEng = csModel.NameEng;
+                csObj.NameArb = csModel.NameArb;
+                csObj.CompanyId = csModel.CompanyId;
+                csObj.ShortDescriptionEng = csModel.ShortDescriptionEng;
+                csObj.ShortDescriptionArb = csModel.ShortDescriptionArb;
+                csObj.DescriptionEng = csModel.DescriptionEng;
+                csObj.DescriptionArb = csModel.DescriptionArb;
+                csObj.Image = csModel.Image;
+                csObj.OldPrice = csModel.OldPrice.HasValue ? csModel.OldPrice.Value : 0;
+                csObj.Price = csModel.Price.HasValue ? csModel.Price.Value : 0;
+                csObj.SortOrder = csModel.SortOrder;
+                csObj.IsPublished = csModel.IsPublished;
+                csObj.HasOffers = csModel.HasOffers;
+                csObj.OffersDescriptionEng = csModel.OffersDescriptionEng;
+                csObj.OffersDescriptionArb = csModel.OffersDescriptionArb;
+                csObj.LastModificationTime = csModel.LastModificationTime;
+                csObj.LastModifierUserId = csModel.LastModifierUserId;
+                csObj.OfferStartDate = csModel.OfferStartDate;
+                csObj.OfferEndDate = csModel.OfferEndDate;
+                csObj.OfferShortDescriptionEng = csModel.OfferShortDescriptionEng;
+                csObj.OfferShortDescriptionArb = csModel.OfferShortDescriptionArb;
+
+                result.Message = "Company Serivce Updated.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyService(int Id)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyService.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj != null)
+            {
+                csObj.IsDeleted = true;
+                csObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Service Deleted.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var cpList = _dbContext.CompanyService.Join(_dbContext.Company, cs => cs.CompanyId, cmny => cmny.Id, (cs, cmny) => new { cs, cmny }).
+                            Where(w => w.cs.IsDeleted == false && (!string.IsNullOrEmpty(searchValue) ? w.cmny.NameEng.Contains(searchValue) : w.cmny.NameEng == w.cmny.NameEng)).
+                            Select(s => new CompanyServiceViewModel
+                            {
+                                Id = s.cs.Id,
+                                Company = s.cmny.NameEng,
+                                NameEng = s.cs.NameEng,
+                                NameArb = s.cs.NameArb,
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+            var tot = _dbContext.CompanyService.Where(w => w.IsDeleted == false).CountAsync().Result;
+
+
+            result.IsSuccess = true;
+            result.Message = "Company Service List.";
+            result.Data = cpList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyServiceById(int id)
+        {
+            GetResults result = new GetResults();
+            var cb = _dbContext.CompanyService.Where(w => w.Id == id && w.IsDeleted == false)
+                                                   .Select(s => new CompanyServiceViewModel
+                                                   {
+                                                       Id = s.Id,
+                                                       NameEng = s.NameEng,
+                                                       NameArb = s.NameArb,
+                                                       CompanyId = s.CompanyId,
+                                                       ShortDescriptionEng = s.ShortDescriptionEng,
+                                                       ShortDescriptionArb = s.ShortDescriptionArb,
+                                                       DescriptionEng = s.DescriptionEng,
+                                                       DescriptionArb = s.DescriptionArb,
+                                                       Image = s.Image,
+                                                       OldPrice = s.OldPrice,
+                                                       Price = s.Price,
+                                                       SortOrder = s.SortOrder,
+                                                       IsPublished = s.IsPublished,
+                                                       HasOffers = s.HasOffers,
+                                                       OffersDescriptionEng = s.OffersDescriptionEng,
+                                                       OffersDescriptionArb = s.OffersDescriptionArb,
+                                                       IsDeleted = s.IsDeleted,
+                                                       DeleterUserId = s.DeleterUserId,
+                                                       DeletionTime = s.DeletionTime,
+                                                       LastModificationTime = s.LastModificationTime,
+                                                       LastModifierUserId = s.LastModifierUserId,
+                                                       CreationTime = s.CreationTime,
+                                                       CreatorUserId = s.CreatorUserId,
+                                                       OfferStartDate = s.OfferStartDate,
+                                                       OfferEndDate = s.OfferEndDate,
+                                                       OfferShortDescriptionEng = s.OfferShortDescriptionEng,
+                                                       OfferShortDescriptionArb = s.OfferShortDescriptionArb
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Company Service Found.";
+            result.Data = cb;
             result.Total = 1;
             return await Task.FromResult(result);
         }

@@ -6,7 +6,7 @@ namespace CommonService.RequestModel
 {
     public class CompanyServiceRequestModel
     {
-        public long Id { get; set; }
+        public long? Id { get; set; }
         public string NameEng { get; set; }
         public string NameArb { get; set; }
         public long CompanyId { get; set; }
@@ -15,11 +15,11 @@ namespace CommonService.RequestModel
         public string DescriptionEng { get; set; }
         public string DescriptionArb { get; set; }
         public string Image { get; set; }
-        public decimal OldPrice { get; set; }
-        public decimal Price { get; set; }
+        public decimal? OldPrice { get; set; }
+        public decimal? Price { get; set; }
         public int? SortOrder { get; set; }
-        public bool? IsPublished { get; set; }
-        public bool? HasOffers { get; set; }
+        public bool IsPublished { get; set; }
+        public bool HasOffers { get; set; }
         public string OffersDescriptionEng { get; set; }
         public string OffersDescriptionArb { get; set; }
         public bool IsDeleted { get; set; }
