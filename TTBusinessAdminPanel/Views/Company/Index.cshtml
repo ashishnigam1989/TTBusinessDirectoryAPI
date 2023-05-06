@@ -30,10 +30,10 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Name English</th>
-                            <th>Name Arabic</th>
+                            <th>Company Name</th>
                             <th>EmailAddress</th>
                             <th>Phone</th>
+                            <th>Is Verified</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -64,9 +64,18 @@
                 "columns": [
                     { "data": "id", "name": "Id", "autoWidth": true },
                     { "data": "nameEng", "name": "nameEng", "autoWidth": true },
-                    { "data": "nameArb", "name": "nameArb", "autoWidth": true },
                     { "data": "primaryEmail", "name": "primaryEmail", "autoWidth": true },
                     { "data": "primaryPhone", "name": "primaryPhone", "autoWidth": true },
+                    {
+                        "render": function (data, row, d) {
+                            if (d.isVerified) {
+                                return "<span>Yes</span>";
+                            } 
+                            else{
+                                return "<span>No</span>";
+                            }
+                        }
+                    },
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | "+

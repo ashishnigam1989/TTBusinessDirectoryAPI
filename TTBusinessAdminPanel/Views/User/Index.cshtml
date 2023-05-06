@@ -64,14 +64,14 @@
                     
                     {
                         "render": function (data,row,d) {
-                            var btns = "<a href='/User/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " ;
+                            var btns = "<a href='/User/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> " ;
                             if(d.isActive==null){
-                                btns+="<a href='#' onclick=Approve(" + d.id + ",'approve') class='icon' style='color:green' title='Approve'><i class='zmdi zmdi-assignment-check'></i></a> | " +
+                                btns+=" | <a href='#' onclick=Approve(" + d.id + ",'approve') class='icon' style='color:green' title='Approve'><i class='zmdi zmdi-assignment-check'></i></a> | " +
                                 "<a href='#' onclick=Approve(" + d.id + ",'reject') class='icon' style='color:red' title='Reject'><i class='zmdi zmdi-close-circle'></i></a>";
                             }
                             if(d.isActive==false)
                             {
-                                btns += "<a href='#' onclick=Approve(" + d.id + ",'approve') class='icon' style='color:green' title='Approve'><i class='zmdi zmdi-assignment-check'></i></a>" ;
+                                btns += " | <a href='#' onclick=Approve(" + d.id + ",'approve') class='icon' style='color:green' title='Approve'><i class='zmdi zmdi-assignment-check'></i></a>" ;
                             }
                             if (d.isActive == true) {
                                 btns += " | <a href='#' onclick=Approve(" + d.id + ",'reject') class='icon' style='color:red' title='Reject'><i class='zmdi zmdi-close-circle'></i></a>";
