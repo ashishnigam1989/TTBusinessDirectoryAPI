@@ -95,6 +95,7 @@ namespace TTBusinessDirectoryAPI
             {
                 endpoints.MapControllers();
             });
+            
             // global error handler
             app.UseMiddleware<GlobalExceptionHandler>();
         }
