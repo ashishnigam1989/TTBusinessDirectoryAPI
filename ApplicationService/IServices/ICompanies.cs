@@ -39,5 +39,6 @@ namespace ApplicationService.IServices
         Task<GetResults> DeleteCompanyService(int Id);
         Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue);
         Task<GetResults> GetCompanyServiceById(int id);
+        Task<GetResults> GetFeaturedCompanies();
     }
 }

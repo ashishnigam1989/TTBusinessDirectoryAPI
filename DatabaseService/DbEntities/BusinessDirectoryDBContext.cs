@@ -55,6 +55,7 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<UserRoles> UserRoles { get; set; }
         public virtual DbSet<UserSocialLogins> UserSocialLogins { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<SearchModel> SearchModel { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -848,6 +849,11 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasMaxLength(32);
+            });
+
+            modelBuilder.Entity<SearchModel>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -361,6 +361,27 @@ namespace ApplicationService.Services
             return await Task.FromResult(uobj);
 
         }
+
+        public async Task<GetResults> GetFeaturedCompanies()
+        {
+            List<CompanyModel> companylist = _dbContext.Company.Where(w => w.IsFeatured.Value).Select(s => new CompanyModel
+            {
+                NameEng = s.NameEng,
+                EstablishmentDate = s.EstablishmentDate,
+                Logo = s.Logo,
+                PrimaryWebsite = s.PrimaryWebsite,
+                id = s.Id
+            }).Distinct().OrderByDescending(o => o.id).Take(10).ToListAsync().Result;
+
+
+            GetResults uobj = new GetResults
+            {
+                Total = companylist.Count,
+                Data = companylist
+            };
+            return await Task.FromResult(uobj);
+
+        }
         #endregion
 
         #region CompanyBrand

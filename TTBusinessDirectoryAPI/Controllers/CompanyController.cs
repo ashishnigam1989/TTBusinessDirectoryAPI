@@ -273,6 +273,24 @@ namespace TTBusinessDirectoryAPI.Controllers
             return await Task.FromResult(getResults);
         }
 
-
+        [HttpGet]
+        [Route("GetFeaturedCompanies")]
+        public async Task<GetResults> GetFeaturedCompanies(int limit = 0)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = _company.GetFeaturedCompanies().Result;
+                logger.Info(getResults.Message);
+                getResults.IsSuccess = true;
+                getResults.Message = "Featured Company List";
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
     }
 }

@@ -465,6 +465,19 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
+
+        public async Task<GetResults> GetSearchResults(string searchTerm)
+        {
+            var queryResult = await _dbContext.SearchModel.FromSqlRaw("EXEC [usp_GetSearchResult] {0}", searchTerm).ToListAsync();
+
+            GetResults result = new GetResults
+            {
+                Data = queryResult,
+                Total = queryResult.Count
+            };
+            return await Task.FromResult(result);
+
+        }
         #endregion
     }
 }
