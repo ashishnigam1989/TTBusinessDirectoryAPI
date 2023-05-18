@@ -10,20 +10,19 @@ namespace DatabaseService.DbEntities
     public partial class FreeListing
     {
         public long Id { get; set; }
-        public string ContactName { get; set; }
-        public string ContactEmail { get; set; }
-        public string ContactMobile { get; set; }
         public string CompanyName { get; set; }
         public string CompanyAddress { get; set; }
-        public string Logo { get; set; }
-        public string Pobox { get; set; }
+        public int? CountryId { get; set; }
         public int? RegionId { get; set; }
-        public string CompanyPhone { get; set; }
-        public string Fax { get; set; }
-        public string PrimaryEmail { get; set; }
+        public int? DistrictId { get; set; }
+        public string Pobox { get; set; }
+        public int FoundedYear { get; set; }
+        public string FounderName { get; set; }
+        public int? EmployeeNum { get; set; }
         public string PrimaryWebsite { get; set; }
-        public string Iso { get; set; }
-        public int EstablishmentYear { get; set; }
+        public string Logo { get; set; }
+        public string PrimaryEmail { get; set; }
+        public string CompanyPhone { get; set; }
         public bool IsDeleted { get; set; }
         public long? DeleterUserId { get; set; }
         public DateTime? DeletionTime { get; set; }
@@ -31,5 +30,6 @@ namespace DatabaseService.DbEntities
         public long? LastModifierUserId { get; set; }
         public DateTime CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

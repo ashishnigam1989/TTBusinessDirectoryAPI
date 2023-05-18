@@ -168,6 +168,8 @@ namespace DatabaseService.DbEntities
 
                 entity.Property(e => e.FacebookUrl).HasMaxLength(100);
 
+                entity.Property(e => e.FounderName).HasMaxLength(100);
+
                 entity.Property(e => e.GooglePlaystoreUrl).HasMaxLength(250);
 
                 entity.Property(e => e.GooglePlusUrl).HasMaxLength(100);
@@ -572,25 +574,11 @@ namespace DatabaseService.DbEntities
                     .IsRequired()
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ContactEmail)
-                    .IsRequired()
-                    .HasMaxLength(150);
-
-                entity.Property(e => e.ContactMobile)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.ContactName)
-                    .IsRequired()
-                    .HasMaxLength(150);
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Fax).HasMaxLength(20);
-
-                entity.Property(e => e.Iso).HasMaxLength(100);
+                entity.Property(e => e.FounderName).HasMaxLength(100);
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -619,6 +607,8 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.RelatedProduct).HasMaxLength(150);
+
+                entity.Property(e => e.RelatedService).HasMaxLength(150);
             });
 
             modelBuilder.Entity<Industry>(entity =>
@@ -815,9 +805,13 @@ namespace DatabaseService.DbEntities
             {
                 entity.Property(e => e.AuthenticationSource).HasMaxLength(64);
 
+                entity.Property(e => e.CountryCode).HasMaxLength(20);
+
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Designation).HasMaxLength(256);
 
                 entity.Property(e => e.EmailAddress)
                     .IsRequired()
@@ -833,21 +827,11 @@ namespace DatabaseService.DbEntities
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(32);
+                    .HasMaxLength(100);
 
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(128);
+                entity.Property(e => e.Password).HasMaxLength(256);
 
                 entity.Property(e => e.PasswordResetCode).HasMaxLength(328);
-
-                entity.Property(e => e.Surname)
-                    .IsRequired()
-                    .HasMaxLength(32);
-
-                entity.Property(e => e.UserName)
-                    .IsRequired()
-                    .HasMaxLength(32);
             });
 
             OnModelCreatingPartial(modelBuilder);
