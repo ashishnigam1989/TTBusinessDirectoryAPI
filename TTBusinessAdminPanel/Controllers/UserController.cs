@@ -130,7 +130,6 @@ namespace TTBusinessAdminPanel.Controllers
                     umodel = new UserRequestModel()
                     {
                         Name = user.Name,
-                        Surname = user.Surname,
                         EmailAddress = user.EmailAddress,
                         Mobile = user.Mobile,
                         RoleId = user.RoleId
@@ -143,11 +142,6 @@ namespace TTBusinessAdminPanel.Controllers
                 _logger.Error(ex);
             }
             return View(umodel);
-        }
-
-        public IActionResult Approve()
-        {
-            return View();
         }
 
         public IActionResult RoleMenuMap()

@@ -10,9 +10,10 @@ namespace DatabaseService.DbEntities
     public partial class FreeListingDetails
     {
         public long Id { get; set; }
-        public long? CategoryId { get; set; }
         public long FreeListingId { get; set; }
+        public long? CategoryId { get; set; }
         public string RelatedProduct { get; set; }
+        public string RelatedService { get; set; }
         public string Brand { get; set; }
         public bool IsDeleted { get; set; }
         public long? DeleterUserId { get; set; }
