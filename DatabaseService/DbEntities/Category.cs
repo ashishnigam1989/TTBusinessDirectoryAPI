@@ -13,6 +13,7 @@ namespace DatabaseService.DbEntities
         public string NameEng { get; set; }
         public string NameArb { get; set; }
         public string Unspsccode { get; set; }
+        public string Icon { get; set; }
         public bool? IsPublished { get; set; }
         public bool IsDeleted { get; set; }
         public long? DeleterUserId { get; set; }

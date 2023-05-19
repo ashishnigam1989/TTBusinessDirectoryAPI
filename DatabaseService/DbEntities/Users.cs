@@ -10,12 +10,12 @@ namespace DatabaseService.DbEntities
     public partial class Users
     {
         public long Id { get; set; }
-        public int? TenantId { get; set; }
         public string Name { get; set; }
-        public string Surname { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        public string CountryCode { get; set; }
+        public string Mobile { get; set; }
         public string EmailAddress { get; set; }
+        public string Designation { get; set; }
+        public string Password { get; set; }
         public bool IsEmailConfirmed { get; set; }
         public string EmailConfirmationCode { get; set; }
         public string PasswordResetCode { get; set; }
@@ -31,6 +31,5 @@ namespace DatabaseService.DbEntities
         public bool ShouldChangePasswordOnNextLogin { get; set; }
         public Guid? ProfilePictureId { get; set; }
         public string AuthenticationSource { get; set; }
-        public string Mobile { get; set; }
     }
 }

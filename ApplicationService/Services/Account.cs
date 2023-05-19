@@ -34,7 +34,6 @@ namespace ApplicationService.Services
                     Id = s.u.Id,
                     Name = s.u.Name,
                     RoleId = s.ur.RoleId,
-                    Surname = s.u.Surname,
                     EmailAddress = s.u.EmailAddress,
                     IsEmailConfirmed = s.u.IsEmailConfirmed,
                     LastLoginTime = s.u.LastLoginTime,
@@ -85,9 +84,7 @@ namespace ApplicationService.Services
                     Name = s.Users.Name,
                     RoleId = s.UserRoles.RoleId,
                     Rolename = s.Roles.Name,
-                    Surname = s.Users.Surname,
                     EmailAddress = s.Users.EmailAddress,
-                    Username = s.Users.UserName,
                     IsEmailConfirmed = s.Users.IsEmailConfirmed,
                     LastLoginTime = s.Users.LastLoginTime,
                     IsDeleted = s.Users.IsDeleted,
@@ -125,8 +122,6 @@ namespace ApplicationService.Services
                     Name = userRequest.Name,
                     EmailAddress = userRequest.EmailAddress,
                     Password = userRequest.Password,
-                    Surname = userRequest.Surname,
-                    UserName = userRequest.UserName,
                     Mobile = userRequest.Mobile,
                     IsEmailConfirmed = false,
                     EmailConfirmationCode = String.Empty,
@@ -135,7 +130,6 @@ namespace ApplicationService.Services
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
                     ShouldChangePasswordOnNextLogin = true,
-                    TenantId = 1
 
                 };
                 _dbContext.Users.Add(uobj);
@@ -154,15 +148,12 @@ namespace ApplicationService.Services
                 userinfo.Name = userRequest.Name;
                 userinfo.EmailAddress = userRequest.EmailAddress;
              //   userinfo.Password = userRequest.Password;
-                userinfo.Surname = userRequest.Surname;
-                userinfo.UserName = userRequest.UserName;
                 userinfo.Mobile = userRequest.Mobile; 
                 userinfo.EmailConfirmationCode = String.Empty;
                 userinfo.PasswordResetCode = String.Empty;
                 userinfo.LastLoginTime = DateTime.Now; 
                 userinfo.LastModificationTime = DateTime.Now;
                 userinfo.ShouldChangePasswordOnNextLogin = true;
-                userinfo.TenantId = 1;
 
                 var roleinfo = _dbContext.UserRoles.Where(w => w.RoleId == userRequest.RoleId && w.UserId == userinfo.Id).FirstOrDefault();
                 if (roleinfo != null)
@@ -313,9 +304,7 @@ namespace ApplicationService.Services
                     Id = s.u.Id,
                     Name = s.u.Name,
                     RoleId = s.ur.RoleId,
-                    Surname = s.u.Surname,
                     EmailAddress = s.u.EmailAddress,
-                    Username = s.u.UserName,
                     IsEmailConfirmed = s.u.IsEmailConfirmed,
                     LastLoginTime = s.u.LastLoginTime,
                     IsDeleted = s.u.IsDeleted,

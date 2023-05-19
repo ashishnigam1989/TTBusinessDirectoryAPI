@@ -39,6 +39,7 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<CompanyVideos> CompanyVideos { get; set; }
         public virtual DbSet<CompanyVouchers> CompanyVouchers { get; set; }
         public virtual DbSet<Country> Country { get; set; }
+        public virtual DbSet<CountryCode> CountryCode { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<EventPassType> EventPassType { get; set; }
         public virtual DbSet<EventRegion> EventRegion { get; set; }
@@ -61,6 +62,7 @@ namespace DatabaseService.DbEntities
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=185.182.184.243;Database=BusinessDirectoryDB;User Id=businessdir;Password=BusinessDir@123;");
             }
         }
@@ -112,6 +114,10 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Icon)
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -168,6 +174,8 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.EstablishmentDate).HasColumnType("datetime");
 
                 entity.Property(e => e.FacebookUrl).HasMaxLength(100);
+
+                entity.Property(e => e.FounderName).HasMaxLength(100);
 
                 entity.Property(e => e.GooglePlaystoreUrl).HasMaxLength(250);
 
@@ -513,6 +521,22 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.West).HasMaxLength(30);
             });
 
+            modelBuilder.Entity<CountryCode>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CodeIcon)
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodeName)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CountryCodeId).ValueGeneratedOnAdd();
+            });
+
             modelBuilder.Entity<Districts>(entity =>
             {
                 entity.HasKey(e => e.DistrictId);
@@ -573,25 +597,11 @@ namespace DatabaseService.DbEntities
                     .IsRequired()
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ContactEmail)
-                    .IsRequired()
-                    .HasMaxLength(150);
-
-                entity.Property(e => e.ContactMobile)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.ContactName)
-                    .IsRequired()
-                    .HasMaxLength(150);
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Fax).HasMaxLength(20);
-
-                entity.Property(e => e.Iso).HasMaxLength(100);
+                entity.Property(e => e.FounderName).HasMaxLength(100);
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -620,6 +630,8 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.RelatedProduct).HasMaxLength(150);
+
+                entity.Property(e => e.RelatedService).HasMaxLength(150);
             });
 
             modelBuilder.Entity<Industry>(entity =>
@@ -816,9 +828,13 @@ namespace DatabaseService.DbEntities
             {
                 entity.Property(e => e.AuthenticationSource).HasMaxLength(64);
 
+                entity.Property(e => e.CountryCode).HasMaxLength(20);
+
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Designation).HasMaxLength(256);
 
                 entity.Property(e => e.EmailAddress)
                     .IsRequired()
@@ -834,21 +850,11 @@ namespace DatabaseService.DbEntities
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(32);
+                    .HasMaxLength(100);
 
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(128);
+                entity.Property(e => e.Password).HasMaxLength(256);
 
                 entity.Property(e => e.PasswordResetCode).HasMaxLength(328);
-
-                entity.Property(e => e.Surname)
-                    .IsRequired()
-                    .HasMaxLength(32);
-
-                entity.Property(e => e.UserName)
-                    .IsRequired()
-                    .HasMaxLength(32);
             });
 
             modelBuilder.Entity<SearchModel>(entity =>

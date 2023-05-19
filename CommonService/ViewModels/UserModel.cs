@@ -10,9 +10,7 @@ namespace CommonService.ViewModels
         public int RoleId { get; set; }
         public string Rolename { get; set; }
         public string Name { get; set; }
-        public string Surname { get; set; }
         public string EmailAddress { get; set; }
-        public string Username { get; set; }
         public bool IsEmailConfirmed { get; set; }
         public DateTime? LastLoginTime { get; set; }
         public bool IsDeleted { get; set; }
