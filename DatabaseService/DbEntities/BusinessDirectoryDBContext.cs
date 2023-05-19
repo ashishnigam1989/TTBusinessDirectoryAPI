@@ -39,6 +39,7 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<CompanyVideos> CompanyVideos { get; set; }
         public virtual DbSet<CompanyVouchers> CompanyVouchers { get; set; }
         public virtual DbSet<Country> Country { get; set; }
+        public virtual DbSet<CountryCode> CountryCode { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<EventPassType> EventPassType { get; set; }
         public virtual DbSet<EventRegion> EventRegion { get; set; }
@@ -60,6 +61,7 @@ namespace DatabaseService.DbEntities
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=185.182.184.243;Database=BusinessDirectoryDB;User Id=businessdir;Password=BusinessDir@123;");
             }
         }
@@ -512,6 +514,22 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.South).HasMaxLength(30);
 
                 entity.Property(e => e.West).HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<CountryCode>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CodeIcon)
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodeName)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CountryCodeId).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<Districts>(entity =>
