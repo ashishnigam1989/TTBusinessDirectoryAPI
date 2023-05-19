@@ -114,6 +114,10 @@ namespace DatabaseService.DbEntities
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
 
+                entity.Property(e => e.Icon)
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.MetaDescriptionArb).HasMaxLength(160);
