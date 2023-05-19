@@ -184,8 +184,87 @@ namespace ApplicationService.Services
                 await _dbContext.SaveChangesAsync();
                 result = true;
             }
-            
+
             return await Task.FromResult(result);
+        }
+
+        /// <summary>
+        /// Method for API
+        /// </summary>
+        /// <param name="userRequest"></param>
+        /// <returns></returns>
+        public async Task<int> CreateUserForListing(UserRequestModel userRequest)
+        {
+            int userId;
+            var userinfo = _dbContext.Users.Where(w => w.EmailAddress.ToLower() == userRequest.EmailAddress.ToLower()).FirstOrDefault();
+            if (userinfo == null)
+            {
+                Users uobj = new Users
+                {
+                    Name = userRequest.Name,
+                    EmailAddress = userRequest.EmailAddress,
+                    Password = userRequest.Password,
+                    Surname = userRequest.Surname,
+                    UserName = userRequest.UserName,
+                    Mobile = userRequest.Mobile,
+                    IsEmailConfirmed = false,
+                    EmailConfirmationCode = String.Empty,
+                    PasswordResetCode = String.Empty,
+                    LastLoginTime = DateTime.Now,
+                    IsDeleted = false,
+                    CreationTime = DateTime.Now,
+                    ShouldChangePasswordOnNextLogin = true,
+                    TenantId = 1
+
+                };
+                _dbContext.Users.Add(uobj);
+                userId = await _dbContext.SaveChangesAsync();
+                var userRole = new UserRoles();
+                userRole.UserId = uobj.Id;
+                userRole.RoleId = userRequest.RoleId;
+                userRole.CreatorUserId = uobj.Id;
+                userRole.CreationTime = DateTime.Now;
+                _dbContext.UserRoles.Add(userRole);
+                int roleId = await _dbContext.SaveChangesAsync();
+                //result = true;
+            }
+            else
+            {
+                userinfo.Name = userRequest.Name;
+                userinfo.EmailAddress = userRequest.EmailAddress;
+                //   userinfo.Password = userRequest.Password;
+                userinfo.Surname = userRequest.Surname;
+                userinfo.UserName = userRequest.UserName;
+                userinfo.Mobile = userRequest.Mobile;
+                userinfo.EmailConfirmationCode = String.Empty;
+                userinfo.PasswordResetCode = String.Empty;
+                userinfo.LastLoginTime = DateTime.Now;
+                userinfo.LastModificationTime = DateTime.Now;
+                userinfo.ShouldChangePasswordOnNextLogin = true;
+                userinfo.TenantId = 1;
+
+                var roleinfo = _dbContext.UserRoles.Where(w => w.RoleId == userRequest.RoleId && w.UserId == userinfo.Id).FirstOrDefault();
+                if (roleinfo != null)
+                {
+                    var userRole = new UserRoles();
+                    userRole.UserId = userinfo.Id;
+                    userRole.RoleId = userRequest.RoleId;
+                    userRole.CreatorUserId = userinfo.Id;
+                    userRole.CreationTime = DateTime.Now;
+                    _dbContext.UserRoles.Add(userRole);
+                }
+                else
+                {
+                    roleinfo.UserId = userinfo.Id;
+                    roleinfo.RoleId = userRequest.RoleId;
+                    roleinfo.CreatorUserId = userinfo.Id;
+                    roleinfo.CreationTime = DateTime.Now;
+                }
+                userId = await _dbContext.SaveChangesAsync();
+                //result = true;
+            }
+
+            return await Task.FromResult(userId);
         }
 
         public async Task<bool> EditUser(UserRequestModel userRequest)
