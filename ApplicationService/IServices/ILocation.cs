@@ -21,5 +21,10 @@ namespace ApplicationService.IServices
         Task<List<RegionModel>> GetMasterRegions(int countryId);
         Task<GetResults> GetRegions(int page, int limit, string searchValue);
         #endregion
+
+        #region CountryCode
+        Task<List<CountryCodeModel>> GetCountryCodes();
+        #endregion
+        Task<List<DistrictModel>> GetDistricts(int regionId);
     }
 }

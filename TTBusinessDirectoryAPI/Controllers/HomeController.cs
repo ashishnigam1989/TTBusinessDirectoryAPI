@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System;
 using ApplicationService.IServices;
 using NLog;
+using CommonService.RequestModel;
+using System.Linq;
 
 namespace TTBusinessDirectoryAPI.Controllers
 {
@@ -16,11 +18,15 @@ namespace TTBusinessDirectoryAPI.Controllers
         private ICategories categories;
         protected Logger logger;
         private IMaster _master;
-        public HomeController(ICategories category, IMaster master)
+        private IListing _listing;
+        private IAccount _account;
+        public HomeController(ICategories category, IMaster master, IListing listing, IAccount account)
         {
             categories = category;
             logger = LogManager.GetLogger("Home");
             _master = master;
+            _listing = listing;
+            _account = account;
         }
 
         [HttpGet]
@@ -30,10 +36,11 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
+                logger.Info("Going to get featured categories.");
                 getResults = await categories.GetAllCategories(isFeatured);
                 getResults.IsSuccess = true;
-                getResults.Message = "Company List";
-                logger.Info("Get Companies");
+                getResults.Message = "Featured Categories";
+                logger.Info("Get Featured Categories.");
             }
             catch (Exception ex)
             {
@@ -50,10 +57,40 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
+                logger.Info("Going to get search results.");
                 getResults = await _master.GetSearchResults(searchTerm);
                 getResults.IsSuccess = true;
-                getResults.Message = "Company List";
-                logger.Info("Get Companies");
+                getResults.Message = "Search Result";
+                logger.Info("Get Search Results");
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpPost]
+        [Route("AddNewBusiness")]
+        public async Task<GetResults> AddNewBusiness(NewBusinessModel newBusinessDetails)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                var roles = await _master.GetMasterRoles();
+                newBusinessDetails.NewUserDetails.RoleId = roles.FirstOrDefault(r => r.Name.ToLower().Equals("free")).Id;
+                logger.Info("Going to add user for free listing.");
+                var userId = await _account.CreateUserForListing(newBusinessDetails.NewUserDetails);
+
+                newBusinessDetails.FreeListingDetails.CreatorUserId = userId;
+                logger.Info("Going to add free listing and products" +
+                    ".");
+                await _listing.AddFreeListing(newBusinessDetails.FreeListingDetails);
+
+                getResults.IsSuccess = true;
+                getResults.Message = "Add Business";
+                logger.Info("Add Business");
             }
             catch (Exception ex)
             {

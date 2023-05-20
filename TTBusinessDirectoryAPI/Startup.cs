@@ -16,6 +16,8 @@ using ApplicationService.IServices;
 using ApplicationService.Services;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using TTBusinessDirectoryAPI.Filters;
+using System.Net.Mime;
 
 namespace TTBusinessDirectoryAPI
 {
@@ -56,7 +58,20 @@ namespace TTBusinessDirectoryAPI
                 });
             });
 
-            services.AddControllers();
+            services.AddControllers(options =>
+                options.Filters.Add(new HttpResponseExceptionFilter()))
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var result = new BadRequestObjectResult(context.ModelState);
+
+                        result.ContentTypes.Add(MediaTypeNames.Application.Json);
+                        result.ContentTypes.Add(MediaTypeNames.Application.Xml);
+
+                        return result;
+                    };
+                }); ;
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -67,6 +82,8 @@ namespace TTBusinessDirectoryAPI
             services.AddScoped<ICompanies, ApplicationService.Services.Companies>();
             services.AddScoped<IOffers, ApplicationService.Services.Offers>();
             services.AddScoped<ICategories, ApplicationService.Services.Categories>();
+            services.AddScoped<IListing, ApplicationService.Services.Listing>();
+            services.AddScoped<ILocation, ApplicationService.Services.Location>();
 
             //Dependencies Mapping End
             services.AddDbContext<BusinessDirectoryDBContext>(ServiceLifetime.Scoped);

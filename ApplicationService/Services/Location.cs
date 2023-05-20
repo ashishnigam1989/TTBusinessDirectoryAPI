@@ -194,7 +194,7 @@ namespace ApplicationService.Services
         public async Task<List<RegionModel>> GetMasterRegions(int countryId)
         {
             var regions = _dbContext.Region
-                .Where(w => w.IsDeleted == false)
+                .Where(w => !w.IsDeleted && w.CountryId == countryId)
                 .Select(s => new RegionModel
                 {
                     Id = s.Id,
@@ -241,6 +241,37 @@ namespace ApplicationService.Services
             return await Task.FromResult(uobj);
         }
 
+        #endregion
+
+        #region
+        public async Task<List<CountryCodeModel>> GetCountryCodes()
+        {
+            var countryCodes = _dbContext.CountryCode
+                .Where(w => w.IsActive.Value)
+                .Select(s => new CountryCodeModel
+                {
+                    CountryCodeId = s.CountryCodeId,
+                    CodeName = s.CodeName,
+                    CodeIcon= s.CodeIcon,
+                    CountryId = s.CountryId
+                }).ToList();
+            return await Task.FromResult(countryCodes);
+        }
+        #endregion
+
+        #region
+        public async Task<List<DistrictModel>> GetDistricts(int regionId)
+        {
+            var districts = _dbContext.Districts
+                .Where(w => !w.IsDeleted && w.RegionId == regionId)
+                .Select(s => new DistrictModel
+                {
+                    RegionId = s.RegionId,
+                    Id = s.DistrictId,
+                    DistrictName = s.DistrictName,
+                }).ToList();
+            return await Task.FromResult(districts);
+        }
         #endregion
     }
 }

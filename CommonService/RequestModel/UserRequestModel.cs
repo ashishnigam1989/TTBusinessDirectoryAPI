@@ -34,5 +34,7 @@ namespace CommonService.RequestModel
         public Guid? ProfilePictureId { get; set; }
         public string AuthenticationSource { get; set; }
         public string Mobile { get; set; }
+        public string CountryCode { get; set; }
+        public string Designation { get; set; }
     }
 }

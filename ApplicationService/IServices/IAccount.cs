@@ -1,10 +1,6 @@
-﻿using CommonService.Enums;
-using CommonService.RequestModel;
+﻿using CommonService.RequestModel;
 using CommonService.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ApplicationService.IServices
@@ -19,5 +15,7 @@ namespace ApplicationService.IServices
         Task<bool> RoleMenuPermission(RoleMenuMapping _rModel);
         Task<UserModel> GetUserById(int userid);
         Task<bool> ApproveRejectUser(ChangeStatusModel uModel);
+        Task<long> CreateUserForListing(UserRequestModel userRequest);
+        Task<bool> CreateUserRole(UserRoleModel urModel);
     }
 }

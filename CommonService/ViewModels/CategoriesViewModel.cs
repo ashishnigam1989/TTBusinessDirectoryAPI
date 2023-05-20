@@ -29,5 +29,6 @@ namespace CommonService.ViewModels
         public string MetaDescriptionArb { get; set; }
         public string PageContentArb { get; set; }
         public bool IsFeatured { get; set; }
+        public string Icon { get; set; }
     }
 }

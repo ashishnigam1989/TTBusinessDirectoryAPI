@@ -31,6 +31,7 @@ namespace ApplicationService.Services
                 NameEng = s.NameEng,
                 NameArb = s.NameArb,
                 IsFeatured = isFeatured,
+                Icon = s.Icon,
             })
             .Distinct()
             .OrderBy(o => o.NameEng)
