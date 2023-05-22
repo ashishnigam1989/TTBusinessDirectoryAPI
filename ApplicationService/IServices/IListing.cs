@@ -10,6 +10,6 @@ namespace ApplicationService.IServices
 {
     public interface IListing
     {
-        public Task AddFreeListing(FreeListingModel freeListing);
+        public Task<GetResults> AddFreeListing(NewBusinessModel newBusinessDetails);
     }
 }

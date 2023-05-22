@@ -25,7 +25,7 @@ namespace ApplicationService.Services
         public async Task<GetResults> GetAllCategories(bool isFeatured = true)
         {
             int total = 0;
-            var categories = await _dbContext.Category.Where(w => w.IsFeatured.Equals(isFeatured)).Select(s => new CategoriesViewModel
+            var categories = await _dbContext.Category.Where(w => w.IsPublished.Value && w.IsFeatured.Equals(isFeatured)).Select(s => new CategoriesViewModel
             {
                 Id = s.Id,
                 NameEng = s.NameEng,

@@ -78,19 +78,11 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var roles = await _master.GetMasterRoles();
-                newBusinessDetails.NewUserDetails.RoleId = roles.FirstOrDefault(r => r.Name.ToLower().Equals("free")).Id;
-                logger.Info("Going to add user for free listing.");
-                var userId = await _account.CreateUserForListing(newBusinessDetails.NewUserDetails);
+                logger.Info("Going to add free listing and products.");
 
-                newBusinessDetails.FreeListingDetails.CreatorUserId = userId;
-                logger.Info("Going to add free listing and products" +
-                    ".");
-                await _listing.AddFreeListing(newBusinessDetails.FreeListingDetails);
+                getResults = await _listing.AddFreeListing(newBusinessDetails);
 
-                getResults.IsSuccess = true;
-                getResults.Message = "Add Business";
-                logger.Info("Add Business");
+                logger.Info("Business added successfully.");
             }
             catch (Exception ex)
             {
