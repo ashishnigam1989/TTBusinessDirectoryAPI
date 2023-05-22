@@ -175,8 +175,48 @@ namespace ApplicationService.Services
                 await _dbContext.SaveChangesAsync();
                 result = true;
             }
-            
+
             return await Task.FromResult(result);
+        }
+
+        /// <summary>
+        /// Method for API
+        /// </summary>
+        /// <param name="userRequest"></param>
+        /// <returns></returns>
+        public async Task<long> CreateUserForListing(UserRequestModel userRequest)
+        {
+            var userinfo = _dbContext.Users.FirstOrDefault(w => w.EmailAddress.ToLower() == userRequest.EmailAddress.ToLower());
+            if (userinfo == null)
+            {
+                Users uobj = new Users
+                {
+                    Name = userRequest.Name,
+                    EmailAddress = userRequest.EmailAddress,
+                    Designation = userRequest.Designation,
+                    Password = userRequest.Password,
+                    Mobile = userRequest.Mobile,
+                    CountryCode = userRequest.CountryCode,
+                    IsEmailConfirmed = true,
+                    LastLoginTime = DateTime.Now,
+                    IsDeleted = false,
+                    CreationTime = DateTime.Now,
+                    IsActive = true,
+                };
+                _dbContext.Users.Add(uobj);
+                await _dbContext.SaveChangesAsync();
+                var userId = uobj.Id;
+                _dbContext.UserRoles.Add(new UserRoles
+                {
+                    UserId = userId,
+                    RoleId = userRequest.RoleId,
+                    CreatorUserId= userId,
+                    CreationTime= DateTime.Now,
+                });
+                await _dbContext.SaveChangesAsync();
+                return await Task.FromResult(userId);
+            }
+            return await Task.FromResult(userinfo.Id);
         }
 
         public async Task<bool> EditUser(UserRequestModel userRequest)
@@ -253,6 +293,23 @@ namespace ApplicationService.Services
             await _dbContext.SaveChangesAsync();
             ischanged=true;
             return await Task.FromResult(ischanged);
+        }
+
+        public async Task<bool> CreateUserRole(UserRoleModel urModel)
+        {
+            var uinfo = await _dbContext.UserRoles.FirstOrDefaultAsync(w => w.UserId == urModel.UserId && w.RoleId == urModel.RoleId);
+            if (uinfo != null)
+            {
+                UserRoles userRoles = new UserRoles
+                {
+                    RoleId = urModel.RoleId,
+                    UserId = urModel.UserId,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = urModel.UserId,
+                };
+            }
+            await _dbContext.SaveChangesAsync();
+            return await Task.FromResult(true);
         }
     }
 }

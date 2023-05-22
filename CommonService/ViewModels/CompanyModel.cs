@@ -73,6 +73,10 @@ namespace CommonService.ViewModels
         public string PrimaryPhone { get; set; }
         public string PrimaryEmail { get; set; }
         public bool? IsVerified { get; set; }
+        public DateTime? EstablishmentDate { get; set; }
+        public string PrimaryWebsite { get; set; }
+        public string Logo { get; set; }
+
 
     }
 }

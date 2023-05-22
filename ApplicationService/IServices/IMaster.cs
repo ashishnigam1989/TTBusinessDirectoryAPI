@@ -31,5 +31,7 @@ namespace ApplicationService.IServices
         public Task<GetResults> DeleteBrand(int brandid);
         Task<GetResults> GetMasterBrand();
         #endregion
+
+        Task<GetResults> GetSearchResults(string searchTerm);
     }
 }

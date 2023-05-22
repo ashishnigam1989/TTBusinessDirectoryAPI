@@ -30,6 +30,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
+                logger.Info("Going to get roles.");
                 var roles = _master.GetMasterRoles().Result;
                 var total = roles.Count;
                 getResults = new GetResults(true, "Get Roles", roles, total);
@@ -50,10 +51,74 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var countries = _location.GetMasterCountries().Result;
+                logger.Info("Going to get countries.");
+                var countries = await _location.GetMasterCountries();
                 var total = countries.Count;
                 getResults = new GetResults(true, "Get Countries", countries, total);
                 logger.Info("Get Countries");
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetRegions/{countryId:int}")]
+        public async Task<GetResults> GetRegions(int countryId)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                logger.Info("Going to get regionns.");
+                var regions = await _location.GetMasterRegions(countryId);
+                var total = regions.Count;
+                getResults = new GetResults(true, "Get Regions", regions, total);
+                logger.Info("Get Regions");
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetCountryCodes")]
+        public async Task<GetResults> GetCountryCodes()
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                logger.Info("Going to get country codes.");
+                var regions = await _location.GetCountryCodes();
+                var total = regions.Count;
+                getResults = new GetResults(true, "Get Country Codes", regions, total);
+                logger.Info("Get Country Codes");
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetDistricts/{regionId:int}")]
+        public async Task<GetResults> GetDistricts(int regionId)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                logger.Info("Going to get districts.");
+                var regions = await _location.GetDistricts(regionId);
+                var total = regions.Count;
+                getResults = new GetResults(true, "Get Districts", regions, total);
+                logger.Info("Get Districts");
             }
             catch (Exception ex)
             {
