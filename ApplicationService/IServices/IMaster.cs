@@ -21,6 +21,7 @@ namespace ApplicationService.IServices
         public Task<GetResults> GetCategoryById(int id);
         public Task<GetResults> DeleteCategory(int id);
         public Task<GetResults> GetMasterCategories();
+        Task<GetResults> GetFeaturedCategories(bool isFeatured = true);
 
         #endregion
 

@@ -277,6 +277,36 @@ namespace ApplicationService.Services
 
         }
 
+        /// <summary>
+        /// Category for UI app
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <param name="searchValue"></param>
+        /// <returns></returns>
+        public async Task<GetResults> GetFeaturedCategories(bool isFeatured = true)
+        {
+            int total = 0;
+            var categories = await _dbContext.Category.Where(w => !w.IsDeleted && w.IsPublished.Value && w.IsFeatured.Equals(isFeatured)).Select(s => new CategoriesViewModel
+            {
+                Id = s.Id,
+                NameEng = s.NameEng,
+                NameArb = s.NameArb,
+                IsFeatured = isFeatured,
+                Icon = s.Icon,
+            })
+            .Distinct()
+            .OrderBy(o => o.NameEng)
+            .ToListAsync();
+
+            GetResults uobj = new GetResults
+            {
+                Total = total,
+                Data = categories
+            };
+            return await Task.FromResult(uobj);
+
+        }
         #endregion
 
         #region Brand
