@@ -1,13 +1,21 @@
 ﻿using ApplicationService.IServices;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using NLog;
+using NLog.Fluent;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using TTBusinessDirectoryAPI.Extensions;
 
 namespace TTBusinessDirectoryAPI.Controllers
 {
@@ -17,10 +25,12 @@ namespace TTBusinessDirectoryAPI.Controllers
     {
         private IAccount _account;
         protected Logger logger;
-        public AccountController(IAccount account)
+        IConfiguration _configuration;
+        public AccountController(IAccount account, IConfiguration configuration)
         {
             _account = account;
             logger = LogManager.GetLogger("Test");
+            _configuration= configuration;
         }
 
         [HttpPost]
@@ -30,16 +40,26 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var user = _account.Login(login).Result;
-                getResults = new GetResults(true, "Login Successful", user, 1);
-                logger.Info("Login Successful");
+                var hashedPassword = PasswordHelper.HashPassword(login.Password);
+                login.Password = hashedPassword;
+                var user = await _account.Login(login);
+                if(user != null)
+                {
+                    var jwtAccessToken = GenerateAccessToken(login.EmailAddress);
+                    var jwtRefreshToken = _configuration["Jwt:RefreshToken"];
+
+                    getResults = new GetResults(true, "Login Successful", new LoginResponseModel { JwtAccessToken = jwtAccessToken, User = user, JwtRefreshToken = jwtRefreshToken}, 1);
+                    logger.Info("Login Successful");
+                    return getResults;
+                }
+                return new GetResults { IsSuccess = false, Message = "UnAuthorized", Data = null };
             }
             catch (Exception ex)
             {
                 getResults = new GetResults(false, ex.Message);
                 logger.Error(ex.Message);
+                return getResults;
             }
-            return await Task.FromResult(getResults);
         }
 
         [HttpGet]
@@ -182,5 +202,53 @@ namespace TTBusinessDirectoryAPI.Controllers
             return await Task.FromResult(getResults);
         }
 
+        [HttpPost("Refresh/{refreshToken}/{userName}")]
+        public async Task<GetResults> Refresh(string refreshToken, string userName)
+        {
+            GetResults getResults = new GetResults();
+
+            if (ValidateRefreshToken(refreshToken))
+            {
+                var newAccessToken = GenerateAccessToken(userName);
+                getResults.Message = "New AccessToken generated";
+                getResults.Data = newAccessToken;
+                return getResults;
+            }
+
+            getResults.IsSuccess = false;
+            getResults.Message = "Invalid refresh token";
+            return getResults;
+        }
+
+
+        #region private ,ethods for token generation
+
+        private string GenerateAccessToken(string username)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, username)
+            };
+
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpiryInMinutes"])),
+                signingCredentials: new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256)
+            );
+
+            var jwtAccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwtAccessToken;
+        }
+
+        private bool ValidateRefreshToken(string refreshToken)
+        {
+            return refreshToken == _configuration["Jwt:RefreshToken"];
+        }
+
+        #endregion
     }
 }

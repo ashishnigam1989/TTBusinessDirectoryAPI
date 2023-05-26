@@ -1,4 +1,4 @@
-﻿using CommonService.RequestModel;
+﻿using CommonService.Enums;
 using CommonService.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ApplicationService.IServices
 {
-    public interface ICategories
+    public interface IInsight
     {
-        Task<GetResults> GetAllCategories(bool isFeatured);
+        public Task<List<InsightModel>> GetInsights(EnumInsightType insightType);
     }
 }

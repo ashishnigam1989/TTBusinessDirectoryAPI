@@ -18,6 +18,10 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using TTBusinessDirectoryAPI.Filters;
 using System.Net.Mime;
+using TTBusinessDirectoryAPI.Models;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 namespace TTBusinessDirectoryAPI
 {
@@ -44,7 +48,30 @@ namespace TTBusinessDirectoryAPI
                   .AllowCredentials());
             });
             //
-             
+
+            var jwtSettings = Configuration.GetSection("Jwt").Get<JwtModel>();
+
+
+            // Configure JWT authentication
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+                };
+            });
+
 
             //Swagger
             services.AddSwaggerGen();
@@ -55,6 +82,31 @@ namespace TTBusinessDirectoryAPI
                     Version = "v1",
                     Title = "Implement Swagger UI",
                     Description = "A simple example to Implement Swagger UI",
+                });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
                 });
             });
 
@@ -81,9 +133,9 @@ namespace TTBusinessDirectoryAPI
             services.AddScoped<IMaster, ApplicationService.Services.Master>();
             services.AddScoped<ICompanies, ApplicationService.Services.Companies>();
             services.AddScoped<IOffers, ApplicationService.Services.Offers>();
-            services.AddScoped<ICategories, ApplicationService.Services.Categories>();
             services.AddScoped<IListing, ApplicationService.Services.Listing>();
             services.AddScoped<ILocation, ApplicationService.Services.Location>();
+            services.AddScoped<IInsight, ApplicationService.Services.Insight>();
 
             //Dependencies Mapping End
             services.AddDbContext<BusinessDirectoryDBContext>(ServiceLifetime.Scoped);
@@ -106,7 +158,7 @@ namespace TTBusinessDirectoryAPI
             });
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

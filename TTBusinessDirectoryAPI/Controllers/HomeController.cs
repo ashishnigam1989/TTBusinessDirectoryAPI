@@ -8,25 +8,30 @@ using ApplicationService.IServices;
 using NLog;
 using CommonService.RequestModel;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using TTBusinessDirectoryAPI.Extensions;
+using ApplicationService.Services;
+using CommonService.Enums;
 
 namespace TTBusinessDirectoryAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HomeController : ControllerBase
     {
-        private ICategories categories;
         protected Logger logger;
         private IMaster _master;
         private IListing _listing;
         private IAccount _account;
-        public HomeController(ICategories category, IMaster master, IListing listing, IAccount account)
+        private readonly IInsight _insights;
+        public HomeController(IMaster master, IListing listing, IAccount account, IInsight insights)
         {
-            categories = category;
             logger = LogManager.GetLogger("Home");
             _master = master;
             _listing = listing;
             _account = account;
+            _insights = insights;
         }
 
         [HttpGet]
@@ -37,7 +42,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             try
             {
                 logger.Info("Going to get featured categories.");
-                getResults = await categories.GetAllCategories(isFeatured);
+                getResults = await _master.GetFeaturedCategories(isFeatured);
                 getResults.IsSuccess = true;
                 getResults.Message = "Featured Categories";
                 logger.Info("Get Featured Categories.");
@@ -52,6 +57,7 @@ namespace TTBusinessDirectoryAPI.Controllers
 
         [HttpGet]
         [Route("GetSearchResults/{searchTerm}")]
+
         public async Task<GetResults> GetSearchResults(string searchTerm)
         {
             GetResults getResults = new GetResults();
@@ -78,19 +84,16 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                var roles = await _master.GetMasterRoles();
-                newBusinessDetails.NewUserDetails.RoleId = roles.FirstOrDefault(r => r.Name.ToLower().Equals("free")).Id;
-                logger.Info("Going to add user for free listing.");
-                var userId = await _account.CreateUserForListing(newBusinessDetails.NewUserDetails);
+                logger.Info("Going to add free listing and products.");
 
-                newBusinessDetails.FreeListingDetails.CreatorUserId = userId;
-                logger.Info("Going to add free listing and products" +
-                    ".");
-                await _listing.AddFreeListing(newBusinessDetails.FreeListingDetails);
+                if(newBusinessDetails.NewUserDetails != null)
+                {
+                    newBusinessDetails.NewUserDetails.Password = PasswordHelper.HashPassword(newBusinessDetails.NewUserDetails.Password);
+                }
 
-                getResults.IsSuccess = true;
-                getResults.Message = "Add Business";
-                logger.Info("Add Business");
+                getResults = await _listing.AddFreeListing(newBusinessDetails);
+
+                logger.Info("Business added successfully.");
             }
             catch (Exception ex)
             {
@@ -100,5 +103,31 @@ namespace TTBusinessDirectoryAPI.Controllers
             return await Task.FromResult(getResults);
         }
 
+        [HttpGet]
+        [Route("GetAllInsights/{insightType}")]
+        public async Task<GetResults> GetAllInsights(string insightType)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                logger.Info($"Going to get insights for insight type : {insightType}.");
+                if (!Enum.TryParse<EnumInsightType>(insightType, true, out var insight))
+                {
+                    getResults.IsSuccess = false;
+                    getResults.Message = "Incorrect Insight Types provided.";
+                    return await Task.FromResult(getResults);
+                }
+                getResults.Data = await _insights.GetInsights(insight);
+                getResults.IsSuccess = true;
+                getResults.Message = "Insights";
+                logger.Info("Get Insights.");
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
     }
 }

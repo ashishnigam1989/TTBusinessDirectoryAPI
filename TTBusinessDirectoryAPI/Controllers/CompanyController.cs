@@ -280,7 +280,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = _company.GetFeaturedCompanies().Result;
+                getResults = await _company.GetFeaturedCompanies();
                 logger.Info(getResults.Message);
                 getResults.IsSuccess = true;
                 getResults.Message = "Featured Company List";

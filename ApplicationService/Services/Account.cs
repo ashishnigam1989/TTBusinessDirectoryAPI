@@ -27,7 +27,7 @@ namespace ApplicationService.Services
         }
         public async Task<UserModel> Login(LoginRequestModel login)
         {
-            var user = _dbContext.Users.Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
+            var user = await _dbContext.Users.Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
                 .Where(x => x.u.EmailAddress == login.EmailAddress && x.u.Password == login.Password)
                 .Select(s => new UserModel
                 {
@@ -40,7 +40,7 @@ namespace ApplicationService.Services
                     IsDeleted = s.u.IsDeleted,
                     IsActive = s.u.IsActive,
                     Mobile = s.u.Mobile
-                }).FirstOrDefaultAsync().Result;
+                }).FirstOrDefaultAsync();
             return await Task.FromResult(user);
         }
 
