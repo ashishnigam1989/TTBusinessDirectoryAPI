@@ -20,15 +20,18 @@ namespace CommonService.RequestModel
         public string CompanyPhone { get; set; }
         public string PrimaryEmail { get; set; }
         public string PrimaryWebsite { get; set; }
-        public int FoundedYear { get; set; }
+        public string FoundedYear { get; set; }
         public long? CreatorUserId { get; set; }
+        public int CountryId { get; set; }
+        public int RegionId { get; set; }
+
         public List<FreeListingDetailsModel> FreeListingProductDetails { get; set; }
     }
 
     public class FreeListingDetailsModel
     {
         public long Id { get; set; }
-        public long? CategoryId { get; set; }
+        public string CategoryId { get; set; }
         public long FreeListingId { get; set; }
         public string RelatedProduct { get; set; }
         public long? CreatorUserId { get; set; }

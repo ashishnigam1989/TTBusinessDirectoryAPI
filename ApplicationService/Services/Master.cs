@@ -284,10 +284,19 @@ namespace ApplicationService.Services
         /// <param name="limit"></param>
         /// <param name="searchValue"></param>
         /// <returns></returns>
-        public async Task<GetResults> GetFeaturedCategories(bool isFeatured = true)
+        public async Task<GetResults> GetFeaturedCategories(bool isFeatured = true, int count = 0)
         {
             int total = 0;
-            var categories = await _dbContext.Category.Where(w => !w.IsDeleted && w.IsPublished.Value && w.IsFeatured.Equals(isFeatured)).Select(s => new CategoriesViewModel
+            var categoriesQuery = _dbContext.Category.Where(w => !w.IsDeleted && w.IsPublished.Value);
+            if (isFeatured)
+            {
+                categoriesQuery = categoriesQuery.Where(w => w.IsFeatured.Equals(isFeatured));
+            }
+            if (count > default(int))
+            {
+                categoriesQuery = categoriesQuery.Take(count);
+            }
+            var categories = await categoriesQuery.Select(s => new CategoriesViewModel
             {
                 Id = s.Id,
                 NameEng = s.NameEng,
@@ -496,9 +505,9 @@ namespace ApplicationService.Services
 
         }
 
-        public async Task<GetResults> GetSearchResults(string searchTerm)
+        public async Task<GetResults> GetSearchResults(string searchTerm, int countryId)
         {
-            var queryResult = await _dbContext.SearchModel.FromSqlRaw("EXEC [usp_GetSearchResult] {0}", searchTerm).ToListAsync();
+            var queryResult = await _dbContext.SearchModel.FromSqlRaw("EXEC [usp_GetSearchResult] {0}, {1}", searchTerm, countryId).ToListAsync();
 
             GetResults result = new GetResults
             {
