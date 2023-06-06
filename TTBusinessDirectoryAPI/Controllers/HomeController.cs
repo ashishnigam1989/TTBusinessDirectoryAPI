@@ -17,7 +17,7 @@ namespace TTBusinessDirectoryAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class HomeController : ControllerBase
     {
         protected Logger logger;
@@ -36,13 +36,13 @@ namespace TTBusinessDirectoryAPI.Controllers
 
         [HttpGet]
         [Route("GetAllCategories")]
-        public async Task<GetResults> GetAllCategories(bool isFeatured = true)
+        public async Task<GetResults> GetAllCategories(bool isFeatured = true, int count = 0)
         {
             GetResults getResults = new GetResults();
             try
             {
                 logger.Info("Going to get featured categories.");
-                getResults = await _master.GetFeaturedCategories(isFeatured);
+                getResults = await _master.GetFeaturedCategories(isFeatured, count);
                 getResults.IsSuccess = true;
                 getResults.Message = "Featured Categories";
                 logger.Info("Get Featured Categories.");
@@ -56,15 +56,15 @@ namespace TTBusinessDirectoryAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetSearchResults/{searchTerm}")]
+        [Route("GetSearchResults/{searchTerm}/{countryId}")]
 
-        public async Task<GetResults> GetSearchResults(string searchTerm)
+        public async Task<GetResults> GetSearchResults(string searchTerm, int countryId)
         {
             GetResults getResults = new GetResults();
             try
             {
                 logger.Info("Going to get search results.");
-                getResults = await _master.GetSearchResults(searchTerm);
+                getResults = await _master.GetSearchResults(searchTerm, countryId);
                 getResults.IsSuccess = true;
                 getResults.Message = "Search Result";
                 logger.Info("Get Search Results");

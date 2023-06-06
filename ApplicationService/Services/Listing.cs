@@ -48,7 +48,7 @@ namespace ApplicationService.Services
                     Password = userRequest.Password,
                     Mobile = userRequest.Mobile,
                     CountryCode = userRequest.CountryCode,
-                    IsEmailConfirmed = true,
+                    IsEmailConfirmed = false,
                     LastLoginTime = DateTime.Now,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
@@ -78,8 +78,7 @@ namespace ApplicationService.Services
                         CompanyAddress = freeListingModel.CompanyAddress,
                         CompanyPhone = freeListingModel.CompanyPhone,
                         Pobox = freeListingModel.Pobox,
-                        DistrictId = freeListingModel.DistrictId,
-                        FoundedYear = freeListingModel.FoundedYear,
+                        FoundedYear = Int32.Parse(freeListingModel.FoundedYear),
                         FounderName = freeListingModel.FounderName,
                         Logo = freeListingModel.Logo,
                         EmployeeNum = freeListingModel.EmployeeNumber,
@@ -88,6 +87,9 @@ namespace ApplicationService.Services
                         CreationTime = DateTime.Now,
                         IsActive = true,
                         PrimaryEmail = freeListingModel.PrimaryEmail,
+                        CountryId = freeListingModel.CountryId,
+                        RegionId = freeListingModel.RegionId,
+                        DistrictId = freeListingModel.DistrictId, // Only for iIndia
                     };
                     _dbContext.FreeListing.Add(freeListing);
                     await _dbContext.SaveChangesAsync();
@@ -97,7 +99,7 @@ namespace ApplicationService.Services
                     {
                         FreeListingDetails freeListingDetails = new FreeListingDetails
                         {
-                            CategoryId = productDetail.CategoryId,
+                            CategoryId = Int64.Parse( productDetail.CategoryId),
                             CreationTime = DateTime.Now,
                             CreatorUserId = freeListing.CreatorUserId,
                             IsDeleted = false,

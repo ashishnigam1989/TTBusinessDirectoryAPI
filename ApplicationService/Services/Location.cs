@@ -198,7 +198,8 @@ namespace ApplicationService.Services
                 .Select(s => new RegionModel
                 {
                     Id = s.Id,
-                    NameEng = s.NameEng
+                    NameEng = s.NameEng,
+                    CountryId = s.CountryId
                 }).ToList();
             return await Task.FromResult(regions);
         }

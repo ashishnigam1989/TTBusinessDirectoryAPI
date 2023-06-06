@@ -21,7 +21,7 @@ namespace ApplicationService.IServices
         public Task<GetResults> GetCategoryById(int id);
         public Task<GetResults> DeleteCategory(int id);
         public Task<GetResults> GetMasterCategories();
-        Task<GetResults> GetFeaturedCategories(bool isFeatured = true);
+        Task<GetResults> GetFeaturedCategories(bool isFeatured = true, int count = 0);
 
         #endregion
 
@@ -33,6 +33,6 @@ namespace ApplicationService.IServices
         Task<GetResults> GetMasterBrand();
         #endregion
 
-        Task<GetResults> GetSearchResults(string searchTerm);
+        Task<GetResults> GetSearchResults(string searchTerm, int countryId);
     }
 }
