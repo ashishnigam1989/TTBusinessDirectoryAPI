@@ -18,5 +18,7 @@ namespace CommonService.RequestModel
         public DateTime CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
         public bool IsPublished { get; set; }
+
+        public List<int> BrandList { get; set; }
     }
 }

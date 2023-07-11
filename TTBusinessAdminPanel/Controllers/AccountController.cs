@@ -47,7 +47,7 @@ namespace TTBusinessAdminPanel.Controllers
                         claims.Add(new Claim(ClaimTypes.Email, user.EmailAddress));
                         claims.Add(new Claim(ClaimTypes.Role, user.RoleId.ToString()));
                         claims.Add(new Claim(ClaimTypes.PrimarySid, user.Id.ToString()));
-                        Helper.SetUserSession(user);
+                        ExtensionHelper.SetUserSession(user);
 
                         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);

@@ -2,6 +2,8 @@
 using ApplicationService.Services;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
+using CommonService.Enums;
+using CommonService.Helpers;
 using CommonService.RequestModel;
 using CommonService.ViewModel;
 using CommonService.ViewModels;
@@ -10,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -43,6 +46,7 @@ namespace TTBusinessAdminPanel.Controllers
         }
         public IActionResult GetAllCompany()
         {
+            Helper.MoveFileToS3Server(EnumImageType.CompanyLogo, 100,"C:\\TempImages\\31052023121743_pexels-scott-webb-305821.jpg");
             try
             {
                 var draw = Request.Form["draw"].FirstOrDefault();
@@ -111,8 +115,11 @@ namespace TTBusinessAdminPanel.Controllers
             CompanyRequestModel cmodel = new CompanyRequestModel();
             try
             {
+                if (id > 0) { 
+                BindCountries();
                 var company = _company.GetCompanyById(id).Result;
                 cmodel = (CompanyRequestModel)company.Data;
+            }
             }
             catch (Exception ex)
             {
@@ -165,6 +172,19 @@ namespace TTBusinessAdminPanel.Controllers
             }
             return Json(null);
         }
+        public IActionResult BindDistricts(int Id)
+        {
+            try
+            {
+                var districts = _location.GetMasterDistricts(Id).Result;
+                return Json(districts);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Json(null);
+        }
 
         #endregion
 
@@ -183,6 +203,7 @@ namespace TTBusinessAdminPanel.Controllers
         }
         public IActionResult AddUpdateCompanyBrand(CompanyBrandRequestModel reqmodel)
         {
+            GetResults res = new GetResults();
             try
             {
                 if (ModelState.IsValid)
@@ -190,26 +211,47 @@ namespace TTBusinessAdminPanel.Controllers
                     var result = _company.AddEditCompanyBrand(reqmodel).Result;
                     if (result.IsSuccess)
                     {
-                        _notyfService.Success(result.Message);
-                        return RedirectToAction("Brand", "Company");
+                        //_notyfService.Success(result.Message);
+                        //return RedirectToAction("Brand", "Company");
+                        res = new GetResults()
+                        {
+                            IsSuccess = true,
+                            Message = "Company Brand Mapping Successfull."
+                        };
                     }
                     else
                     {
-                        _notyfService.Warning(result.Message);
+                        // _notyfService.Warning(result.Message);
+                        res = new GetResults()
+                        {
+                            IsSuccess = false,
+                            Message = "Company Brand Mapping Failed."
+                        };
                     }
                 }
                 else
                 {
-                    _notyfService.Error("Validation Error !!!");
+                    res = new GetResults()
+                    {
+                        IsSuccess = false,
+                        Message = "Company Brand Mapping Failed."
+                    };
+                    // _notyfService.Error("Validation Error !!!");
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                _notyfService.Error(ex.Message.ToString());
+                //   _notyfService.Error(ex.Message.ToString());
+                res = new GetResults()
+                {
+                    IsSuccess = false,
+                    Message = "Company Brand Mapping Failed"
+                };
             }
             BindCompanyAndBrand();
-            return View("Brand", reqmodel);
+            _logger.Info(JsonConvert.SerializeObject(res));
+            return Json(res);// View("Category", reqmodel);
         }
         public IActionResult GetAllCompanyBrand()
         {
@@ -284,6 +326,25 @@ namespace TTBusinessAdminPanel.Controllers
             BindCompanyAndBrand();
             return View("Brand");
         }
+
+        [HttpGet]
+        public IActionResult BindCompanyBrand(int id)
+        {
+            try
+            {
+                var acat = _master.GetMasterBrand().Result;
+                var bcat = _company.GetCompanyBrand(id).Result;
+                var brands = (List<BrandModel>)acat.Data;
+                if (bcat.Count > 0)
+                    brands.Where(w => bcat.Contains(w.Id)).ToList().ForEach(f => f.IsSelected = true);
+                return Json(brands);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return null;
+        }
         #endregion
 
         #region CompanyCategory
@@ -357,8 +418,10 @@ namespace TTBusinessAdminPanel.Controllers
 
             return View("Category", cmodel);
         }
+        [HttpPost]
         public IActionResult AddUpdateCompanyCategory(CompanyCategoryRequestModel reqmodel)
         {
+            GetResults res = new GetResults();
             try
             {
                 if (ModelState.IsValid)
@@ -366,26 +429,47 @@ namespace TTBusinessAdminPanel.Controllers
                     var result = _company.AddEditCompanyCategory(reqmodel).Result;
                     if (result.IsSuccess)
                     {
-                        _notyfService.Success(result.Message);
-                        return RedirectToAction("Category", "Company");
+                        res= new GetResults()
+                        {
+                            IsSuccess = true,
+                            Message = "Company Category Mapping Successfull"
+                        };
+                        //_notyfService.Success(result.Message);
+                        //return RedirectToAction("Category", "Company");
                     }
                     else
                     {
-                        _notyfService.Warning(result.Message);
+                         res = new GetResults()
+                        {
+                            IsSuccess = false,
+                            Message = "Company Category Mapping failed"
+                        };
+                        //_notyfService.Warning(result.Message);
                     }
                 }
                 else
                 {
-                    _notyfService.Error("Validation Error !!!");
+                    // _notyfService.Error("Validation Error !!!");
+                    res = new GetResults()
+                    {
+                        IsSuccess = false,
+                        Message = "Company Category Mapping failed"
+                    };
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                _notyfService.Error(ex.Message.ToString());
+                res = new GetResults()
+                {
+                    IsSuccess = false,
+                    Message = "Company Category Mapping failed"
+                };
+                // _notyfService.Error(ex.Message.ToString());
             }
             BindCompanyAndCategory();
-            return View("Category", reqmodel);
+            _logger.Info(JsonConvert.SerializeObject(res));
+            return Json(res);// View("Category", reqmodel);
         }
         public IActionResult DeleteCompanyCategory(int id)
         {
@@ -411,6 +495,26 @@ namespace TTBusinessAdminPanel.Controllers
 
             return View("Category");
         }
+
+        [HttpGet]
+        public IActionResult BindComapanyCategory(int id)
+        {
+            try
+            {
+                var acat = _master.GetMasterCategories().Result;
+                var bcat = _company.GetCompanyCategory(id).Result;
+                var categories = (List<CategoriesViewModel>)acat.Data;
+                if (bcat.Count > 0)
+                    categories.Where(w => bcat.Contains(w.Id)).ToList().ForEach(f => f.IsSelected = true);
+                return Json(categories);
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return null;
+        }
+
         #endregion
 
         #region CompanyProduct

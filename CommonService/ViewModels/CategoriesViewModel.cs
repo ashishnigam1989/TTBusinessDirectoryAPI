@@ -30,5 +30,6 @@ namespace CommonService.ViewModels
         public string PageContentArb { get; set; }
         public bool IsFeatured { get; set; }
         public string Icon { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

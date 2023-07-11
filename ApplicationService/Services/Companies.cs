@@ -121,7 +121,8 @@ namespace ApplicationService.Services
                 Iso = s.Iso,
                 EstablishmentDate = s.EstablishmentDate,
                 IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false,
-
+                CountryId=s.CountryId,
+                DistrictId=s.DistrictId.HasValue?s.DistrictId.Value:0
 
             }).FirstOrDefaultAsync().Result;
 
@@ -192,7 +193,10 @@ namespace ApplicationService.Services
                         Iso = creqmodel.Iso,
                         EstablishmentDate = creqmodel.EstablishmentDate,
                         IsFeatured = creqmodel.IsFeatured,
-                        IsVerified = creqmodel.IsVerified
+                        IsVerified = creqmodel.IsVerified,
+                        DistrictId=creqmodel.DistrictId,
+                        CountryId=creqmodel.CountryId,
+                        
 
                     };
                     _dbContext.Company.Add(cobj);
@@ -267,6 +271,8 @@ namespace ApplicationService.Services
                     cdetail.EstablishmentDate = creqmodel.EstablishmentDate;
                     cdetail.IsFeatured = creqmodel.IsFeatured;
                     cdetail.IsVerified = creqmodel.IsVerified;
+                    cdetail.DistrictId = creqmodel.DistrictId;
+                    cdetail.CountryId=creqmodel.CountryId;
                     gobj = new GetResults()
                     {
                         IsSuccess = true,
@@ -387,29 +393,52 @@ namespace ApplicationService.Services
         public async Task<GetResults> AddEditCompanyBrand(CompanyBrandRequestModel cbModel)
         {
             GetResults result = new GetResults();
-            var cbObj = _dbContext.CompanyBrand.Where(w => w.Id == cbModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
-            if (cbObj == null)
+
+            var ccObj = _dbContext.CompanyBrand.Where(w => w.CompanyId == cbModel.CompanyId && w.IsDeleted == false).ToListAsync().Result;
+
+            if (ccObj.Count > 0)
             {
-                CompanyBrand cc = new CompanyBrand()
+                _dbContext.CompanyBrand.RemoveRange(ccObj);
+                await _dbContext.SaveChangesAsync();
+            }
+            List<CompanyBrand> cclist = new List<CompanyBrand>();
+            foreach (var bid in cbModel.BrandList)
+            {
+                CompanyBrand cModel = new CompanyBrand
                 {
                     CompanyId = cbModel.CompanyId,
-                    BrandId = cbModel.BrandId,
-                    IsPublished = cbModel.IsPublished,
+                    BrandId = bid,
                     CreationTime = DateTime.Now,
                     CreatorUserId = cbModel.CreatorUserId
+
                 };
-                _dbContext.CompanyBrand.Add(cc);
-                result.Message = "Company Brand Added.";
+                cclist.Add(cModel);
             }
-            else
-            {
-                cbObj.CompanyId = cbModel.CompanyId;
-                cbObj.BrandId = cbModel.BrandId;
-                cbObj.IsPublished = cbModel.IsPublished;
-                cbObj.LastModificationTime = DateTime.Now;
-                cbObj.LastModifierUserId = cbModel.LastModifierUserId;
-                result.Message = "Company Brand Updated.";
-            }
+            _dbContext.CompanyBrand.AddRange(cclist);
+
+            //var cbObj = _dbContext.CompanyBrand.Where(w => w.Id == cbModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            //if (cbObj == null)
+            //{
+            //    CompanyBrand cc = new CompanyBrand()
+            //    {
+            //        CompanyId = cbModel.CompanyId,
+            //        BrandId = cbModel.BrandId,
+            //        IsPublished = cbModel.IsPublished,
+            //        CreationTime = DateTime.Now,
+            //        CreatorUserId = cbModel.CreatorUserId
+            //    };
+            //    _dbContext.CompanyBrand.Add(cc);
+            //    result.Message = "Company Brand Added.";
+            //}
+            //else
+            //{
+            //    cbObj.CompanyId = cbModel.CompanyId;
+            //    cbObj.BrandId = cbModel.BrandId;
+            //    cbObj.IsPublished = cbModel.IsPublished;
+            //    cbObj.LastModificationTime = DateTime.Now;
+            //    cbObj.LastModifierUserId = cbModel.LastModifierUserId;
+            //    result.Message = "Company Brand Updated.";
+            //}
             _dbContext.SaveChanges();
             result.IsSuccess = true;
             return await Task.FromResult(result);
@@ -477,36 +506,65 @@ namespace ApplicationService.Services
             result.Total = 1;
             return await Task.FromResult(result);
         }
+
+        public async Task<List<long>> GetCompanyBrand(int companyid)
+        {
+            var ccList = _dbContext.CompanyBrand.Where(w => w.CompanyId == companyid && w.IsDeleted == false).Select(s => (long)s.BrandId).ToListAsync().Result;
+
+            return await Task.FromResult(ccList);
+        }
         #endregion
 
         #region CompanyCategory
         public async Task<GetResults> AddEditCompanyCategory(CompanyCategoryRequestModel ccModel)
         {
             GetResults result = new GetResults();
-            var ccObj = _dbContext.CompanyCategory.Where(w => w.Id == ccModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
-            if (ccObj == null)
+            var ccObj = _dbContext.CompanyCategory.Where(w => w.CompanyId == ccModel.CompanyId && w.IsDeleted == false).ToListAsync().Result;
+
+            if (ccObj.Count > 0)
             {
-                CompanyCategory cc = new CompanyCategory()
+                _dbContext.CompanyCategory.RemoveRange(ccObj);
+                await _dbContext.SaveChangesAsync();
+            }
+            List<CompanyCategory> cclist = new List<CompanyCategory>();
+            foreach (var catid in ccModel.CategoryList)
+            {
+                CompanyCategory cModel = new CompanyCategory
                 {
                     CompanyId = ccModel.CompanyId,
-                    CategoryId = ccModel.CategoryId,
-                    IsPublished = ccModel.IsPublished,
+                    CategoryId = catid,
                     CreationTime = DateTime.Now,
                     CreatorUserId = ccModel.CreatorUserId
+
                 };
-                _dbContext.CompanyCategory.Add(cc);
-                result.Message = "Company Category Added.";
+                cclist.Add(cModel);
             }
-            else
-            {
-                ccObj.CompanyId = ccModel.CompanyId;
-                ccObj.CategoryId = ccModel.CategoryId;
-                ccObj.IsPublished = ccModel.IsPublished;
-                ccObj.LastModificationTime = DateTime.Now;
-                ccObj.LastModifierUserId = ccModel.LastModifierUserId;
-                result.Message = "Company Category Updated.";
-            }
-            _dbContext.SaveChanges();
+            _dbContext.CompanyCategory.AddRange(cclist);
+            await _dbContext.SaveChangesAsync();
+
+            //if (ccObj == null)
+            //{
+            //    CompanyCategory cc = new CompanyCategory()
+            //    {
+            //        CompanyId = ccModel.CompanyId,
+            //        CategoryId = ccModel.CategoryId,
+            //        IsPublished = ccModel.IsPublished,
+            //        CreationTime = DateTime.Now,
+            //        CreatorUserId = ccModel.CreatorUserId
+            //    };
+            //    _dbContext.CompanyCategory.Add(cc);
+            //    result.Message = "Company Category Added.";
+            //}
+            //else
+            //{
+            //    ccObj.CompanyId = ccModel.CompanyId;
+            //    ccObj.CategoryId = ccModel.CategoryId;
+            //    ccObj.IsPublished = ccModel.IsPublished;
+            //    ccObj.LastModificationTime = DateTime.Now;
+            //    ccObj.LastModifierUserId = ccModel.LastModifierUserId;
+            //    result.Message = "Company Category Updated.";
+            //}
+            //_dbContext.SaveChanges();
             result.IsSuccess = true;
             return await Task.FromResult(result);
 
@@ -570,6 +628,12 @@ namespace ApplicationService.Services
             result.Data = ccList;
             result.Total = 1;
             return await Task.FromResult(result);
+        }
+        public async Task<List<long>> GetCompanyCategory(int companyid)
+        {
+            var ccList = _dbContext.CompanyCategory.Where(w => w.CompanyId == companyid && w.IsDeleted == false).Select(s=>s.CategoryId).ToListAsync().Result;
+            
+            return await Task.FromResult(ccList);
         }
         #endregion
 

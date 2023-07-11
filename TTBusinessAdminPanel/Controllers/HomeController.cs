@@ -3,6 +3,7 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
+using DatabaseService.DbEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TTBusinessAdminPanel.Models;
 
@@ -24,6 +26,7 @@ namespace TTBusinessAdminPanel.Controllers
         private ILocation _location;
         private readonly IMapper _mapper;
         private readonly INotyfService _notyfService;
+        private int LoggedInUser = 0;
 
         public HomeController(IMaster master, ILocation location, IMapper mapper, INotyfService notyfService)
         {
@@ -32,6 +35,9 @@ namespace TTBusinessAdminPanel.Controllers
             _location = location;
             _mapper = mapper;
             _notyfService = notyfService;
+            if(User!=null)
+            LoggedInUser = User.Claims.Where(w => w.Type == ClaimTypes.PrimarySid).Select(s => Convert.ToInt32(s.Value)).FirstOrDefault();
+
         }
 
         //Dashboard
@@ -169,6 +175,19 @@ namespace TTBusinessAdminPanel.Controllers
                 _logger.Error(ex);
             }
         }
+        public IActionResult BindRegion(int Id)
+        {
+            try
+            {
+                var region = _location.GetMasterRegions(Id).Result;
+                return Json(region);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Json(null);
+        }
         public IActionResult RegionAdd()
         {
             try
@@ -291,6 +310,123 @@ namespace TTBusinessAdminPanel.Controllers
             }
             return Json(cmodel);
         }
+
+        public IActionResult AddDistrict()
+        {
+            BindCountry();
+            return View();
+        }
+
+
+        public IActionResult AddEditDistrict(DistrictRequestModel dreqmodel)
+        {
+            GetResults result = new GetResults();
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    dreqmodel.CreatedBy = LoggedInUser;
+                    result = _master.AddUpdateDistrict(dreqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("AddDistrict", "Home");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View(dreqmodel);
+        }
+        [HttpPost]
+        public IActionResult GetAllDistricts(int regionid)
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _location.GetDistricts(regionid,pageNo, pageSize, searchValue).Result;
+                var cData = (List<DistrictModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteDistrict(int Id)
+        {
+            bool isupdated = false;
+            try
+            {
+                _logger.Info("Deleting District for userid->" + Id);
+                isupdated = _location.DeleteDistrict(Id).Result;
+                _logger.Info("District deletion->" + isupdated);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Json(isupdated);
+        }
+
+
+        public IActionResult GetDistrictById(int id)
+        {
+            DistrictRequestModel umodel = new DistrictRequestModel();
+            try
+            {
+                _logger.Info("Getting district data for edit. Id->" + id);
+                var d = _location.GetDistrictById(id).Result;
+                var data = (DistrictModel)d.Data;
+                if (data != null)
+                {
+                    umodel = new DistrictRequestModel()
+                    {
+                        District = data.DistrictName,
+                        RegionId = data.RegionId,
+                        CountryId=data.CountryId,
+                    };
+                }
+                BindCountry();
+                _logger.Info("District detail found.");
+            }
+            catch (Exception ex)
+            {
+                _logger.Info("Exception while getting district details. id:-" + id);
+                _logger.Error(ex);
+            }
+            return Json(umodel);
+        }
+
         #endregion
 
         #region Category
@@ -568,5 +704,61 @@ namespace TTBusinessAdminPanel.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult BrandCategoryMapping()
+        {
+            BindBrand();
+            return View();
+        }
+
+        private void BindBrand()
+        { 
+            var brands = (List<BrandModel>)_master.GetMasterBrand().Result.Data;
+            ViewBag.Brands = new SelectList(brands, "Id", "NameEng");
+        }
+
+        [HttpGet]
+        public IActionResult BindBandCategory(int id)
+        {
+            try
+            {
+                var acat = _master.GetMasterCategories().Result;
+                var bcat = _master.GetAllAssignedBrandCategory(id).Result;
+                var categories = (List<CategoriesViewModel>)acat.Data;
+                if (bcat.Count > 0)
+                    categories.Where(w => bcat.Contains(w.Id)).ToList().ForEach(f => f.IsSelected = true);
+                return Json(categories);
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return null;
+        }
+
+        [HttpPost]
+        public IActionResult AddUpdateBrandCategory(BrandCategoryModel brmoded)
+        {
+            try
+            {
+                if (ModelState.IsValid && brmoded.BrandId != 0)
+                {
+                    brmoded.CreatedBy = LoggedInUser;
+                    var result = _master.AddUpdateBrandCategory(brmoded).Result;
+                    if(result)
+                    {
+                        _notyfService.Success("Brand Category Mapping successfull.");
+
+                    }
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return null;
+        }
+
     }
 }

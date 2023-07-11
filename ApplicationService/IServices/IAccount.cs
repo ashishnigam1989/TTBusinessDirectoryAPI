@@ -17,5 +17,6 @@ namespace ApplicationService.IServices
         Task<bool> ApproveRejectUser(ChangeStatusModel uModel);
         Task<long> CreateUserForListing(UserRequestModel userRequest);
         Task<bool> CreateUserRole(UserRoleModel urModel);
+        Task<bool> DeleteUser(int userid, int deletedby);
     }
 }

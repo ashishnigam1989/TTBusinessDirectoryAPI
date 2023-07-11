@@ -70,7 +70,7 @@ namespace ApplicationService.Services
             //var usersobj = _dbContext.Users
             //    .Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur });
 
-            var usersobj = _dbContext.Users
+            var usersobj = _dbContext.Users.Where(w=>w.IsDeleted==false)
                 .Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur)
                 => new { Users = u, UserRoles = ur })
                 .Join(_dbContext.Roles, x => x.UserRoles.RoleId, r => r.Id, (x, r)
@@ -94,7 +94,7 @@ namespace ApplicationService.Services
 
             if (!string.IsNullOrEmpty(searchValue.ToLower()))
             {
-                users = users.Where(m => m.Name.ToLower().Contains(searchValue)
+                users = users.Where(m =>m.IsDeleted==false && m.Name.ToLower().Contains(searchValue)
                                 || m.EmailAddress.ToLower().Contains(searchValue)
                                 || m.Mobile.ToLower().Contains(searchValue)
                                 || m.Rolename.ToLower().Contains(searchValue));
@@ -130,6 +130,7 @@ namespace ApplicationService.Services
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
                     ShouldChangePasswordOnNextLogin = true,
+                    Designation=userRequest.Designation
 
                 };
                 _dbContext.Users.Add(uobj);
@@ -153,6 +154,7 @@ namespace ApplicationService.Services
                 userinfo.PasswordResetCode = String.Empty;
                 userinfo.LastLoginTime = DateTime.Now; 
                 userinfo.LastModificationTime = DateTime.Now;
+                userinfo.Designation=userRequest.Designation;
                 userinfo.ShouldChangePasswordOnNextLogin = true;
 
                 var roleinfo = _dbContext.UserRoles.Where(w => w.RoleId == userRequest.RoleId && w.UserId == userinfo.Id).FirstOrDefault();
@@ -264,6 +266,7 @@ namespace ApplicationService.Services
                 {
                     Id = s.u.Id,
                     Name = s.u.Name,
+                    Designation=s.u.Designation,
                     RoleId = s.ur.RoleId,
                     EmailAddress = s.u.EmailAddress,
                     IsEmailConfirmed = s.u.IsEmailConfirmed,
@@ -311,5 +314,21 @@ namespace ApplicationService.Services
             await _dbContext.SaveChangesAsync();
             return await Task.FromResult(true);
         }
+
+        public async Task<bool> DeleteUser(int userId,int deletedby)
+        {
+            bool ischanged = false;
+            var uinfo = _dbContext.Users.Where(w => w.Id == userId).FirstOrDefaultAsync().Result;
+            if (uinfo != null)
+            {
+                uinfo.IsDeleted = true;
+                uinfo.DeletionTime = DateTime.Now;
+                uinfo.CreatorUserId = deletedby;
+            }
+            await _dbContext.SaveChangesAsync();
+            ischanged = true;
+            return await Task.FromResult(ischanged);
+        }
     }
+
 }
