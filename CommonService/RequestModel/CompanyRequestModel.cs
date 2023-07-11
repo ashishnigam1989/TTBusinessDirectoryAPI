@@ -64,5 +64,6 @@ namespace CommonService.RequestModel
         public DateTime? EstablishmentDate { get; set; }
         public bool IsFeatured { get; set; }
         public int CountryId { get; set; }
+        public int DistrictId { get; set; }
     }
 }

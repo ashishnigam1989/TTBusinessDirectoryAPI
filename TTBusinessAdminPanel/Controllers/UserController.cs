@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Security.Claims;
 using System.Text;
 
 namespace TTBusinessAdminPanel.Controllers
@@ -24,16 +26,19 @@ namespace TTBusinessAdminPanel.Controllers
         private IAccount _account;
         private IMaster _master;
         private readonly INotyfService _notyfService;
+        private int LoggedInUser = 0;
         public UserController( IAccount account, IMaster master, INotyfService notyfService)
         {
             _logger = LogManager.GetLogger("User");
             _account = account;
             _master = master;
             _notyfService = notyfService;
+         //   LoggedInUser = User.Claims.Where(w => w.Type == ClaimTypes.PrimarySid).Select(s => Convert.ToInt32(s.Value)).FirstOrDefault();
         }
 
         public IActionResult Index()
         {
+            _logger.Info("Opening user list page.");
             return View();
         }
 
@@ -42,6 +47,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                _logger.Info("Loading user list.");
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -60,6 +66,8 @@ namespace TTBusinessAdminPanel.Controllers
                 }
                 recordsTotal = allData.Total;
                 var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = userData };
+
+                _logger.Info("User list loaded.");
                 return Ok(jsonData);
 
             }
@@ -75,6 +83,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                _logger.Info("Add User Page Open.");
                 BindRoles();
             }
             catch (Exception ex)
@@ -90,24 +99,29 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                _logger.Info("Add user detail submitted->", JsonConvert.SerializeObject(userRequest));
                 if (ModelState.IsValid)
                 {
 
                     userRequest.Password = RandomPassword();
                     userRequest.UserName = userRequest.EmailAddress;
+                    userRequest.CreatorUserId = LoggedInUser;
                     var isadded = _account.CreateUser(userRequest).Result;
                     if (isadded)
                     {
+                        _logger.Info("User added succussfully.");
                         _notyfService.Success("User added successfully !!!");
                         return RedirectToAction("Index", "User");
                     }
                     else
                     {
+                        _logger.Info("User adding failed.");
                         _notyfService.Error("User creation failed !!!");
                     }
                 }
                 else
                 {
+                    _logger.Info("Add user request model validation failed.");
                     _notyfService.Error("Validation Error !!!");
                 }
             }
@@ -124,6 +138,7 @@ namespace TTBusinessAdminPanel.Controllers
             UserRequestModel umodel = new UserRequestModel();
             try
             {
+                _logger.Info("Getting user data for edit. UserId->"+id);
                 var user = _account.GetUserById(id).Result;
                 if (user != null)
                 {
@@ -132,13 +147,16 @@ namespace TTBusinessAdminPanel.Controllers
                         Name = user.Name,
                         EmailAddress = user.EmailAddress,
                         Mobile = user.Mobile,
-                        RoleId = user.RoleId
+                        RoleId = user.RoleId,
+                        Designation=user.Designation
                     };
                 }
                 BindRoles();
+                _logger.Info("User detail found.");
             }
             catch(Exception ex)
             {
+                _logger.Info("Exception while getting user details. Userid:-"+id);
                 _logger.Error(ex);
             }
             return View(umodel);
@@ -242,6 +260,23 @@ namespace TTBusinessAdminPanel.Controllers
             builder.Append(RandomNumber(0, 9));
             builder.Append(RandomString(2, false));
             return builder.ToString();
+        }
+
+        [HttpPost]
+        public IActionResult DeleteUser(int userid)
+        {
+            bool isupdated = false;
+            try
+            {
+                _logger.Info("Deleting user for userid->"+userid);
+                isupdated = _account.DeleteUser(userid,LoggedInUser).Result;
+                _logger.Info("User deletion->"+isupdated);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Json(isupdated);
         }
     }
 }

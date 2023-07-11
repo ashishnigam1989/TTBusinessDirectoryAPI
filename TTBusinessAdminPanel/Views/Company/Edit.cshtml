@@ -159,13 +159,17 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
 
                                         <div>
-                                            <select name="CountryId" class="show-tick">
+                                            <select asp-for="CountryId" id="CountryId" name="CountryId" class="show-tick" onchange="BindRegion(this.value)">
                                                 <option value="0">Select Country</option>
+                                                @foreach (var country in @ViewBag.Countries)
+                                                {
+                                                    <option value="@country.Value">@country.Text</option>
+                                                }
                                             </select>
                                         </div>
                                         <span class="text-danger"></span>
@@ -174,19 +178,34 @@
                                     <span class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
 
                                         <div>
-                                            <select asp-for="RegionId" name="RegionId" class="show-tick">
+                                           <select asp-for="RegionId" name="RegionId" id="RegionId" class="show-tick" onchange="BindDistrict(this.value)">
                                                 <option value="0">Select Region</option>
-                                            </select>
+                                            </select> 
                                         </div>
                                         <span asp-validation-for="RegionId" class="text-danger"></span>
 
                                     </div>
                                     <span asp-validation-for="RegionId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <div>
+                                            <select asp-for="DistrictId" name="DistrictId" id="DistrictId" class="show-tick">
+                                                <option value="0">Select District</option>
+                                            </select>
+                                        </div>
+                                        <span asp-validation-for="DistrictId" class="text-danger"></span>
+
+                                    </div>
+                                    <span asp-validation-for="DistrictId" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -489,3 +508,55 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+    {
+
+        <script>
+        $(document).ready(function () {
+           
+            BindRegion(@Model.CountryId); 
+            BindDistrict(@Model.RegionId);
+            $('#CountryId').selectpicker('refresh');
+            $('#RegionId').selectpicker('refresh');
+        });
+            function BindRegion(id) { 
+                var reqObj = {
+                    Id: id
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("BindRegion")',
+                    dataType: 'json',
+                    data: reqObj,
+                    success: function (data) {
+                        $('#RegionId').html('');
+                        $.each(data, function (index, value) { 
+                            $('#RegionId').append('<option value="' + value.id + '">' + value.nameEng + '</option>');
+                        });
+                        $('.show-tick').selectpicker('refresh');
+                    }
+                });
+            }
+
+            function BindDistrict(id) { 
+                var reqObj = {
+                    Id: id
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("BindDistricts")',
+                    dataType: 'json',
+                    data: reqObj,
+                    success: function (data) {
+                        $('#DistrictId').html('');
+                        $.each(data, function (index, value) {
+                            $('#DistrictId').append('<option value="' + value.id + '">' + value.districtName + '</option>');
+                        });
+                        $('.show-tick').selectpicker('refresh');
+                    }
+                });
+            }
+
+        </script>
+}

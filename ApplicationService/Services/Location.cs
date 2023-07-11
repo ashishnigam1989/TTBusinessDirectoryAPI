@@ -261,17 +261,79 @@ namespace ApplicationService.Services
         #endregion
 
         #region
-        public async Task<List<DistrictModel>> GetDistricts(int regionId)
+        public async Task<GetResults> GetDistricts(int regionId,int pageNo,int pageSize,string searchValue)
         {
+            
             var districts = _dbContext.Districts
-                .Where(w => !w.IsDeleted && w.RegionId == regionId)
+                .Where(w => !w.IsDeleted && w.RegionId == regionId && w.DistrictName.Contains(!string.IsNullOrEmpty(searchValue)?searchValue:w.DistrictName))
                 .Select(s => new DistrictModel
                 {
                     RegionId = s.RegionId,
                     Id = s.DistrictId,
                     DistrictName = s.DistrictName,
+                }).Skip(pageSize * pageNo).Take(pageSize).ToList();
+
+
+            int total = _dbContext.Districts.Where(w => w.IsDeleted == false).Where(w =>
+                                   !w.IsDeleted && w.RegionId == regionId && w.DistrictName.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.DistrictName)
+                                    ).CountAsync().Result;
+            GetResults result = new GetResults()
+            {
+                Data = districts,
+                IsSuccess = true,
+                Total = total,
+                Message = "Districts found"
+            };
+            return await Task.FromResult(result);
+        }
+
+        public async Task<bool> DeleteDistrict(int Id)
+        {
+            bool ischanged = false;
+            var uinfo = _dbContext.Districts.Where(w => w.DistrictId == Id).FirstOrDefaultAsync().Result;
+            if (uinfo != null)
+            {
+                uinfo.IsDeleted = true;
+            }
+            await _dbContext.SaveChangesAsync();
+            ischanged = true;
+            return await Task.FromResult(ischanged);
+        }
+        public async Task<GetResults> GetDistrictById(int id)
+        {
+
+            var districts = _dbContext.Districts.Join(_dbContext.Region, d => d.RegionId, r => r.Id, (d, r) => new {d,r })
+                .Join(_dbContext.Country, rg => rg.r.CountryId, c => c.Id, (rg, c) => new {rg,c })
+                .Where(w => w.rg.d.DistrictId==id && w.rg.d.IsDeleted==false)
+                .Select(s => new DistrictModel
+                {
+                    RegionId = s.rg.d.RegionId,
+                    Id = s.rg.d.DistrictId,
+                    DistrictName = s.rg.d.DistrictName,
+                    CountryId=s.c.Id
+
+                }).FirstOrDefault(); 
+
+            GetResults result = new GetResults()
+            {
+                Data = districts,
+                IsSuccess = true,
+                Total = 1,
+                Message = "Districts found"
+            };
+            return await Task.FromResult(result);
+        }
+
+        public async Task<List<DistrictModel>> GetMasterDistricts(int regionid)
+        {
+            var regions = _dbContext.Districts
+                .Where(w => !w.IsDeleted && w.RegionId == regionid)
+                .Select(s => new DistrictModel
+                {
+                    Id = s.DistrictId,
+                    DistrictName = s.DistrictName
                 }).ToList();
-            return await Task.FromResult(districts);
+            return await Task.FromResult(regions);
         }
         #endregion
     }

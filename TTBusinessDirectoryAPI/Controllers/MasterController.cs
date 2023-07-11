@@ -115,8 +115,8 @@ namespace TTBusinessDirectoryAPI.Controllers
             try
             {
                 logger.Info("Going to get districts.");
-                var regions = await _location.GetDistricts(regionId);
-                var total = regions.Count;
+                var regions = await _location.GetDistricts(regionId,0,100,"");
+                var total=0;
                 getResults = new GetResults(true, "Get Districts", regions, total);
                 logger.Info("Get Districts");
             }

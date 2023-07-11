@@ -5,7 +5,7 @@ using System;
 
 namespace TTBusinessAdminPanel.Extensions
 {
-    public static class Helper
+    public static class ExtensionHelper
     {
         private static IHttpContextAccessor httpContextAccessor; 
         public static void Help(IHttpContextAccessor accessor)
