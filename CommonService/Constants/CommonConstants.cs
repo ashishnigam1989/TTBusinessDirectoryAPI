@@ -9,6 +9,7 @@ namespace CommonService.Constants
     {
         public static string FileTempPath = "C:/TempImages/";
         public static string CompanyLogo = "Content/Company/{0}/Logo/";
-        public static string S3BaseURL { get; set; } = "https://stagingtripoturf.s3.us-east-1.amazonaws.com/";
+        public static string CategoryIcon = "Content/Category/{0}/Icon/";
+        public static string S3BaseURL { get; set; } = "http://taazatadka.s3.ap-south-1.amazonaws.com/";
     }
 }

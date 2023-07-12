@@ -9,6 +9,8 @@ namespace CommonService.Enums
         CompanyLogo=1,
         BrandLogo =2,
         ProductLogo = 3,
-        ServiceLogo = 4
+        ServiceLogo = 4,
+        CategoryIcon=5
+            
     }
 }

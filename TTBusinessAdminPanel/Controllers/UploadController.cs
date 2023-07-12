@@ -7,6 +7,7 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 using NLog;
 using CommonService.Constants;
 using CommonService.Enums;
+using CommonService.Helpers;
 
 namespace TTBusinessAdminPanel.Controllers
 {
@@ -25,8 +26,9 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 if (Request.Form.Files.Count > 0)
                 {
-                   // string filePath = GetFileUploadDetails(uploadtype);
-                    string tempPath =CommonConstants.FileTempPath;
+                    var imgType = (EnumImageType)Enum.Parse(typeof(EnumImageType), Convert.ToString(Request.Form["imgtype"])) ;
+                 string filetempPath = Helper.GetFileUploadDetails(imgType);
+                   string tempPath =CommonConstants.FileTempPath+"/"+filetempPath;
                     if (!Directory.Exists(tempPath))
                     {
                         Directory.CreateDirectory(tempPath);
@@ -43,7 +45,7 @@ namespace TTBusinessAdminPanel.Controllers
                             using (var stream = new FileStream(newPath, FileMode.Create))
                             {
                                 postedFile.CopyTo(stream);
-                                imageList.Add(newPath);
+                                imageList.Add(filetempPath+newName);
                                 stream.Flush();
                             }
                         }

@@ -33,6 +33,7 @@
                                 <img id="img" style="width:250px; height:170px;" />
                                 <div class="fallback">
                                     <input name="file" id="imageinput" type="file" multiple />
+                                    <input type="hidden" id="Icon" name="Icon" asp-for="Icon" />
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -176,72 +177,34 @@
 @section Scripts
     {
     <script>
-        //$(document).ready(function () {
-        //    uploadImage();
-        //});
+        $(document).ready(function () {
+            uploadImage();
+        });
 
         function uploadImage()
         {
-           // $('#imageinput').change(function () {
+           $('#imageinput').change(function () {
                 var formdata = new FormData();
                 var fileInput = document.getElementById('imageinput'); 
                     for (i = 0; i < fileInput.files.length; i++) { 
                         formdata.append(fileInput.files[i].name, fileInput.files[i]);
-                    } 
+                    }
+                formdata.append("imgtype", "CategoryIcon");
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', '/Upload/Upload');
                     xhr.send(formdata);
                     xhr.onreadystatechange = function () {
                         debugger;
                         if (xhr.readyState == 4 && xhr.status == 200) {
-                         $('#img').attr('src', JSON.parse(xhr.responseText)[0]);
+                        // $('#img').attr('src', JSON.parse(xhr.responseText)[0]);
+                       // uploadedImage=JSON.parse(xhr.responseText)[0];
+                        $('#Icon').val(JSON.parse(xhr.responseText)[0]);
                             //return JSON.parse(xhr.responseText)[0];
                         }
                     }
                     return "";
-          //  });
+            });
            
         }
-
-
-        //$("#imageinput").change = function () {
-        //    var formdata = new FormData(); //FormData object
-        //    var fileInput = document.getElementById('imageinput');
-        //    //Iterating through each files selected in fileInput
-        //    for (i = 0; i < fileInput.files.length; i++) {
-        //        //Appending each file to FormData object
-        //        formdata.append(fileInput.files[i].name, fileInput.files[i]);
-        //    }
-        //    //Creating an XMLHttpRequest and sending
-        //    var xhr = new XMLHttpRequest();
-        //    xhr.open('POST', '/Upload/Upload');
-        //    xhr.send(formdata);
-        //    xhr.onreadystatechange = function () {
-        //        if (xhr.readyState == 4 && xhr.status == 200) {
-        //            alert(xhr.responseText);
-        //        }
-        //    }
-        //    return false;
-        //}
-                    //function uploadImage()
-                    //{
-                    //    var formdata = new FormData(); //FormData object
-                    //    var fileInput = document.getElementById('fileInput');
-                    //    //Iterating through each files selected in fileInput
-                    //    for (i = 0; i < fileInput.files.length; i++) {
-                    //        //Appending each file to FormData object
-                    //        formdata.append(fileInput.files[i].name, fileInput.files[i]);
-                    //    }
-                    //    //Creating an XMLHttpRequest and sending
-                    //    var xhr = new XMLHttpRequest();
-                    //    xhr.open('POST', '/Upload/Upload');
-                    //    xhr.send(formdata);
-                    //    xhr.onreadystatechange = function () {
-                    //        if (xhr.readyState == 4 && xhr.status == 200) {
-                    //            alert(xhr.responseText);
-                    //        }
-                    //    }
-                    //    return false;
-                    //}
     </script>
     }

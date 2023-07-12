@@ -46,7 +46,6 @@ namespace TTBusinessAdminPanel.Controllers
         }
         public IActionResult GetAllCompany()
         {
-            Helper.MoveFileToS3Server(EnumImageType.CompanyLogo, 100,"C:\\TempImages\\31052023121743_pexels-scott-webb-305821.jpg");
             try
             {
                 var draw = Request.Form["draw"].FirstOrDefault();

@@ -152,11 +152,13 @@ namespace ApplicationService.Services
                         MetaTitleArb = crModel.MetaTitleArb,
                         MetaDescriptionArb = crModel.MetaDescriptionArb,
                         PageContentArb = crModel.PageContentArb,
-                        IsFeatured = crModel.IsFeatured
+                        IsFeatured = crModel.IsFeatured,
+                        Icon = crModel.Icon
                     };
                     _dbContext.Category.Add(crobj);
                     await _dbContext.SaveChangesAsync();
                     resp.Message = "Category Added Successfully.";
+                    resp.Data = crobj.Id;
                     resp.IsSuccess = true;
                 }
                 else
@@ -187,8 +189,10 @@ namespace ApplicationService.Services
                     cdata.MetaDescriptionArb = crModel.MetaDescriptionArb;
                     cdata.PageContentArb = crModel.PageContentArb;
                     cdata.IsFeatured = crModel.IsFeatured;
+                    cdata.Icon = crModel.Icon;
                     await _dbContext.SaveChangesAsync();
                     resp.Message = "Category Updated Successfully.";
+                    resp.Data = cdata.Id;
                     resp.IsSuccess = true;
                 }
                 else
@@ -227,7 +231,8 @@ namespace ApplicationService.Services
                    MetaTitleArb = s.MetaTitleArb,
                    MetaDescriptionArb = s.MetaDescriptionArb,
                    PageContentArb = s.PageContentArb,
-                   IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false
+                   IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false,
+                   Icon=s.Icon
 
                }).FirstOrDefaultAsync().Result;
             GetResults result = new GetResults
