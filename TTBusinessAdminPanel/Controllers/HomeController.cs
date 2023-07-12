@@ -1,6 +1,8 @@
 ﻿using ApplicationService.IServices;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
+using CommonService.Enums;
+using CommonService.Helpers;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
@@ -478,6 +480,7 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     result = _master.CreateUpdateCategory(rceqmodel).Result;
+                    Helper.MoveFileToS3Server(EnumImageType.CategoryIcon, (long)result.Data, rceqmodel.Icon);
                     if (result.IsSuccess)
                     {
                         _notyfService.Success(result.Message);
@@ -534,6 +537,9 @@ namespace TTBusinessAdminPanel.Controllers
                         MetaDescriptionArb = s.MetaDescriptionArb,
                         PageContentArb = s.PageContentArb,
                         IsFeatured = s.IsFeatured,
+                        Icon = s.Icon,
+                        DisplayIcon=s.DisplayIcon
+                        
                     };
                 }
             }
