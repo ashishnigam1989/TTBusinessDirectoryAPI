@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -33,5 +34,7 @@ namespace CommonService.RequestModel
         public DateTime? OfferEndDate { get; set; }
         public string OfferShortDescriptionEng { get; set; }
         public string OfferShortDescriptionArb { get; set; }
+        public string DisplayLogo => string.Format(CommonConstants.S3BaseURL + Image, Id);
+
     }
 }

@@ -41,5 +41,10 @@ namespace ApplicationService.IServices
         Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue);
         Task<GetResults> GetCompanyServiceById(int id);
         Task<GetResults> GetFeaturedCompanies();
+
+        Task<GetResults> AddEditCompanyBanner(CompanyBannerRequestModel csModel);
+        Task<GetResults> DeleteCompanyBanner(int Id);
+        Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyBannerById(int id);
     }
 }

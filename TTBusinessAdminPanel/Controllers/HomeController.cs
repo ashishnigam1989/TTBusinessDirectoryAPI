@@ -612,6 +612,7 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     result = _master.AddUpdateBrand(breqmodel).Result;
+                    Helper.MoveFileToS3Server(EnumImageType.BrandLogo, Convert.ToInt64(result.Data), breqmodel.Logo);
                     if (result.IsSuccess)
                     {
                         _notyfService.Success(result.Message);

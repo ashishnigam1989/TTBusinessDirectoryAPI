@@ -72,6 +72,21 @@ namespace CommonService.Helpers
                 case EnumImageType.CategoryIcon:
                     uploadPath = CommonConstants.CategoryIcon;
                     break;
+                case EnumImageType.BrandLogo:
+                    uploadPath = CommonConstants.BrandLogo;
+                    break;
+                case EnumImageType.ProductLogo:
+                    uploadPath = CommonConstants.ProductLogo;
+                    break;
+                case EnumImageType.ServiceLogo:
+                    uploadPath = CommonConstants.ServiceLogo;
+                    break;
+                case EnumImageType.BannerEng:
+                    uploadPath = CommonConstants.BannerEng;
+                    break;
+                case EnumImageType.BannerArb:
+                    uploadPath = CommonConstants.BannerArb;
+                    break;
                 default:
                     uploadPath = string.Empty;
                     break;

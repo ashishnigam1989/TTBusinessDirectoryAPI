@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,6 +12,7 @@ namespace CommonService.RequestModel
         public string NameArb { get; set; }
         public int? SortOrder { get; set; }
         public string Logo { get; set; }
+        public string DisplayLogo => string.Format(CommonConstants.S3BaseURL + Logo, Id);
         public bool IsDeleted { get; set; }
         public long? DeleterUserId { get; set; }
         public DateTime? DeletionTime { get; set; }

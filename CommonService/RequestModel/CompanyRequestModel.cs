@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -65,5 +66,6 @@ namespace CommonService.RequestModel
         public bool IsFeatured { get; set; }
         public int CountryId { get; set; }
         public int DistrictId { get; set; }
+        public string DisplayLogo => string.Format(CommonConstants.S3BaseURL + Logo, Id);
     }
 }
