@@ -424,6 +424,7 @@ namespace ApplicationService.Services
                     _dbContext.Brand.Add(bobj);
                     await _dbContext.SaveChangesAsync();
                     result.Message = "Brand added successfully";
+                    result.Data = bobj.Id;
                     result.IsSuccess = true;
                 }
                 else
@@ -459,6 +460,7 @@ namespace ApplicationService.Services
                     brandobj.PageContentArb = breqmodel.PageContentArb;
                     result.Message = "Brand updated successfully";
                     await _dbContext.SaveChangesAsync();
+                    result.Data = brandobj.Id;
                     result.IsSuccess = true;
                 }
                 else

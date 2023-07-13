@@ -4,10 +4,13 @@ using CommonService.RequestModel;
 using CommonService.ViewModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -121,8 +124,8 @@ namespace ApplicationService.Services
                 Iso = s.Iso,
                 EstablishmentDate = s.EstablishmentDate,
                 IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false,
-                CountryId=s.CountryId,
-                DistrictId=s.DistrictId.HasValue?s.DistrictId.Value:0
+                CountryId = s.CountryId,
+                DistrictId = s.DistrictId.HasValue ? s.DistrictId.Value : 0
 
             }).FirstOrDefaultAsync().Result;
 
@@ -194,16 +197,17 @@ namespace ApplicationService.Services
                         EstablishmentDate = creqmodel.EstablishmentDate,
                         IsFeatured = creqmodel.IsFeatured,
                         IsVerified = creqmodel.IsVerified,
-                        DistrictId=creqmodel.DistrictId,
-                        CountryId=creqmodel.CountryId,
-                        
+                        DistrictId = creqmodel.DistrictId,
+                        CountryId = creqmodel.CountryId,
+
 
                     };
                     _dbContext.Company.Add(cobj);
                     gobj = new GetResults()
                     {
                         IsSuccess = true,
-                        Message = "Company Saved Successfully"
+                        Message = "Company Saved Successfully",
+                        Data = cobj.Id
                     };
                 }
                 else
@@ -272,11 +276,12 @@ namespace ApplicationService.Services
                     cdetail.IsFeatured = creqmodel.IsFeatured;
                     cdetail.IsVerified = creqmodel.IsVerified;
                     cdetail.DistrictId = creqmodel.DistrictId;
-                    cdetail.CountryId=creqmodel.CountryId;
+                    cdetail.CountryId = creqmodel.CountryId;
                     gobj = new GetResults()
                     {
                         IsSuccess = true,
-                        Message = "Company Updated Successfully"
+                        Message = "Company Updated Successfully",
+                        Data = cdetail.Id
                     };
                 }
                 else
@@ -621,7 +626,7 @@ namespace ApplicationService.Services
                                                        Id = s.Id,
                                                        CategoryId = s.CategoryId,
                                                        CompanyId = s.CompanyId,
-                                                       IsPublished =s.IsPublished.HasValue?s.IsPublished.Value:false
+                                                       IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company Found.";
@@ -631,8 +636,8 @@ namespace ApplicationService.Services
         }
         public async Task<List<long>> GetCompanyCategory(int companyid)
         {
-            var ccList = _dbContext.CompanyCategory.Where(w => w.CompanyId == companyid && w.IsDeleted == false).Select(s=>s.CategoryId).ToListAsync().Result;
-            
+            var ccList = _dbContext.CompanyCategory.Where(w => w.CompanyId == companyid && w.IsDeleted == false).Select(s => s.CategoryId).ToListAsync().Result;
+
             return await Task.FromResult(ccList);
         }
         #endregion
@@ -674,7 +679,9 @@ namespace ApplicationService.Services
 
                 };
                 _dbContext.CompanyProduct.Add(cp);
+                _dbContext.SaveChanges();
                 result.Message = "Company Product Added.";
+                result.Data = cp.Id;
             }
             else
             {
@@ -704,9 +711,10 @@ namespace ApplicationService.Services
                 cpObj.OfferShortDescriptionArb = cpModel.OfferShortDescriptionArb;
                 cpObj.OldPrice = cpModel.OldPrice;
 
+                _dbContext.SaveChanges();
                 result.Message = "Company Product Updated.";
+                result.Data = cpObj.Id;
             }
-            _dbContext.SaveChanges();
             result.IsSuccess = true;
             return await Task.FromResult(result);
 
@@ -738,7 +746,7 @@ namespace ApplicationService.Services
                                 Company = s.cmny.NameEng,
                                 NameEng = s.cp.NameEng,
                                 NameArb = s.cp.NameArb,
-                                PartNumber=s.cp.PartNumber
+                                PartNumber = s.cp.PartNumber
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
 
@@ -816,8 +824,8 @@ namespace ApplicationService.Services
                     DescriptionEng = csModel.DescriptionEng,
                     DescriptionArb = csModel.DescriptionArb,
                     Image = csModel.Image,
-                    OldPrice = csModel.OldPrice.HasValue?csModel.OldPrice.Value:0,
-                    Price = csModel.Price.HasValue? csModel.Price.Value:0,
+                    OldPrice = csModel.OldPrice.HasValue ? csModel.OldPrice.Value : 0,
+                    Price = csModel.Price.HasValue ? csModel.Price.Value : 0,
                     SortOrder = csModel.SortOrder,
                     IsPublished = csModel.IsPublished,
                     HasOffers = csModel.HasOffers,
@@ -832,6 +840,8 @@ namespace ApplicationService.Services
 
                 };
                 _dbContext.CompanyService.Add(cs);
+                _dbContext.SaveChanges();
+                result.Data = cs.Id;
                 result.Message = "Company Service Added.";
             }
             else
@@ -858,9 +868,10 @@ namespace ApplicationService.Services
                 csObj.OfferShortDescriptionEng = csModel.OfferShortDescriptionEng;
                 csObj.OfferShortDescriptionArb = csModel.OfferShortDescriptionArb;
 
+                _dbContext.SaveChanges();
+                result.Data = csObj.Id;
                 result.Message = "Company Serivce Updated.";
             }
-            _dbContext.SaveChanges();
             result.IsSuccess = true;
             return await Task.FromResult(result);
 
@@ -938,6 +949,131 @@ namespace ApplicationService.Services
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company Service Found.";
+            result.Data = cb;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
+
+        #region CompanyBanner
+        public async Task<GetResults> AddEditCompanyBanner(CompanyBannerRequestModel csModel)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyBanners.Where(w => w.Id == csModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj == null)
+            {
+                CompanyBanners cs = new CompanyBanners()
+                {
+                    BannerNameEng = csModel.BannerNameEng,
+                    BannerNameArb = csModel.BannerNameArb,
+                    CompanyId = csModel.CompanyId,
+                    EnglishUrl = csModel.EnglishUrl,
+                    ArabicUrl = csModel.ArabicUrl,
+                    ImageEng = csModel.ImageEng,
+                    ImageArb = csModel.ImageArb,
+                    Target = csModel.Target,
+                    BannerStartDate = csModel.BannerStartDate,
+                    BannerExpiryDate = csModel.BannerExpiryDate,
+                    IsPublished = csModel.IsPublished,
+                    SortOrder = csModel.SortOrder,
+                    IsDeleted = false,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = csModel.CreatorUserId
+
+                };
+                _dbContext.CompanyBanners.Add(cs);
+                _dbContext.SaveChanges();
+                result.Data = cs.Id;
+                result.Message = "Company Banner Added.";
+            }
+            else
+            {
+                csObj.BannerNameEng = csModel.BannerNameEng;
+                csObj.BannerNameArb = csModel.BannerNameArb;
+                csObj.CompanyId = csModel.CompanyId;
+                csObj.EnglishUrl = csModel.EnglishUrl;
+                csObj.ArabicUrl = csModel.ArabicUrl;
+                csObj.ImageEng = csModel.ImageEng;
+                csObj.ImageArb = csModel.ImageArb;
+                csObj.Target = csModel.Target;
+                csObj.BannerStartDate = csModel.BannerStartDate;
+                csObj.BannerExpiryDate = csModel.BannerExpiryDate;
+                csObj.IsPublished = csModel.IsPublished;
+                csObj.SortOrder = csModel.SortOrder;
+                csObj.IsDeleted = false;
+                csObj.CreationTime = DateTime.Now;
+                csObj.CreatorUserId = csModel.CreatorUserId;
+
+                _dbContext.SaveChanges();
+                result.Data = csObj.Id;
+                result.Message = "Company Banner Updated.";
+            }
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyBanner(int Id)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyBanners.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj != null)
+            {
+                csObj.IsDeleted = true;
+                csObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Banner Deleted.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var cpList = _dbContext.CompanyBanners.Join(_dbContext.Company, b => b.CompanyId, c => c.Id, (b, c) => new { b,c}).
+                            Where(w => w.b.IsDeleted == false).
+                            Select(s => new CompanyBannerViewModel
+                            {
+                                Id = s.b.Id,
+                                BannerNameArb = s.b.BannerNameArb,
+                                BannerNameEng = s.b.BannerNameEng,
+                                ImageArb = s.b.ImageArb,
+                                ImageEng = s.b.ImageEng,
+                                CompanyId = s.b.CompanyId,
+                                CompanyName=s.c.NameEng
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+            var tot = _dbContext.CompanyBanners.Where(w => w.IsDeleted == false).CountAsync().Result;
+
+
+            result.IsSuccess = true;
+            result.Message = "Company Banner List.";
+            result.Data = cpList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyBannerById(int id)
+        {
+            GetResults result = new GetResults();
+            var cb = _dbContext.CompanyBanners.Where(w => w.Id == id && w.IsDeleted == false)
+                                                   .Select(s => new CompanyBannerViewModel
+                                                   {
+                                                       Id=s.Id,
+                                                       BannerNameEng = s.BannerNameEng,
+                                                       BannerNameArb = s.BannerNameArb,
+                                                       CompanyId = s.CompanyId,
+                                                       EnglishUrl = s.EnglishUrl,
+                                                       ArabicUrl = s.ArabicUrl,
+                                                       ImageEng = s.ImageEng,
+                                                       ImageArb = s.ImageArb,
+                                                       Target = s.Target,
+                                                       BannerStartDate = s.BannerStartDate,
+                                                       BannerExpiryDate = s.BannerExpiryDate,
+                                                       IsPublished = s.IsPublished,
+                                                       SortOrder = s.SortOrder
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Company Banner Found.";
             result.Data = cb;
             result.Total = 1;
             return await Task.FromResult(result);

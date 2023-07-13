@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommonService.Constants;
+using NLog.Fluent;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -24,7 +26,10 @@ namespace CommonService.RequestModel
         public DateTime CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
         public DateTime? BannerExpiryDate { get; set; }
-        public bool? IsPublished { get; set; }
+        public bool IsPublished { get; set; }
         public DateTime? BannerStartDate { get; set; }
+
+        public string DisplayEngImage => string.Format(CommonConstants.S3BaseURL + ImageEng, Id).Replace("com//", "com/");
+        public string DisplayArbImage => string.Format(CommonConstants.S3BaseURL + ImageArb, Id).Replace("com//", "com/");
     }
 }

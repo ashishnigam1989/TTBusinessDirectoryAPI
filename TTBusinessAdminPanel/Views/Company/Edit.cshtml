@@ -29,10 +29,11 @@
                     <fieldset>
                         <input type="hidden" id="Id" name="Id" asp-for="Id" />
                         <div class="row">
-                            <div class="col-md-4">
-                                <img style="width:250px; height:170px;" />
+                            <div class="col-md-4 center-align">
+                                <img id="img" style="width:250px; height:170px;" />
                                 <div class="fallback">
-                                    <input name="file" type="file" multiple />
+                                    <input name="file" id="imageinput" type="file" multiple />
+                                    <input type="hidden" id="Logo" name="Logo" asp-for="Logo" />
                                 </div>
                             </div>
                             <div class="col-md-8">
@@ -514,7 +515,8 @@
 
         <script>
         $(document).ready(function () {
-           
+            uploadImage();
+            $('#img').attr('src', '@Model.DisplayLogo');
             BindRegion(@Model.CountryId); 
             BindDistrict(@Model.RegionId);
             $('#CountryId').selectpicker('refresh');
@@ -558,5 +560,26 @@
                 });
             }
 
+        function uploadImage() {
+            $('#imageinput').change(function () {
+                var formdata = new FormData();
+                var fileInput = document.getElementById('imageinput');
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                formdata.append("imgtype", "CompanyLogo");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Upload/Upload');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () {
+                    debugger;
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#Logo').val(JSON.parse(xhr.responseText)[0]);
+                    }
+                }
+                return "";
+            });
+
+        }
         </script>
 }
