@@ -87,6 +87,12 @@ namespace CommonService.Helpers
                 case EnumImageType.BannerArb:
                     uploadPath = CommonConstants.BannerArb;
                     break;
+                case EnumImageType.GalleryImage:
+                    uploadPath = CommonConstants.GalleryImage;
+                    break;
+                case EnumImageType.GalleryFile:
+                    uploadPath = CommonConstants.GalleryFile;
+                    break;
                 default:
                     uploadPath = string.Empty;
                     break;

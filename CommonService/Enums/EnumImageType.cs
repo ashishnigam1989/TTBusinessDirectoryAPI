@@ -12,7 +12,9 @@ namespace CommonService.Enums
         ServiceLogo = 4,
         CategoryIcon=5,
         BannerEng=6,
-        BannerArb=7
+        BannerArb=7,
+        GalleryImage=8,
+        GalleryFile=9
             
     }
 }

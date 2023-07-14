@@ -46,5 +46,10 @@ namespace ApplicationService.IServices
         Task<GetResults> DeleteCompanyBanner(int Id);
         Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue);
         Task<GetResults> GetCompanyBannerById(int id);
+
+        Task<GetResults> AddEditCompanyGallery(CompanyGalleryRequestModel csModel);
+        Task<GetResults> DeleteCompanyGallery(int Id);
+        Task<GetResults> GetAllCompanyGallery(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyGalleryById(int id);
     }
 }
