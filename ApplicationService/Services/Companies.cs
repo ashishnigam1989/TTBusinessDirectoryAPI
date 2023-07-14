@@ -16,6 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ApplicationService.Services
 {
@@ -1074,6 +1075,163 @@ namespace ApplicationService.Services
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company Banner Found.";
+            result.Data = cb;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
+
+        #region CompanyGallery
+        public async Task<GetResults> AddEditCompanyGallery(CompanyGalleryRequestModel csModel)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyGalleryAttachment.Where(w => w.Id == csModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj == null)
+            {
+                CompanyGalleryAttachment cs = new CompanyGalleryAttachment()
+                {
+                    Image = csModel.Image,
+                    YoutubeVideoUrl = csModel.YoutubeVideoUrl,
+                    File = csModel.File,
+                    CompanyMenuId = csModel.CompanyMenuId,
+                    TitleEng = csModel.TitleEng,
+                    TitleArb= csModel.TitleArb,
+                    ShortDescriptionEng= csModel.ShortDescriptionEng,
+                    ShortDescriptionArb=csModel.ShortDescriptionArb,
+                    DescriptionEng= csModel.DescriptionEng,
+                    DescriptionArb= csModel.DescriptionArb,
+                    Target= csModel.Target,
+                    TargetUrl= csModel.TargetUrl,
+                    IsPublished = csModel.IsPublished,
+                    SortOrder = csModel.SortOrder,
+                    IsDeleted = false,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = csModel.CreatorUserId
+
+                };
+                _dbContext.CompanyGalleryAttachment.Add(cs);
+                _dbContext.SaveChanges();
+                result.Data = cs.Id;
+                result.Message = "Company Gallery Added.";
+            }
+            else
+            {
+                    csObj.Image = csModel.Image;
+                    csObj.YoutubeVideoUrl = csModel.YoutubeVideoUrl;
+                    csObj.File = csModel.File;
+                    csObj.CompanyMenuId = csModel.CompanyMenuId;
+                    csObj.TitleEng = csModel.TitleEng;
+                    csObj.TitleArb = csModel.TitleArb;
+                    csObj.ShortDescriptionEng = csModel.ShortDescriptionEng;
+                    csObj.ShortDescriptionArb = csModel.ShortDescriptionArb;
+                    csObj.DescriptionEng = csModel.DescriptionEng;
+                    csObj.DescriptionArb = csModel.DescriptionArb;
+                    csObj.Target = csModel.Target;
+                    csObj.TargetUrl = csModel.TargetUrl;
+                    csObj.IsPublished = csModel.IsPublished;
+                    csObj.SortOrder = csModel.SortOrder;
+                    csObj.IsDeleted = false;
+                    csObj.CreationTime = DateTime.Now;
+                csObj.CreatorUserId = csModel.CreatorUserId;
+                _dbContext.SaveChanges();
+                result.Data = csObj.Id;
+                result.Message = "Company Gallery Updated.";
+            }
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyGallery(int Id)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyGalleryAttachment.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj != null)
+            {
+                csObj.IsDeleted = true;
+                csObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Gallery Deleted.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyGallery(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var cpList = _dbContext.CompanyGalleryAttachment.Where(w => w.IsDeleted == false).
+                            Select(s => new CompanyGalleryViewModel
+                            {
+                                Id = s.Id,
+                                Image = s.Image,
+                                YoutubeVideoUrl = s.YoutubeVideoUrl,
+                                File = s.File,
+                                CompanyMenuId = s.CompanyMenuId,
+                                TitleEng = s.TitleEng,
+                                TitleArb = s.TitleArb,
+                                ShortDescriptionEng = s.ShortDescriptionEng,
+                                ShortDescriptionArb = s.ShortDescriptionArb,
+                                DescriptionEng = s.DescriptionEng,
+                                DescriptionArb = s.DescriptionArb,
+                                Target = s.Target,
+                                TargetUrl = s.TargetUrl,
+                                IsPublished = s.IsPublished
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+ 
+            //var cpList = _dbContext.CompanyGalleryAttachment.Join(_dbContext.Company, b => b.CompanyMenuId, c => c.Id, (b, c) => new { b, c }).
+            //                Where(w => w.b.IsDeleted == false).
+            //                Select(s => new CompanyGalleryViewModel
+            //                {
+            //                    Id=s.b.Id,
+            //                    Image = s.b.Image,
+            //                    YoutubeVideoUrl = s.b.YoutubeVideoUrl,
+            //                    File = s.b.File,
+            //                    CompanyMenuId = s.b.CompanyMenuId,
+            //                    TitleEng = s.b.TitleEng,
+            //                    TitleArb = s.b.TitleArb,
+            //                    ShortDescriptionEng = s.b.ShortDescriptionEng,
+            //                    ShortDescriptionArb = s.b.ShortDescriptionArb,
+            //                    DescriptionEng = s.b.DescriptionEng,
+            //                    DescriptionArb = s.b.DescriptionArb,
+            //                    Target = s.b.Target,
+            //                    TargetUrl = s.b.TargetUrl,
+            //                    IsPublished = s.b.IsPublished,
+            //                    CompanyName=s.c.NameEng
+
+            //                }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+
+            var tot = _dbContext.CompanyGalleryAttachment.Where(w => w.IsDeleted == false).CountAsync().Result;
+
+
+            result.IsSuccess = true;
+            result.Message = "Company Gallery List.";
+            result.Data = cpList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyGalleryById(int id)
+        {
+            GetResults result = new GetResults();
+            var cb = _dbContext.CompanyGalleryAttachment.Where(w => w.Id == id && w.IsDeleted == false)
+                                                   .Select(s => new CompanyGalleryViewModel
+                                                   {
+                                                       Id = s.Id,
+                                                       Image = s.Image,
+                                                       YoutubeVideoUrl = s.YoutubeVideoUrl,
+                                                       File = s.File,
+                                                       CompanyMenuId = s.CompanyMenuId,
+                                                       TitleEng = s.TitleEng,
+                                                       TitleArb = s.TitleArb,
+                                                       ShortDescriptionEng = s.ShortDescriptionEng,
+                                                       ShortDescriptionArb = s.ShortDescriptionArb,
+                                                       DescriptionEng = s.DescriptionEng,
+                                                       DescriptionArb = s.DescriptionArb,
+                                                       Target = s.Target,
+                                                       TargetUrl = s.TargetUrl,
+                                                       IsPublished = s.IsPublished
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Company Gallery Found.";
             result.Data = cb;
             result.Total = 1;
             return await Task.FromResult(result);

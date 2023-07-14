@@ -71,6 +71,45 @@
                                         
                                     </div>
                                 </div>
+                            <div class="row">
+                                 
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <input asp-for="Target" type="text" class="form-control" name="Target" >
+                                            <label class="form-label">Target</label>
+                                        </div>
+                                        <span asp-validation-for="Target" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <input asp-for="SortOrder" type="number" class="form-control" name="SortOrder">
+                                            <label class="form-label">SortOrder</label>
+                                        </div>
+                                        <span asp-validation-for="SortOrder" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <input asp-for="BannerStartDate" type="date" class="form-control" name="BannerStartDate">
+                                            <label class="form-label">Banner Star Date</label>
+                                        </div>
+                                        <span asp-validation-for="BannerStartDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <input asp-for="BannerExpiryDate" type="date" class="form-control" name="BannerExpiryDate">
+                                            <label class="form-label">Banner Expiry Date</label>
+                                        </div>
+                                        <span asp-validation-for="BannerExpiryDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-float">

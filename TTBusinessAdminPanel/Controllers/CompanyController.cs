@@ -904,7 +904,6 @@ namespace TTBusinessAdminPanel.Controllers
             }
             return View("AddCompanyService", reqmodel);
         }
-
         public IActionResult EditCompanyBanner(int id)
         {
             CompanyBannerRequestModel cmodel = new CompanyBannerRequestModel();
@@ -967,20 +966,158 @@ namespace TTBusinessAdminPanel.Controllers
                 _notyfService.Error(ex.Message);
             }
 
-            return View("Product");
+            return View("Banner");
         }
 
         #endregion
+
+        #region CompanyGallery
+        public IActionResult Gallery()
+        {
+            return View();
+        }
+        public IActionResult GetAllCompanyGallery()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyGallery(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyGalleryViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyGallery()
+        {
+            BindCompany();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyGallery(CompanyGalleryRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyGallery(reqmodel).Result;
+                    Helper.MoveFileToS3Server(EnumImageType.GalleryFile, Convert.ToInt64(result.Data), reqmodel.File);
+                    Helper.MoveFileToS3Server(EnumImageType.GalleryImage, Convert.ToInt64(result.Data), reqmodel.Image);
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Gallery", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyService", reqmodel);
+        }
+        public IActionResult EditCompanyGallery(int id)
+        {
+            CompanyGalleryRequestModel cmodel = new CompanyGalleryRequestModel();
+            try
+            {
+                BindCompany();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyGalleryById(id).Result;
+                    var s = (CompanyGalleryViewModel)company.Data;
+                    cmodel = new CompanyGalleryRequestModel
+                    { 
+                        Id = s.Id,
+                        Image = s.Image,
+                        YoutubeVideoUrl = s.YoutubeVideoUrl,
+                        File = s.File,
+                        CompanyMenuId = s.CompanyMenuId,
+                        TitleEng = s.TitleEng,
+                        TitleArb = s.TitleArb,
+                        ShortDescriptionEng = s.ShortDescriptionEng,
+                        ShortDescriptionArb = s.ShortDescriptionArb,
+                        DescriptionEng = s.DescriptionEng,
+                        DescriptionArb = s.DescriptionArb,
+                        Target = s.Target,
+                        TargetUrl = s.TargetUrl,
+                        IsPublished = s.IsPublished
+
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyGallery(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyGallery(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("Gallery", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("Gallery");
+        }
+
+        #endregion
+
+
 
         public IActionResult Offer()
         {
             return View();
         }
 
-        public IActionResult Gallery()
-        {
-            return View();
-        }
         public IActionResult Link()
         {
             return View();
