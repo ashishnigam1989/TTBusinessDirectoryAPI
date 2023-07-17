@@ -517,6 +517,12 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
+
+        public Task<GetResults> GetResultsForSearchPage(string searchTerm, int countryId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }
