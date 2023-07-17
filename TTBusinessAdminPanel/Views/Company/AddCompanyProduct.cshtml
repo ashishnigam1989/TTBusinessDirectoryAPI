@@ -30,29 +30,39 @@
                     <fieldset>
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <select asp-for="CompanyId" name="CompanyId" class="show-tick" required>
-                                            <option value="">Select Company</option>
-                                            @foreach (var company in @ViewBag.Companies)
-                                            {
-                                                    <option value="@company.Value">@company.Text</option>
-                                            }
-                                        </select>
+                                <div class="col-md-4 center-align">
+                                    <img id="img" style="width:250px; height:170px;" />
+                                    <div class="fallback">
+                                        <input name="file" id="imageinput" type="file" multiple />
+                                        <input type="hidden" id="Image" name="Image" asp-for="Image" />
                                     </div>
-                                    <span asp-validation-for="CompanyId" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
-                                        <label class="form-label">NameEng</label>
+                            <div class="col-md-8">
+                                <div class="col-md-12">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <select asp-for="CompanyId" name="CompanyId" class="show-tick" required>
+                                                <option value="">Select Company</option>
+                                                @foreach (var company in @ViewBag.Companies)
+                                                {
+                                                        <option value="@company.Value">@company.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span asp-validation-for="CompanyId" class="text-danger"></span>
                                     </div>
-                                    <span asp-validation-for="NameEng" class="text-danger"></span>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
+                                            <label class="form-label">NameEng</label>
+                                        </div>
+                                        <span asp-validation-for="NameEng" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="NameArb" type="text" class="form-control" name="NameArb">
@@ -60,6 +70,7 @@
                                     </div>
                                     <span asp-validation-for="NameArb" class="text-danger"></span>
                                 </div>
+                            </div>
                             </div>
                         </div>
                         <div class="row">
@@ -237,3 +248,35 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            uploadImage();
+        });
+
+        function uploadImage() {
+            $('#imageinput').change(function () {
+                var formdata = new FormData();
+                var fileInput = document.getElementById('imageinput');
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                formdata.append("imgtype", "ProductLogo");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Upload/Upload');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () {
+                    debugger;
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#Image').val(JSON.parse(xhr.responseText)[0]);
+                    }
+                }
+                return "";
+            });
+
+        }
+    </script>
+    }

@@ -21,13 +21,14 @@ namespace ApplicationService.IServices
         Task<GetResults> GetAllCompanyBrand(int page, int limit, string searchValue);
         Task<GetResults> GetCompanyBrandById(int id);
         Task<GetResults> DeleteCompanyBrand(int Id);
+        Task<List<long>> GetCompanyBrand(int companyid);
 
 
         Task<GetResults> GetAllCompanyCategory(int pageNo, int pageSize, string searchValue);
         Task<GetResults> GetCompanyCategoryById(int id);
         Task<GetResults> DeleteCompanyCategory(int Id);
         Task<GetResults> AddEditCompanyCategory(CompanyCategoryRequestModel ccModel);
-
+        Task<List<long>> GetCompanyCategory(int companyid);
 
         Task<GetResults> AddEditCompanyProduct(CompanyProductRequestModel cpModel);
         Task<GetResults> DeleteCompanyProduct(int Id); 
@@ -40,5 +41,15 @@ namespace ApplicationService.IServices
         Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue);
         Task<GetResults> GetCompanyServiceById(int id);
         Task<GetResults> GetFeaturedCompanies();
+
+        Task<GetResults> AddEditCompanyBanner(CompanyBannerRequestModel csModel);
+        Task<GetResults> DeleteCompanyBanner(int Id);
+        Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyBannerById(int id);
+
+        Task<GetResults> AddEditCompanyGallery(CompanyGalleryRequestModel csModel);
+        Task<GetResults> DeleteCompanyGallery(int Id);
+        Task<GetResults> GetAllCompanyGallery(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyGalleryById(int id);
     }
 }

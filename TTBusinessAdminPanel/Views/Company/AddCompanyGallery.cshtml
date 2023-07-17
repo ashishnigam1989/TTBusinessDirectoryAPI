@@ -1,0 +1,242 @@
+﻿@model CommonService.RequestModel.CompanyGalleryRequestModel
+
+@{
+    ViewData["Title"] = "Add Gallery";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="block-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-7">
+            <h2>Add Gallery</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">Company</li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Gallery", "Company")">Gallery</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("AddCompanyGallery", "Company")">Add Gallery</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="header">
+                <h2>Add Gallery Details</h2>
+            </div>
+            <div class="body">
+                <form id="wizard_with_validation" asp-controller="Company" asp-action="AddUpdateCompanyGallery">
+                    <h3>Basic Info</h3>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-4">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                        <select asp-for="CompanyMenuId" name="CompanyMenuId" class="show-tick" required>
+                                                    <option value="">Select Company</option>
+                                                    @foreach (var company in @ViewBag.Companies)
+                                                    {
+                                                        <option value="@company.Value">@company.Text</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                    <span asp-validation-for="CompanyMenuId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="TitleEng" type="text" class="form-control" name="TitleEng" required>
+                                        <label class="form-label">TitleEng</label>
+                                    </div>
+                                    <span asp-validation-for="TitleEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="TitleArb" type="text" class="form-control" name="TitleArb">
+                                        <label class="form-label">TitleArb</label>
+                                    </div>
+                                    <span asp-validation-for="TitleArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="Target" type="text" class="form-control" name="Target">
+                                        <label class="form-label">Target</label>
+                                    </div>
+                                    <span asp-validation-for="Target" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="TargetUrl" type="url" class="form-control" name="TargetUrl">
+                                        <label class="form-label">TargetUrl</label>
+                                    </div>
+                                    <span asp-validation-for="TargetUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="YoutubeVideoUrl" type="url" class="form-control" name="YoutubeVideoUrl">
+                                        <label class="form-label">YoutubeVideoUrl</label>
+                                    </div>
+                                    <span asp-validation-for="YoutubeVideoUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+
+                        </div> 
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <img id="img" style="width:250px; height:170px;" />
+                                        <div class="fallback">
+                                            <input name="fileinput" id="fileinput" type="file" multiple />
+                                            <input type="hidden" id="Fileupload" name="File" asp-for="File" />
+                                        </div> 
+                                    </div>
+                                    <label class="form-label">File</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <img id="img" style="width:250px; height:170px;" />
+                                        <div class="fallback">
+                                            <input name="file" id="imageinput" type="file" multiple />
+                                            <input type="hidden" id="Image" name="Image" asp-for="Image" />
+                                        </div>
+                                    </div>
+                                    <label class="form-label">Image</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="SortOrder" type="number" class="form-control" name="SortOrder">
+                                        <label class="form-label">SortOrder</label>
+                                    </div>
+                                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-float">
+                                    <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                    <label for="IsPublished" class="form-label">IsPublished</label>
+                                </div>
+                                <span asp-validation-for="IsPublished" class="text-danger"></span>
+
+                            </div> 
+                        </div>
+                    </fieldset>
+                    <h3>SEO</h3>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="DescriptionEng" type="text" class="form-control" name="DescriptionEng">
+                                        <label class="form-label">DescriptionEng</label>
+                                    </div>
+                                    <span asp-validation-for="DescriptionEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="DescriptionArb" type="text" class="form-control" name="DescriptionArb">
+                                        <label class="form-label">DescriptionArb</label>
+                                    </div>
+                                    <span asp-validation-for="DescriptionArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="ShortDescriptionEng" type="text" class="form-control" name="ShortDescriptionEng">
+                                        <label class="form-label">ShortDescriptionEng</label>
+                                    </div>
+                                    <span asp-validation-for="ShortDescriptionEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="ShortDescriptionArb" type="text" class="form-control" name="ShortDescriptionArb">
+                                        <label class="form-label">ShortDescriptionArb</label>
+                                    </div>
+                                    <span asp-validation-for="ShortDescriptionArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div> 
+                    </fieldset> 
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            uploadImage();
+            uploadFile();
+        });
+
+        function uploadImage() {
+            $('#imageinput').change(function () {
+                var formdata = new FormData();
+                var fileInput = document.getElementById('imageinput');
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                formdata.append("imgtype", "GalleryImage");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Upload/Upload');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () { 
+                    if (xhr.readyState == 4 && xhr.status == 200) { 
+                        $('#Image').val(JSON.parse(xhr.responseText)[0]); 
+                    }
+                }
+                return "";
+            });
+
+        }
+        function uploadFile() {
+            $('#fileinput').change(function () {
+                var formdata = new FormData();
+                var fileInput = document.getElementById('fileinput');
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                formdata.append("imgtype", "GalleryFile");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Upload/Upload');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () { 
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#Fileupload').val(JSON.parse(xhr.responseText)[0]);
+                    }
+                }
+                return "";
+            });
+
+        }
+    </script>
+    }

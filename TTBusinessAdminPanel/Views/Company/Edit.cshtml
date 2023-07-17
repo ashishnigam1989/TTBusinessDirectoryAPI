@@ -29,10 +29,11 @@
                     <fieldset>
                         <input type="hidden" id="Id" name="Id" asp-for="Id" />
                         <div class="row">
-                            <div class="col-md-4">
-                                <img style="width:250px; height:170px;" />
+                            <div class="col-md-4 center-align">
+                                <img id="img" style="width:250px; height:170px;" />
                                 <div class="fallback">
-                                    <input name="file" type="file" multiple />
+                                    <input name="file" id="imageinput" type="file" multiple />
+                                    <input type="hidden" id="Logo" name="Logo" asp-for="Logo" />
                                 </div>
                             </div>
                             <div class="col-md-8">
@@ -159,13 +160,17 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
 
                                         <div>
-                                            <select name="CountryId" class="show-tick">
+                                            <select asp-for="CountryId" id="CountryId" name="CountryId" class="show-tick" onchange="BindRegion(this.value)">
                                                 <option value="0">Select Country</option>
+                                                @foreach (var country in @ViewBag.Countries)
+                                                {
+                                                    <option value="@country.Value">@country.Text</option>
+                                                }
                                             </select>
                                         </div>
                                         <span class="text-danger"></span>
@@ -174,19 +179,34 @@
                                     <span class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
 
                                         <div>
-                                            <select asp-for="RegionId" name="RegionId" class="show-tick">
+                                           <select asp-for="RegionId" name="RegionId" id="RegionId" class="show-tick" onchange="BindDistrict(this.value)">
                                                 <option value="0">Select Region</option>
-                                            </select>
+                                            </select> 
                                         </div>
                                         <span asp-validation-for="RegionId" class="text-danger"></span>
 
                                     </div>
                                     <span asp-validation-for="RegionId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <div>
+                                            <select asp-for="DistrictId" name="DistrictId" id="DistrictId" class="show-tick">
+                                                <option value="0">Select District</option>
+                                            </select>
+                                        </div>
+                                        <span asp-validation-for="DistrictId" class="text-danger"></span>
+
+                                    </div>
+                                    <span asp-validation-for="DistrictId" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -489,3 +509,77 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+    {
+
+        <script>
+        $(document).ready(function () {
+            uploadImage();
+            $('#img').attr('src', '@Model.DisplayLogo');
+            BindRegion(@Model.CountryId); 
+            BindDistrict(@Model.RegionId);
+            $('#CountryId').selectpicker('refresh');
+            $('#RegionId').selectpicker('refresh');
+        });
+            function BindRegion(id) { 
+                var reqObj = {
+                    Id: id
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("BindRegion")',
+                    dataType: 'json',
+                    data: reqObj,
+                    success: function (data) {
+                        $('#RegionId').html('');
+                        $.each(data, function (index, value) { 
+                            $('#RegionId').append('<option value="' + value.id + '">' + value.nameEng + '</option>');
+                        });
+                        $('.show-tick').selectpicker('refresh');
+                    }
+                });
+            }
+
+            function BindDistrict(id) { 
+                var reqObj = {
+                    Id: id
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("BindDistricts")',
+                    dataType: 'json',
+                    data: reqObj,
+                    success: function (data) {
+                        $('#DistrictId').html('');
+                        $.each(data, function (index, value) {
+                            $('#DistrictId').append('<option value="' + value.id + '">' + value.districtName + '</option>');
+                        });
+                        $('.show-tick').selectpicker('refresh');
+                    }
+                });
+            }
+
+        function uploadImage() {
+            $('#imageinput').change(function () {
+                var formdata = new FormData();
+                var fileInput = document.getElementById('imageinput');
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                formdata.append("imgtype", "CompanyLogo");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Upload/Upload');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () {
+                    debugger;
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#Logo').val(JSON.parse(xhr.responseText)[0]);
+                    }
+                }
+                return "";
+            });
+
+        }
+        </script>
+}

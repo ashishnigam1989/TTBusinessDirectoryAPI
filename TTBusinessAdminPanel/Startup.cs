@@ -2,6 +2,7 @@ using ApplicationService.IServices;
 using ApplicationService.Services;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
+using CommonService.Helpers;
 using DatabaseService.DbEntities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -67,7 +68,8 @@ namespace TTBusinessAdminPanel
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            Helper.Help(accessor);
+            ExtensionHelper.Help(accessor);
+            AccessAppSettings.Initialize(Configuration);
             app.UseStaticFiles();
             var logger = LogManager.GetLogger("Global");
             app.ConfigureExceptionHandler(logger);

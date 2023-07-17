@@ -152,11 +152,13 @@ namespace ApplicationService.Services
                         MetaTitleArb = crModel.MetaTitleArb,
                         MetaDescriptionArb = crModel.MetaDescriptionArb,
                         PageContentArb = crModel.PageContentArb,
-                        IsFeatured = crModel.IsFeatured
+                        IsFeatured = crModel.IsFeatured,
+                        Icon = crModel.Icon
                     };
                     _dbContext.Category.Add(crobj);
                     await _dbContext.SaveChangesAsync();
                     resp.Message = "Category Added Successfully.";
+                    resp.Data = crobj.Id;
                     resp.IsSuccess = true;
                 }
                 else
@@ -187,8 +189,10 @@ namespace ApplicationService.Services
                     cdata.MetaDescriptionArb = crModel.MetaDescriptionArb;
                     cdata.PageContentArb = crModel.PageContentArb;
                     cdata.IsFeatured = crModel.IsFeatured;
+                    cdata.Icon = crModel.Icon;
                     await _dbContext.SaveChangesAsync();
                     resp.Message = "Category Updated Successfully.";
+                    resp.Data = cdata.Id;
                     resp.IsSuccess = true;
                 }
                 else
@@ -227,7 +231,8 @@ namespace ApplicationService.Services
                    MetaTitleArb = s.MetaTitleArb,
                    MetaDescriptionArb = s.MetaDescriptionArb,
                    PageContentArb = s.PageContentArb,
-                   IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false
+                   IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false,
+                   Icon=s.Icon
 
                }).FirstOrDefaultAsync().Result;
             GetResults result = new GetResults
@@ -264,7 +269,7 @@ namespace ApplicationService.Services
                 .Select(s => new CategoriesViewModel
                 {
                     Id = s.Id,
-                    NameEng = s.NameEng,
+                    NameEng = s.NameEng
                 }).Distinct().OrderByDescending(o => o.Id).Take(10).ToListAsync().Result;
 
 
@@ -419,6 +424,7 @@ namespace ApplicationService.Services
                     _dbContext.Brand.Add(bobj);
                     await _dbContext.SaveChangesAsync();
                     result.Message = "Brand added successfully";
+                    result.Data = bobj.Id;
                     result.IsSuccess = true;
                 }
                 else
@@ -454,6 +460,7 @@ namespace ApplicationService.Services
                     brandobj.PageContentArb = breqmodel.PageContentArb;
                     result.Message = "Brand updated successfully";
                     await _dbContext.SaveChangesAsync();
+                    result.Data = brandobj.Id;
                     result.IsSuccess = true;
                 }
                 else
@@ -505,6 +512,38 @@ namespace ApplicationService.Services
 
         }
 
+        public async Task<List<long>> GetAllAssignedBrandCategory(int brandid)
+        {
+            var brandCat = _dbContext.BrandCategory.Where(w => w.BrandId== brandid).Select(s =>s.CategoryId).ToList();
+            return await Task.FromResult(brandCat);
+        }
+
+        public async Task<bool> AddUpdateBrandCategory(BrandCategoryModel _rModel)
+        {
+            var brdcat = _dbContext.BrandCategory.Where(w => w.BrandId == _rModel.BrandId).ToList();
+            if (brdcat.Count > 0)
+            {
+                _dbContext.BrandCategory.RemoveRange(brdcat);
+                await _dbContext.SaveChangesAsync();
+            }
+            List<BrandCategory> rmlist = new List<BrandCategory>();
+            foreach (var catid in _rModel.Categories)
+            {
+                BrandCategory rmModel = new BrandCategory
+                {
+                    BrandId = _rModel.BrandId,
+                    CategoryId =catid,
+                    CreationTime=DateTime.Now,
+                    CreatorUserId=_rModel.CreatedBy
+                    
+                };
+                rmlist.Add(rmModel);
+            }
+            _dbContext.BrandCategory.AddRange(rmlist);
+            await _dbContext.SaveChangesAsync();
+            return await Task.FromResult(true);
+        }
+        #endregion
         public async Task<GetResults> GetSearchResults(string searchTerm, int countryId)
         {
             var queryResult = await _dbContext.SearchModel.FromSqlRaw("EXEC [usp_GetSearchResult] {0}, {1}", searchTerm, countryId).ToListAsync();
@@ -518,11 +557,57 @@ namespace ApplicationService.Services
 
         }
 
+<<<<<<< HEAD
         public Task<GetResults> GetResultsForSearchPage(string searchTerm, int countryId)
         {
             throw new NotImplementedException();
         }
 
         #endregion
+=======
+        public async Task<GetResults> AddUpdateDistrict(DistrictRequestModel dreqmodel)
+        {
+            GetResults result = new GetResults();
+            var district = _dbContext.Districts.Where(w => w.IsDeleted == false && w.DistrictId == dreqmodel.DistrictId).FirstOrDefault();
+            if(district==null)
+            {
+                Districts ds = new Districts()
+                {
+                    DistrictName = dreqmodel.District,
+                    RegionId = dreqmodel.RegionId,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = dreqmodel.CreatedBy
+                };
+                _dbContext.Districts.Add(ds);
+                result.IsSuccess = true;
+                result.Message = "District added successfully";
+            }
+            else
+            {
+                district.RegionId = dreqmodel.RegionId;
+                district.DistrictName = dreqmodel.District;
+                result.IsSuccess = true;
+                result.Message = "District updated successfully";
+            }
+            await _dbContext.SaveChangesAsync();
+
+            return await Task.FromResult(result);
+        }
+
+        public async Task<GetResults> GetAllDistricts(int regionId)
+        {
+            GetResults result = new GetResults();
+            var alldistrict = _dbContext.Districts.Join(_dbContext.Region, d => d.RegionId, r => r.Id, (d, r) => new { d,r})
+                    .Where(w => w.d.IsDeleted == false && w.d.RegionId==regionId).Select(s => new DistrictModel {
+                DistrictName=s.d.DistrictName,
+                RegionName=s.r.NameEng,
+                RegionId=s.d.RegionId,
+                Id=s.d.DistrictId
+            }).ToList();
+            result = new GetResults { Data = alldistrict, Message = "Districts found", IsSuccess = true, Total = alldistrict.Count() };
+            return await Task.FromResult(result);
+        }
+     
+>>>>>>> ab88b81b2049f564c79d08285fb38724d39fb1f4
     }
 }

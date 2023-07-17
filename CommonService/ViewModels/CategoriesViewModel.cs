@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -30,5 +31,7 @@ namespace CommonService.ViewModels
         public string PageContentArb { get; set; }
         public bool IsFeatured { get; set; }
         public string Icon { get; set; }
+        public string DisplayIcon => string.Format(CommonConstants.S3BaseURL+Icon,Id);
+        public bool IsSelected { get; set; }
     }
 }

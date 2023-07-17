@@ -46,24 +46,24 @@
                         <div class="col-md-6">
                             <div class="form-group form-float">
                                 <div class="form-line">
-                                    <input asp-for="Surname" type="text" class="form-control" name="Surname" required>
-                                    <label class="form-label">Surname</label>
-                                </div>
-                                <span asp-validation-for="Surname" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group form-float">
-                                <div class="form-line">
                                     <input asp-for="EmailAddress" type="email" class="form-control" name="EmailAddress" required>
                                     <label class="form-label">User Name</label>
                                 </div>
                                 <span asp-validation-for="EmailAddress" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                       @* <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input asp-for="Surname" type="text" class="form-control" name="Surname" required>
+                                    <label class="form-label">Surname</label>
+                                </div>
+                                <span asp-validation-for="Surname" class="text-danger"></span>
+                            </div>
+                        </div>*@
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             <div class="form-group form-float">
                                 <div class="form-line">
                                     <input asp-for="Mobile" type="text" class="form-control" name="Mobile" required>
@@ -72,26 +72,42 @@
                                 <span asp-validation-for="Mobile" class="text-danger"></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group form-float">
-                                <div> 
-                                <select asp-for="RoleId" name="RoleId" class="show-tick">
-                                    <option value="">Select Role</option>
-                                    @foreach (var role in ViewBag.Roles)
-                                    {
-                                        <option value="@role.Value">@role.Text</option>
-                                    }
-                                     
-                                </select>
+                                <div>
+                                    <select asp-for="Designation" name="Designation" class="show-tick">
+                                        <option value="">Select Designation</option>
+                                        @foreach (var role in ViewBag.Roles)
+                                        {
+                                            <option value="@role.Text">@role.Text</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <span asp-validation-for="Designation" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group form-float">
+                                <div>
+                                    <select asp-for="RoleId" name="RoleId" class="show-tick">
+                                        <option value="">Select Role</option>
+                                        @foreach (var role in ViewBag.Roles)
+                                        {
+                                            <option value="@role.Value">@role.Text</option>
+                                        }
+
+                                    </select>
                                 </div>
                                 <span asp-validation-for="RoleId" class="text-danger"></span>
                             </div>
-                            
+
                         </div>
-                       
                     </div>
+                   @* <div class="row">
+                       
+                       
+                    </div>*@
 
                     <button class="btn btn-raised btn-primary waves-effect" type="submit">SUBMIT</button>
                 </form>

@@ -29,5 +29,6 @@ namespace CommonService.ViewModels
         public string KeywordsArb { get; set; }
         public string MetaDescriptionArb { get; set; }
         public string PageContentArb { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

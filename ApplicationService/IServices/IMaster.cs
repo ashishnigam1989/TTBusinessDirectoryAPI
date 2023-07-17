@@ -29,8 +29,12 @@ namespace ApplicationService.IServices
         public Task<GetResults> GetAllBrands(int page, int limit, string searchValue);
         public Task<GetResults> GetBrandById(int brandid);
         public Task<GetResults> AddUpdateBrand(BrandRequestModel breqmodel);
+        public Task<GetResults> AddUpdateDistrict(DistrictRequestModel dreqmodel);
+        public Task<GetResults> GetAllDistricts(int regionId);
         public Task<GetResults> DeleteBrand(int brandid);
         Task<GetResults> GetMasterBrand();
+        Task<List<long>> GetAllAssignedBrandCategory(int brandid);
+        Task<bool> AddUpdateBrandCategory(BrandCategoryModel _rModel);
         #endregion
 
         Task<GetResults> GetSearchResults(string searchTerm, int countryId);

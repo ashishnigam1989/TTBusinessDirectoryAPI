@@ -25,6 +25,9 @@ namespace ApplicationService.IServices
         #region CountryCode
         Task<List<CountryCodeModel>> GetCountryCodes();
         #endregion
-        Task<List<DistrictModel>> GetDistricts(int regionId);
+        Task<GetResults> GetDistricts(int regionId, int pageNo, int pageSize, string searchValue);
+        Task<bool> DeleteDistrict(int Id);
+        Task<GetResults> GetDistrictById(int id);
+        Task<List<DistrictModel>> GetMasterDistricts(int regionid);
     }
 }

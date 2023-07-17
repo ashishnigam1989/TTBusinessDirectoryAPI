@@ -1,0 +1,209 @@
+﻿@model CommonService.RequestModel.CompanyBannerRequestModel
+
+@{
+    ViewData["Title"] = "Edit Banner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="block-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-7">
+            <h2>Edit Banner</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">Company</li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Banner", "Company")">All Banners</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("EditCompanyBanner", "Company")">Edit Banner</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="header">
+                <h2>Add Banner Details</h2>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="body">
+                        <form asp-controller="Company" asp-action="AddUpdateCompanyBanner">
+                            <input type="hidden" id="Id" name="Id" asp-for="Id" />
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <select asp-for="CompanyId" name="CompanyId" class="show-tick" required>
+                                                <option value="">Select Company</option>
+                                                @foreach (var company in @ViewBag.Companies)
+                                                {
+                                                    <option value="@company.Value">@company.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span asp-validation-for="CompanyId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <input asp-for="BannerNameEng" type="text" class="form-control" name="BannerNameEng" required>
+                                            <label class="form-label">BannerNameEng</label>
+                                        </div>
+                                        <span asp-validation-for="BannerNameEng" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <input asp-for="BannerNameArb" type="text" class="form-control" name="BannerNameArb">
+                                            <label class="form-label">BannerNameArb</label>
+                                        </div>
+                                        <span asp-validation-for="BannerNameArb" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                     <div class="form-group form-float">
+                                    <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                    <label for="IsPublished" class="form-label">IsPublished</label>
+                                    </div>
+                                    <span asp-validation-for="IsPublished" class="text-danger"></span>
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <input asp-for="Target" type="text" class="form-control" name="Target">
+                                            <label class="form-label">Target</label>
+                                        </div>
+                                        <span asp-validation-for="Target" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <input asp-for="SortOrder" type="number" class="form-control" name="SortOrder">
+                                            <label class="form-label">SortOrder</label>
+                                        </div>
+                                        <span asp-validation-for="SortOrder" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <input asp-for="BannerStartDate" type="date" class="form-control" name="BannerStartDate">
+                                            <label class="form-label">Banner Star Date</label>
+                                        </div>
+                                        <span asp-validation-for="BannerStartDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                            <input asp-for="BannerExpiryDate" type="date" class="form-control" name="BannerExpiryDate">
+                                            <label class="form-label">Banner Expiry Date</label>
+                                        </div>
+                                        <span asp-validation-for="BannerExpiryDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group form-float">
+                                        <div>
+                                            <img id="imgeng" style="width:250px; height:170px;" />
+                                            <div class="fallback">
+                                                <input name="file" id="imageEnginput" type="file" multiple />
+                                                <input type="hidden" id="ImageEng" name="ImageEng" asp-for="ImageEng" />
+                                            </div>
+
+
+                                        </div>
+
+                                        <label class="form-label">English Banner</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-float">
+                                        <div>
+                                            <img id="imgarb" style="width:250px; height:170px;" />
+                                            <div class="fallback">
+                                                <input name="file" id="imageArbinput" type="file" multiple />
+                                                <input type="hidden" id="ImageArb" name="ImageArb" asp-for="ImageArb" />
+                                            </div>
+                                        </div>
+                                        <label class="form-label">Arabic Banner</label>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-raised btn-primary waves-effect" style="float:right" type="submit">SUBMIT</button>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+
+            $('#imgeng').attr('src', '@Model.DisplayEngImage');
+            $('#imgarb').attr('src', '@Model.DisplayArbImage');
+            uploadEngImage();
+            uploadArbImage();
+        });
+
+        function uploadEngImage() {
+            $('#imageEnginput').change(function () {
+                var formdata = new FormData();
+                var fileInput = document.getElementById('imageEnginput');
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                formdata.append("imgtype", "BannerEng");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Upload/Upload');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#ImageEng').val(JSON.parse(xhr.responseText)[0]);
+                    }
+                }
+                return "";
+            });
+
+        }
+
+        function uploadArbImage() {
+            $('#imageArbinput').change(function () {
+                var formdata = new FormData();
+                var fileInput = document.getElementById('imageArbinput');
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                formdata.append("imgtype", "BannerArb");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Upload/Upload');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#ImageArb').val(JSON.parse(xhr.responseText)[0]);
+                    }
+                }
+                return "";
+            });
+
+        }
+    </script>
+    }

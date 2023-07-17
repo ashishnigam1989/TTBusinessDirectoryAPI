@@ -9,6 +9,7 @@ namespace CommonService.ViewModels
         public long Id { get; set; }
         public int RoleId { get; set; }
         public string Rolename { get; set; }
+        public string Designation { get; set; }
         public string Name { get; set; }
         public string EmailAddress { get; set; }
         public bool IsEmailConfirmed { get; set; }

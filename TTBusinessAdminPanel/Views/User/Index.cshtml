@@ -5,12 +5,20 @@
 
 <div class="block-header">
     <div class="row">
-        <div class="col-lg-12 col-md-6 col-sm-7">
-            <h2>User Management</h2>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item">User</li>
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "User")">View Users</a></li>
-            </ul>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-10 col-md-10 col-sm-10 float-left">
+                <h2>User Management</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">User</li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "User")">View Users</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 float-right">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Add", "User")" class="btn btn-raised btn-warning waves-effect">Add User</a></li>
+
+                </ul>
+            </div>
         </div>
     </div>
 </div>
@@ -40,6 +48,10 @@
 {
     <script>
         $(document).ready(function () {
+          bindAllUser();
+        });
+        function bindAllUser()
+        {
             $("#user-datatable").DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -60,18 +72,19 @@
                     { "data": "rolename", "name": "Role", "autoWidth": true },
                     { "data": "emailAddress", "name": "Email Address", "autoWidth": true },
                     { "data": "mobile", "name": "Mobile", "autoWidth": true },
-                    { "data": "isActive", "name": "Is Active", "autoWidth": true, "render": function (data, row, d){ return d.isActive==true?"Approved":d.isActive==false?"Rejected":"pending"} },
-                    
+                    { "data": "isActive", "name": "Is Active", "autoWidth": true, "render": function (data, row, d) { return d.isActive == true ? "Approved" : d.isActive == false ? "Rejected" : "pending" } },
+
                     {
-                        "render": function (data,row,d) {
-                            var btns = "<a href='/User/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> " ;
-                            if(d.isActive==null){
-                                btns+=" | <a href='#' onclick=Approve(" + d.id + ",'approve') class='icon' style='color:green' title='Approve'><i class='zmdi zmdi-assignment-check'></i></a> | " +
-                                "<a href='#' onclick=Approve(" + d.id + ",'reject') class='icon' style='color:red' title='Reject'><i class='zmdi zmdi-close-circle'></i></a>";
+                        "render": function (data, row, d) {
+                            var btns = "<a href='/User/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> ";
+                            btns += " | <a href='#' onclick=DeleteUser(" + d.id + ") class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a>";
+
+                            if (d.isActive == null) {
+                                btns += " | <a href='#' onclick=Approve(" + d.id + ",'approve') class='icon' style='color:green' title='Verify'><i class='zmdi zmdi-assignment-check'></i></a> | " +
+                                    "<a href='#' onclick=Approve(" + d.id + ",'reject') class='icon' style='color:red' title='Reject'><i class='zmdi zmdi-close-circle'></i></a>";
                             }
-                            if(d.isActive==false)
-                            {
-                                btns += " | <a href='#' onclick=Approve(" + d.id + ",'approve') class='icon' style='color:green' title='Approve'><i class='zmdi zmdi-assignment-check'></i></a>" ;
+                            if (d.isActive == false) {
+                                btns += " | <a href='#' onclick=Approve(" + d.id + ",'approve') class='icon' style='color:green' title='Verify'><i class='zmdi zmdi-assignment-check'></i></a>";
                             }
                             if (d.isActive == true) {
                                 btns += " | <a href='#' onclick=Approve(" + d.id + ",'reject') class='icon' style='color:red' title='Reject'><i class='zmdi zmdi-close-circle'></i></a>";
@@ -82,8 +95,7 @@
                     }
                 ]
             });
-        });
-
+        }
         function Approve(id,status) {
             var reqObj={
                 Id: id,
@@ -101,6 +113,38 @@
                             title: 'Success!!',
                             text: 'Status changed successfully!!'
                         })
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Not changed!!'
+                        })
+                    }
+                },
+                error: function (ex) {
+
+                }
+            });
+        }
+
+        function DeleteUser(id) {
+            var reqObj = {
+                userid: id
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteUser")',
+                dataType: 'json',
+                data: reqObj,
+                success: function (data) {
+                    if (data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'User Deleted successfully!!'
+                        })
+                        $('#user-datatable').DataTable().ajax.reload();
                     }
                     else {
                         Swal.fire({

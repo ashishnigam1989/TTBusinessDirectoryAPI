@@ -1,8 +1,160 @@
-﻿
+﻿@model CommonService.RequestModel.BrandCategoryModel
 @{
-    ViewData["Title"] = "BrandCategoryMapping";
+    ViewData["Title"] = "Brand Category";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>BrandCategoryMapping</h1>
+<div class="block-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-7">
+            <h2>Brand & Category Mapping</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">Masters</li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Region", "Home")">Brand and Category</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="body">
+                <form id="addbrandcategoryform">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-float">
+                                <div>
+                                    <select asp-for="BrandId" name="BrandId" class="show-tick" onchange="BindCategrories(this);">
+                                        <option value="">Select Brand</option>
+                                        @foreach (var brand in @ViewBag.Brands)
+                                        {
+                                            <option value="@brand.Value">@brand.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                               
+                            </div>
+                        </div>
 
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group form-float">
+                                <div>
+                                    <div style="height: 40px;width: 200px;margin-left: 40px;">
+                                        <input type="checkbox" id="chkselectAll" name="chkselectAll" onchange="SelectAll(this)">
+                                        <label for="chkselectAll">Select All</label>
+                                    </div>
+                                    <ul id="catchklist" style="column-count: 4; column-gap: normal; list-style: none">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-raised btn-primary waves-effect" onclick="SaveBrandCategory()" type="submit">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            BindCategrories();
+        });
+        var categories;
+        function BindCategrories(cat) {
+            categories = [];
+            var categoryid = cat ? cat.value : undefined;
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("BindBandCategory")',
+                dataType: 'json',
+                data: { id: categoryid },
+                success: function (data) {
+                    categories = data;
+                    AddCheckBoxes(false);
+
+                },
+                error: function (ex) {
+
+                }
+            });
+        }
+        function AddCheckBoxes(isAll) {
+            if (isAll) {
+                var isSelectAll = $('#chkselectAll').is(":checked");
+                for (var i = 0; i < categories.length; i++) {
+                    categories[i].isSelected = isSelectAll;
+                }
+            }
+
+            var list = '';
+            $('#catchklist').empty();
+            for (var i = 0; i < categories.length; i++) {
+                var id = 'chk' + categories[i].id;
+                if (categories[i].isSelected) {
+                    list += ' <input type="checkbox" id = "' + id + '" name = "' + id + '" checked onchange="SelectCategories(' + categories[i].id + ',this)" >'
+                }
+                else {
+                    list += ' <input type="checkbox" id = "' + id + '" name = "' + id + '" onchange="SelectCategories(' + categories[i].id + ',this)"  >'
+                }
+
+                list += '<label for= "' + id + '" > ' + categories[i].nameEng + '</label>'
+            }
+            $('#catchklist').append(list);
+        }
+        function SelectCategories(id, event) {
+            var foundIndex = categories.findIndex(x => x.id == id);
+            if (event.checked) {
+                categories[foundIndex].isSelected = true;
+            }
+            else {
+                categories[foundIndex].isSelected = false;
+            }
+        }
+        function SaveBrandCategory() {
+            var selectedcategoryid = [];
+            var selected = categories.filter(function (item) { return item.isSelected === true; });
+            for (var i = 0; i < selected.length; i++) {
+                selectedcategoryid.push(selected[i].id);
+            }
+            var reqObj = {
+                BrandId: $('#BrandId').val() ? Number($('#BrandId').val()) : undefined,
+                Categories: selectedcategoryid
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AddUpdateBrandCategory")',
+                dataType: 'json',
+                data: reqObj,
+                success: function (data) {
+                    if (data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'Role Menu Mapping Successful!!'
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Not Saved!!'
+                        })
+                    }
+                },
+                error: function (ex) {
+
+                }
+            });
+        }
+        function SelectAll(event) {
+            AddCheckBoxes(true);
+        }
+
+    </script>
+}
