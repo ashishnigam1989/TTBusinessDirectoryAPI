@@ -39,6 +39,6 @@ namespace ApplicationService.IServices
 
         Task<GetResults> GetSearchResults(string searchTerm, int countryId);
 
-        Task<GetResults> GetResultsForSearchPage(string searchTerm, int countryId);
+        Task<GetResults> GetSearchPageResult(string searchTerm, int countryId);
     }
 }

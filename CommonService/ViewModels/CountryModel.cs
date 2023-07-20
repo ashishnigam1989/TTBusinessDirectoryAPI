@@ -10,6 +10,7 @@ namespace CommonService.ViewModels
         public string CountryCode { get; set; }
         public string CountryNameEng { get; set; }
         public string CurrencyCode { get; set; }
+        public string CountryCodeNumber { get; set; }
     }
 
     public class CountryCodeModel

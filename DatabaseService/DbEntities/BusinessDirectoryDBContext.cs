@@ -58,6 +58,8 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<SearchModel> SearchModel { get; set; }
 
+        public virtual DbSet<SearchPageModel> SearchPageModel { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -858,6 +860,11 @@ namespace DatabaseService.DbEntities
             });
 
             modelBuilder.Entity<SearchModel>(entity =>
+            {
+                entity.HasNoKey();
+            });
+
+            modelBuilder.Entity<SearchPageModel>(entity =>
             {
                 entity.HasNoKey();
             });

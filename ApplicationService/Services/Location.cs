@@ -26,14 +26,16 @@ namespace ApplicationService.Services
         #region Country
         public async Task<List<CountryModel>> GetMasterCountries()
         {
-            var countries = _dbContext.Country
-                .Where(w => w.IsDeleted == false)
+            var countries = _dbContext.Country.Join(_dbContext.CountryCode, c => c.Id, cc => cc.CountryId, (c, cc) => new { c, cc })
+                .Where(w => w.c.IsDeleted == false)
                 .Select(s => new CountryModel
                 {
-                    Id = s.Id,
-                    CountryCode = s.CountryCode,
-                    CountryNameEng = s.CountryNameEng,
-                    CurrencyCode = s.CurrencyCode
+                    Id = s.c.Id,
+                    CountryCode = s.c.CountryCode,
+                    CountryNameEng = s.c.CountryNameEng,
+                    CurrencyCode = s.c.CurrencyCode,
+                    CountryCodeNumber = s.cc.CodeName
+                    
                 }).ToList();
             return await Task.FromResult(countries);
         }
