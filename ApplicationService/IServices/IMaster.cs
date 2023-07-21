@@ -38,5 +38,7 @@ namespace ApplicationService.IServices
         #endregion
 
         Task<GetResults> GetSearchResults(string searchTerm, int countryId);
+
+        Task<GetResults> GetSearchPageResult(string searchTerm, int countryId);
     }
 }

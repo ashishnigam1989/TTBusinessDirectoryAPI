@@ -12,7 +12,7 @@ namespace CommonService.RequestModel
         public long Id { get; set; }
         public string CompanyName { get; set; }
         public string CompanyAddress { get; set; }
-        public int DistrictId { get; set; }
+        public int? DistrictId { get; set; }
         public string Logo { get; set; }
         public string Pobox { get; set; }
         public int EmployeeNumber { get; set; }

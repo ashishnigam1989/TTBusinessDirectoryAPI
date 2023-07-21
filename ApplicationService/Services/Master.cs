@@ -557,6 +557,18 @@ namespace ApplicationService.Services
 
         }
 
+        public async Task<GetResults> GetSearchPageResult(string searchTerm, int countryId)
+        {
+            var queryResult = await _dbContext.SearchPageModel.FromSqlRaw("EXEC [usp_GetSearchResult] {0}, {1}, {2}", searchTerm, countryId, true).ToListAsync();
+
+            GetResults result = new GetResults
+            {
+                Data = queryResult,
+                Total = queryResult.Count
+            };
+            return await Task.FromResult(result);
+        }
+
         public async Task<GetResults> AddUpdateDistrict(DistrictRequestModel dreqmodel)
         {
             GetResults result = new GetResults();
@@ -599,6 +611,6 @@ namespace ApplicationService.Services
             result = new GetResults { Data = alldistrict, Message = "Districts found", IsSuccess = true, Total = alldistrict.Count() };
             return await Task.FromResult(result);
         }
-     
+   
     }
 }
