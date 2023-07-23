@@ -114,6 +114,7 @@ namespace ApplicationService.Services
                 transaction.Commit();
                 getResults.IsSuccess = true;
                 getResults.Message = "Free listing added successfully.";
+                getResults.Data = "Free listing added successfully.";
                 return getResults;
             }
         }

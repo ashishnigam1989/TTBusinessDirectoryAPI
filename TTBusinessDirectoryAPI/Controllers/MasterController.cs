@@ -115,9 +115,8 @@ namespace TTBusinessDirectoryAPI.Controllers
             try
             {
                 logger.Info("Going to get districts.");
-                var regions = await _location.GetDistricts(regionId,0,100,"");
-                var total=0;
-                getResults = new GetResults(true, "Get Districts", regions, total);
+                var districtModels = await _location.GetMasterDistricts(regionId);
+                getResults = new GetResults(true, "Get Districts", districtModels, districtModels.Count);
                 logger.Info("Get Districts");
             }
             catch (Exception ex)
