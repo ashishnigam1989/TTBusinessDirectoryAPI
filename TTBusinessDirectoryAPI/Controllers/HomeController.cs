@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.Authorization;
 using TTBusinessDirectoryAPI.Extensions;
 using ApplicationService.Services;
 using CommonService.Enums;
+using CommonService.Constants;
+using CommonService.Helpers;
+using System.Collections.Generic;
+using System.IO;
 
 namespace TTBusinessDirectoryAPI.Controllers
 {
@@ -128,6 +132,47 @@ namespace TTBusinessDirectoryAPI.Controllers
                 logger.Error(ex.Message);
             }
             return await Task.FromResult(getResults);
+        }
+
+
+        [HttpPost]
+        [Route("UploadImage")]
+        public async Task<GetResults> UploadImage()
+        {
+            var imageList = new List<string>();
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    var imgType = (EnumImageType)Enum.Parse(typeof(EnumImageType), Convert.ToString(Request.Form["imgtype"]));
+                    string filetempPath = Helper.GetFileUploadDetails(imgType);
+                    string tempPath = CommonConstants.FileTempPath + "/" + filetempPath;
+                    if (!Directory.Exists(tempPath))
+                    {
+                        Directory.CreateDirectory(tempPath);
+                    }
+                    var postedFile = Request.Form.Files[0];
+                    if (postedFile != null)
+                    {
+                        string newName = string.Empty;
+                        newName = DateTime.Now.ToString("ddMMyyyyhhmmss") + "_" + postedFile.FileName;
+                        string newPath = Path.Combine(tempPath, newName);
+                        using (var stream = new FileStream(newPath, FileMode.Create))
+                        {
+                            await postedFile.CopyToAsync(stream);
+                            imageList.Add(filetempPath + newName);
+                            stream.Flush();
+                        }
+                    }
+                }
+                return new GetResults { IsSuccess = true, Data = imageList, Message = "Success" };
+            }
+            catch (Exception ex)
+            {
+                logger.Info("UploadController--> Upload: An error occured ");
+                logger.Error(ex);
+                return new GetResults { IsSuccess = false, Message = "Failed" };
+            }
         }
     }
 }
