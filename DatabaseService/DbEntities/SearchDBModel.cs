@@ -4,13 +4,13 @@ using System.Text;
 
 namespace DatabaseService.DbEntities
 {
-    public partial class SearchModel
+    public partial class SearchDBModel
     {
         public string Type { get; set; }
         public string Name { get; set; }
     }
 
-    public partial class SearchPageModel
+    public partial class SearchPageDBModel
     {
         public string Type { get; set; }
         public long Id { get; set; }
