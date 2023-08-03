@@ -8,6 +8,7 @@ namespace DatabaseService.DbEntities
     {
         public string Type { get; set; }
         public string Name { get; set; }
+        public Int64 Id { get; set; }
     }
 
     public partial class SearchPageDBModel
