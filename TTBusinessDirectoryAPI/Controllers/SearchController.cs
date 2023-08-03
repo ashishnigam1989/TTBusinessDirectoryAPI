@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System;
 using ApplicationService.IServices;
 using NLog;
+using CommonService.RequestModel;
 
 namespace TTBusinessDirectoryAPI.Controllers
 {
@@ -20,15 +21,15 @@ namespace TTBusinessDirectoryAPI.Controllers
             _master = master;
         }
 
-        [HttpGet]
-        [Route("GetSearchPageResult/{searchStr}/{countryId}")]
-        public async Task<GetResults> GetSearchPageResult(string searchStr, int countryId)
+        [HttpPost]
+        [Route("GetSearchPageResult")]
+        public async Task<GetResults> GetSearchPageResult(SearchRequestModel searchRequestModel)
         {
             GetResults getResults = new GetResults();
             try
             {
                 logger.Info("Going to get search results.");
-                getResults = await _master.GetSearchPageResult(searchStr, countryId);
+                getResults = await _master.GetSearchPageResult(searchRequestModel);
                 getResults.IsSuccess = true;
                 getResults.Message = "Search Result";
                 logger.Info("Get Search Results");

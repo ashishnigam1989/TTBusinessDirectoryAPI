@@ -56,9 +56,9 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<UserRoles> UserRoles { get; set; }
         public virtual DbSet<UserSocialLogins> UserSocialLogins { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<SearchModel> SearchModel { get; set; }
+        public virtual DbSet<SearchDBModel> SearchModel { get; set; }
 
-        public virtual DbSet<SearchPageModel> SearchPageModel { get; set; }
+        public virtual DbSet<SearchPageDBModel> SearchPageModel { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -859,12 +859,12 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.PasswordResetCode).HasMaxLength(328);
             });
 
-            modelBuilder.Entity<SearchModel>(entity =>
+            modelBuilder.Entity<SearchDBModel>(entity =>
             {
                 entity.HasNoKey();
             });
 
-            modelBuilder.Entity<SearchPageModel>(entity =>
+            modelBuilder.Entity<SearchPageDBModel>(entity =>
             {
                 entity.HasNoKey();
             });

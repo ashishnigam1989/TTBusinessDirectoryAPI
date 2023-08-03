@@ -20,7 +20,11 @@ namespace ApplicationService.Services
         public Master(BusinessDirectoryDBContext dBContext, IMapper mapper)
         {
             _dbContext = dBContext;
-            _mapper = mapper;
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<SearchPageDBModel, SearchViewModel>();
+            });
+            _mapper = new Mapper(config);
         }
 
         public async Task<GetResults> GetRoles(int page, int limit, string searchValue)
@@ -557,14 +561,31 @@ namespace ApplicationService.Services
 
         }
 
-        public async Task<GetResults> GetSearchPageResult(string searchTerm, int countryId)
+        public async Task<GetResults> GetSearchPageResult(SearchRequestModel searchRequest)
         {
-            var queryResult = await _dbContext.SearchPageModel.FromSqlRaw("EXEC [usp_GetSearchResult] {0}, {1}, {2}", searchTerm, countryId, true).ToListAsync();
+            string type = string.Empty;
+            if (searchRequest.Types.Count == 1 && searchRequest.Types.First() != "all")
+                type = searchRequest.Types.First();
+            var query = _dbContext.SearchPageModel.FromSqlRaw("EXEC [usp_GetSearchPageResult] {0}, {1}, {2}, {3}, {4}, {5}", 
+                searchRequest.SearchTerm, 
+                searchRequest.CountryId,
+                searchRequest.RegionId,
+                type,
+                searchRequest.Sorting,
+                searchRequest.Verified).AsEnumerable();
+
+            if(searchRequest.Types.Count > 1) {
+                query = query.Where(q => searchRequest.Types.Contains(q.Type));
+            }
+            //var queryResult = query.ToList();
+
+            var searchResults = _mapper.Map<List<SearchViewModel>>(query
+                .Skip(searchRequest.Skip).Take(searchRequest.Take).ToList());
 
             GetResults result = new GetResults
             {
-                Data = queryResult,
-                Total = queryResult.Count
+                Data = new SearchResponseModel { SearchResults = searchResults, Total = query.Count() },
+                Total = searchResults.Count
             };
             return await Task.FromResult(result);
         }
