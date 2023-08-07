@@ -28,14 +28,16 @@ namespace TTBusinessDirectoryAPI.Controllers
         private IMaster _master;
         private IListing _listing;
         private IAccount _account;
+        private ICompanies _company;
         private readonly IInsight _insights;
-        public HomeController(IMaster master, IListing listing, IAccount account, IInsight insights)
+        public HomeController(IMaster master, IListing listing, IAccount account, IInsight insights, ICompanies company)
         {
             logger = LogManager.GetLogger("Home");
             _master = master;
             _listing = listing;
             _account = account;
             _insights = insights;
+            _company = company;
         }
 
         [HttpGet]
@@ -173,6 +175,25 @@ namespace TTBusinessDirectoryAPI.Controllers
                 logger.Error(ex);
                 return new GetResults { IsSuccess = false, Message = "Failed" };
             }
+        }
+
+        [HttpGet]
+        [Route("GetAllKeywords")]
+        public async Task<GetResults> GetAllKeywords()
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                logger.Info($"Going to get keywords.");
+                getResults = await _company.GetAllKeywords();
+                return getResults;
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
         }
     }
 }

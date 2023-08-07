@@ -374,7 +374,7 @@ namespace ApplicationService.Services
 
         }
 
-        public async Task<GetResults> GetFeaturedCompanies()
+        public async Task<GetResults> GetFeaturedCompanies(int limit)
         {
             List<CompanyModel> companylist = await _dbContext.Company.Where(w => w.IsPublished.Value && w.IsFeatured.Value).Select(s => new CompanyModel
             {
@@ -383,7 +383,7 @@ namespace ApplicationService.Services
                 Logo = s.Logo,
                 PrimaryWebsite = s.PrimaryWebsite,
                 id = s.Id
-            }).Distinct().OrderByDescending(o => o.id).Take(10).ToListAsync();
+            }).Distinct().OrderByDescending(o => o.id).Take(limit).ToListAsync();
 
             GetResults uobj = new GetResults
             {
@@ -1234,6 +1234,20 @@ namespace ApplicationService.Services
             result.Message = "Company Gallery Found.";
             result.Data = cb;
             result.Total = 1;
+            return await Task.FromResult(result);
+        }
+
+        public async Task<GetResults> GetAllKeywords()
+        {
+            GetResults result = new GetResults { IsSuccess = true, Message = "Keywords fetched."};
+            var cb = await _dbContext.Company.Where(w => w.IsFeatured.Value && !w.IsDeleted && !string.IsNullOrEmpty(w.MetaTitle))
+                .Select(s => new CompanyKewordModel { 
+                    //CompanyId = s.Id,
+                    Keyword = s.MetaTitle
+                }).Distinct().ToListAsync();
+
+            result.Data = cb;
+            result.Total = cb.Count;
             return await Task.FromResult(result);
         }
         #endregion

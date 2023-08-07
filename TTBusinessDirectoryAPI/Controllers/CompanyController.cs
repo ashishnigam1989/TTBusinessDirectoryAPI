@@ -286,7 +286,7 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = await _company.GetFeaturedCompanies();
+                getResults = await _company.GetFeaturedCompanies(limit);
                 logger.Info(getResults.Message);
                 getResults.IsSuccess = true;
                 getResults.Message = "Featured Company List";
