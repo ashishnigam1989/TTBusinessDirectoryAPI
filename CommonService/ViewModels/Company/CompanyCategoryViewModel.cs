@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonService.ViewModel
+namespace CommonService.ViewModels.Company
 {
     public class CompanyCategoryViewModel
     {

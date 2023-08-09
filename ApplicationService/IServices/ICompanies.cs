@@ -53,5 +53,7 @@ namespace ApplicationService.IServices
         Task<GetResults> GetCompanyGalleryById(int id);
 
         Task<GetResults> GetAllKeywords();
+
+        Task<GetResults> GetCompanyDetailsById(long companyId);
     }
 }

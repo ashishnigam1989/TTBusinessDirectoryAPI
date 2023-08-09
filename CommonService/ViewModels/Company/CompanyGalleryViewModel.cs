@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonService.ViewModels
+namespace CommonService.ViewModels.Company
 {
     public class CompanyGalleryViewModel
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonService.ViewModels
+namespace CommonService.ViewModels.Company
 {
     //public class CompanyModel
     //{
@@ -77,6 +77,53 @@ namespace CommonService.ViewModels
         public string PrimaryWebsite { get; set; }
         public string Logo { get; set; }
 
+
+    }
+
+    public class CompanyDetailModel
+    {
+        public CompanyDetailModel()
+        {
+            CompanyProducts = new List<CompanyProductViewModel>();
+            CompanyServices = new List<CompanyServiceViewModel>();
+            CompanyTeams = new List<CompanyTeamViewModel>();
+            CompanyAwards = new List<CompanyAwardViewModel> ();
+            CompanyAddresses = new List<CompanyAddressViewModel>();
+            CompanyEvents = new List<CompanyEventViewModel>();
+            CompanyArticles = new List<CompanyNewsArticleViewModel>();
+            CompanyVideos = new List<CompanyVideoViewModel>();
+        }
+        public long Id { get; set; }
+        public string NameEng { get; set; }
+        public string NameArb { get; set; }
+        public string PrimaryPhone { get; set; }
+        public string PrimaryEmail { get; set; }
+        public string ShortDescriptionEng { get; set; }
+        public string DescriptionEng { get; set; }
+        public DateTime? EstablishmentDate { get; set; }
+        public string PrimaryWebsite { get; set; }
+        public string Logo { get; set; }
+        public string MetaKeywords { get; set; }
+        public string MetaDescription { get; set; }
+        public decimal OverallRating { get; set; }
+        public long TotalReviews { get; set; }
+        public string PrimaryFax { get; set; }
+        public bool? IsVerified { get; set; }
+        public string FacebookUrl { get; set; }
+        public string LinkedInUrl { get; set; }
+        public string TwitterUrl { get; set; }
+        public string GooglePlusUrl { get; set; }
+        public string InstagramUrl { get; set; }
+        public string MetaTitle { get; set; }
+        public List<CompanyProductViewModel> CompanyProducts { get; set; }
+        public List<CompanyServiceViewModel> CompanyServices { get; set; }
+        public List<CompanyBrandViewModel> CompanyBrands { get; set; }
+        public List<CompanyTeamViewModel> CompanyTeams { get; set; }
+        public List<CompanyAwardViewModel> CompanyAwards { get; set; }
+        public List<CompanyAddressViewModel> CompanyAddresses { get; set; }
+        public List<CompanyEventViewModel> CompanyEvents { get; set; }
+        public List<CompanyNewsArticleViewModel> CompanyArticles { get; set; }
+        public List<CompanyVideoViewModel> CompanyVideos { get; set; }
 
     }
 }
