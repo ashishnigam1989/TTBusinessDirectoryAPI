@@ -1428,6 +1428,55 @@ namespace TTBusinessAdminPanel.Controllers
             return Ok(null);
 
         }
+        public IActionResult DeleteFreeListing(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteFreeListing(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("FreeListing", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("Offer");
+        }
+
+        public IActionResult ApproveRejectFreeListing(int id)
+        {
+            try
+            {
+                var resp = _company.ApproveRejectFreeListingCompany(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("FreeListing", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("Offer");
+        }
 
         #endregion
 

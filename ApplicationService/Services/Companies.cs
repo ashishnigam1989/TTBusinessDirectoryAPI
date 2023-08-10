@@ -1552,15 +1552,16 @@ namespace ApplicationService.Services
         public async Task<GetResults> GetFreeListing(int page, int limit, string searchValue)
         {
             GetResults result = new GetResults();
-            var obj = _dbContext.FreeListing.Where(w => !string.IsNullOrEmpty(searchValue) ? w.CompanyName.ToLower().Contains(searchValue.ToLower()) : w.CompanyName == w.CompanyName).Select(s => new CompanyFreeListingViewModel
-            {
-                Id = s.Id,
-                CompanyName = s.CompanyName,
-                CompanyAddress = s.CompanyAddress,
-                CompanyPhone = s.CompanyPhone,
-                IsActive = s.IsActive,
-                CreationTime = s.CreationTime
-            }).Skip(page * limit).Take(limit).ToListAsync().Result;
+            var obj = _dbContext.FreeListing.Where(w =>w.IsDeleted==false && (!string.IsNullOrEmpty(searchValue) ? w.CompanyName.ToLower().Contains(searchValue.ToLower()) : w.CompanyName == w.CompanyName))
+                                            .Select(s => new CompanyFreeListingViewModel
+                                            {
+                                                Id = s.Id,
+                                                CompanyName = s.CompanyName,
+                                                CompanyAddress = s.CompanyAddress,
+                                                CompanyPhone = s.CompanyPhone,
+                                                IsActive = s.IsActive,
+                                                CreationTime = s.CreationTime
+                                            }).Skip(page * limit).Take(limit).ToListAsync().Result;
             var tot = _dbContext.FreeListing.Where(w => w.IsDeleted == false).CountAsync().Result;
 
 
@@ -1568,6 +1569,65 @@ namespace ApplicationService.Services
             result.Message = "Free Listing.";
             result.Data = obj;
             result.Total = tot;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> ApproveRejectFreeListingCompany(int id)
+        {
+            GetResults gobj = new GetResults();
+            var cdetail = _dbContext.FreeListing.Where(w => w.Id == id).FirstOrDefaultAsync().Result;
+            if (cdetail != null)
+            {
+                bool isactive = cdetail.IsActive.HasValue ? cdetail.IsActive.Value : false;
+                if (!isactive)
+                {
+                    cdetail.IsActive = true;
+                    gobj = new GetResults()
+                    {
+                        IsSuccess = true,
+                        Message = "Company Freelisting Approved Successfully."
+                    };
+                }
+                else
+                {
+                    cdetail.IsActive = false;
+                    gobj = new GetResults()
+                    {
+                        IsSuccess = true,
+                        Message = "Company Freelisting Rejected Successfully."
+                    };
+                }
+                cdetail.LastModificationTime = DateTime.Now;
+                _dbContext.SaveChanges();
+                
+            }
+            else
+            {
+                gobj = new GetResults()
+                {
+                    IsSuccess = false,
+                    Message = "Company FreeListing Details Not Found."
+                };
+            }
+            return await Task.FromResult(gobj);
+
+        }
+        public async Task<GetResults> DeleteFreeListing(int Id)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.FreeListing.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj != null)
+            {
+                csObj.IsDeleted = true;
+                csObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Freelisting Deleted.";
+            }
+            else
+            {
+                result.Message = "Company Freelisting Not Found.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
             return await Task.FromResult(result);
 
         }

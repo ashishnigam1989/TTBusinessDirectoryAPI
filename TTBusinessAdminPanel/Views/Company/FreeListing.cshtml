@@ -82,9 +82,15 @@
                     },
                     {
                         "render": function (data, row, d) {
-                            var btns = "<a href='/Company/EditCompanyBanner/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " +
-                                "<a  href='/Company/DeleteCompanyBanner/" + d.id + "' class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a> | ";
-                            "<a  href='/Company/DeleteCompanyBanner/" + d.id + "' class='icon' style='color:red' title='Approve'><i class='zmdi zmdi-delete'></i></a>";
+                            var btns = "<a  href='/Company/DeleteFreeListing/" + d.id + "' class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a> | ";
+
+                            if (d.isActive == true) {
+                                       btns+= "<a  href='/Company/ApproveRejectFreeListing/" + d.id + "' class='icon' style='color:red' title='Reject'><i class='zmdi zmdi-close-circle'></i></a>";
+                            }
+                            else{
+                                       btns+= "<a  href='/Company/ApproveRejectFreeListing/" + d.id + "' class='icon' style='color:red' title='Approve'><i class='zmdi zmdi-assignment-check'></i></a>";
+
+                            }
                             return btns;
                         }
                     }
