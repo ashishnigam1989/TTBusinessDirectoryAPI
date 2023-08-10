@@ -35,7 +35,7 @@ namespace ApplicationService.Services
                     CountryNameEng = s.c.CountryNameEng,
                     CurrencyCode = s.c.CurrencyCode,
                     CountryCodeNumber = s.cc.CodeName
-                    
+
                 }).ToList();
             return await Task.FromResult(countries);
         }
@@ -107,7 +107,7 @@ namespace ApplicationService.Services
             else
             {
                 var regionValid = _dbContext.Region.Where(w => w.NameEng == regionRequest.NameEng && w.CountryId == regionRequest.CountryId && w.Id != regionRequest.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
-                if(regionValid == null)
+                if (regionValid == null)
                 {
                     region.NameEng = regionRequest.NameEng;
                     region.NameArb = regionRequest.NameEng;
@@ -176,7 +176,7 @@ namespace ApplicationService.Services
                     region => region.CountryId,
                     country => country.Id,
                     (region, country) => new { Region = region, Country = country })
-                .Where(w =>w.Region.IsDeleted == false && w.Region.Id == regionId
+                .Where(w => w.Region.IsDeleted == false && w.Region.Id == regionId
                 ).Select(s => new RegionModel
                 {
                     Id = s.Region.Id,
@@ -211,11 +211,11 @@ namespace ApplicationService.Services
             int total = 0;
             var regionList = _dbContext.Region
                 .Join(_dbContext.Country,
-                    region=>region.CountryId,
-                    country=>country.Id,
+                    region => region.CountryId,
+                    country => country.Id,
                     (region, country) => new { Region = region, Country = country })
-                .Where(w=> 
-               (!string.IsNullOrEmpty(searchValue) ? w.Region.NameEng.ToLower().Contains(searchValue.ToLower()) : w.Region.NameEng == w.Region.NameEng) &&
+                .Where(w =>
+               (!string.IsNullOrEmpty(searchValue) ? w.Region.NameEng.ToLower().Contains(searchValue.ToLower()) : w.Region.NameEng == w.Region.NameEng) ||
                (!string.IsNullOrEmpty(searchValue) ? w.Country.CountryNameEng.ToLower().Contains(searchValue.ToLower()) : w.Country.CountryNameEng == w.Country.CountryNameEng) && 
                w.Region.IsDeleted == false
                 ).Select(s => new RegionModel

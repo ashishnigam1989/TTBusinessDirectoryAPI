@@ -55,5 +55,18 @@ namespace ApplicationService.IServices
         Task<GetResults> GetAllKeywords();
 
         Task<GetResults> GetCompanyDetailsById(long companyId);
+
+        Task<GetResults> AddEditCompanyoffers(CompanyOffersRequestModel csModel);
+        Task<GetResults> DeleteCompanyOffer(int Id);
+        Task<GetResults> GetAllCompanyOffer(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyOfferById(int id);
+
+        Task<GetResults> AddEditCompanyLink(CompanyLinksRequestModel csModel);
+        Task<GetResults> DeleteCompanyLinks(int Id);
+        Task<GetResults> GetAllCompanyLink(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyLinkById(int id);
+
+
+        Task<GetResults> GetFreeListing(int page, int limit, string searchValue);
     }
 }

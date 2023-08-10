@@ -4,8 +4,11 @@ using CommonService.RequestModel;
 using CommonService.ViewModels;
 using CommonService.ViewModels.Company;
 using DatabaseService.DbEntities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -1023,7 +1026,7 @@ namespace ApplicationService.Services
         public async Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue)
         {
             GetResults result = new GetResults();
-            var cpList = _dbContext.CompanyBanners.Join(_dbContext.Company, b => b.CompanyId, c => c.Id, (b, c) => new { b,c}).
+            var cpList = _dbContext.CompanyBanners.Join(_dbContext.Company, b => b.CompanyId, c => c.Id, (b, c) => new { b, c }).
                             Where(w => w.b.IsDeleted == false).
                             Select(s => new CompanyBannerViewModel
                             {
@@ -1033,7 +1036,7 @@ namespace ApplicationService.Services
                                 ImageArb = s.b.ImageArb,
                                 ImageEng = s.b.ImageEng,
                                 CompanyId = s.b.CompanyId,
-                                CompanyName=s.c.NameEng
+                                CompanyName = s.c.NameEng
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
             var tot = _dbContext.CompanyBanners.Where(w => w.IsDeleted == false).CountAsync().Result;
@@ -1051,7 +1054,7 @@ namespace ApplicationService.Services
             var cb = _dbContext.CompanyBanners.Where(w => w.Id == id && w.IsDeleted == false)
                                                    .Select(s => new CompanyBannerViewModel
                                                    {
-                                                       Id=s.Id,
+                                                       Id = s.Id,
                                                        BannerNameEng = s.BannerNameEng,
                                                        BannerNameArb = s.BannerNameArb,
                                                        CompanyId = s.CompanyId,
@@ -1087,13 +1090,13 @@ namespace ApplicationService.Services
                     File = csModel.File,
                     CompanyMenuId = csModel.CompanyMenuId,
                     TitleEng = csModel.TitleEng,
-                    TitleArb= csModel.TitleArb,
-                    ShortDescriptionEng= csModel.ShortDescriptionEng,
-                    ShortDescriptionArb=csModel.ShortDescriptionArb,
-                    DescriptionEng= csModel.DescriptionEng,
-                    DescriptionArb= csModel.DescriptionArb,
-                    Target= csModel.Target,
-                    TargetUrl= csModel.TargetUrl,
+                    TitleArb = csModel.TitleArb,
+                    ShortDescriptionEng = csModel.ShortDescriptionEng,
+                    ShortDescriptionArb = csModel.ShortDescriptionArb,
+                    DescriptionEng = csModel.DescriptionEng,
+                    DescriptionArb = csModel.DescriptionArb,
+                    Target = csModel.Target,
+                    TargetUrl = csModel.TargetUrl,
                     IsPublished = csModel.IsPublished,
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
@@ -1108,22 +1111,22 @@ namespace ApplicationService.Services
             }
             else
             {
-                    csObj.Image = csModel.Image;
-                    csObj.YoutubeVideoUrl = csModel.YoutubeVideoUrl;
-                    csObj.File = csModel.File;
-                    csObj.CompanyMenuId = csModel.CompanyMenuId;
-                    csObj.TitleEng = csModel.TitleEng;
-                    csObj.TitleArb = csModel.TitleArb;
-                    csObj.ShortDescriptionEng = csModel.ShortDescriptionEng;
-                    csObj.ShortDescriptionArb = csModel.ShortDescriptionArb;
-                    csObj.DescriptionEng = csModel.DescriptionEng;
-                    csObj.DescriptionArb = csModel.DescriptionArb;
-                    csObj.Target = csModel.Target;
-                    csObj.TargetUrl = csModel.TargetUrl;
-                    csObj.IsPublished = csModel.IsPublished;
-                    csObj.SortOrder = csModel.SortOrder;
-                    csObj.IsDeleted = false;
-                    csObj.CreationTime = DateTime.Now;
+                csObj.Image = csModel.Image;
+                csObj.YoutubeVideoUrl = csModel.YoutubeVideoUrl;
+                csObj.File = csModel.File;
+                csObj.CompanyMenuId = csModel.CompanyMenuId;
+                csObj.TitleEng = csModel.TitleEng;
+                csObj.TitleArb = csModel.TitleArb;
+                csObj.ShortDescriptionEng = csModel.ShortDescriptionEng;
+                csObj.ShortDescriptionArb = csModel.ShortDescriptionArb;
+                csObj.DescriptionEng = csModel.DescriptionEng;
+                csObj.DescriptionArb = csModel.DescriptionArb;
+                csObj.Target = csModel.Target;
+                csObj.TargetUrl = csModel.TargetUrl;
+                csObj.IsPublished = csModel.IsPublished;
+                csObj.SortOrder = csModel.SortOrder;
+                csObj.IsDeleted = false;
+                csObj.CreationTime = DateTime.Now;
                 csObj.CreatorUserId = csModel.CreatorUserId;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
@@ -1169,29 +1172,6 @@ namespace ApplicationService.Services
                                 TargetUrl = s.TargetUrl,
                                 IsPublished = s.IsPublished
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
- 
-            //var cpList = _dbContext.CompanyGalleryAttachment.Join(_dbContext.Company, b => b.CompanyMenuId, c => c.Id, (b, c) => new { b, c }).
-            //                Where(w => w.b.IsDeleted == false).
-            //                Select(s => new CompanyGalleryViewModel
-            //                {
-            //                    Id=s.b.Id,
-            //                    Image = s.b.Image,
-            //                    YoutubeVideoUrl = s.b.YoutubeVideoUrl,
-            //                    File = s.b.File,
-            //                    CompanyMenuId = s.b.CompanyMenuId,
-            //                    TitleEng = s.b.TitleEng,
-            //                    TitleArb = s.b.TitleArb,
-            //                    ShortDescriptionEng = s.b.ShortDescriptionEng,
-            //                    ShortDescriptionArb = s.b.ShortDescriptionArb,
-            //                    DescriptionEng = s.b.DescriptionEng,
-            //                    DescriptionArb = s.b.DescriptionArb,
-            //                    Target = s.b.Target,
-            //                    TargetUrl = s.b.TargetUrl,
-            //                    IsPublished = s.b.IsPublished,
-            //                    CompanyName=s.c.NameEng
-
-            //                }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
-
             var tot = _dbContext.CompanyGalleryAttachment.Where(w => w.IsDeleted == false).CountAsync().Result;
 
 
@@ -1299,5 +1279,300 @@ namespace ApplicationService.Services
             result.Total = 1;
             return result;
         }
+
+        #region CompanyOffers
+        public async Task<GetResults> AddEditCompanyoffers(CompanyOffersRequestModel csModel)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyOffers.Where(w => w.Id == csModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj == null)
+            {
+                CompanyOffers cs = new CompanyOffers()
+                {
+                    OfferNameEng = csModel.OfferNameEng,
+                    OfferNameArb = csModel.OfferNameArb,
+                    OfferDescriptionEng = csModel.OfferDescriptionEng,
+                    OfferDescriptionArb = csModel.OfferDescriptionArb,
+                    OfferShortDescriptionEng = csModel.OfferShortDescriptionEng,
+                    OfferShortDescriptionArb = csModel.OfferShortDescriptionArb,
+                    OfferDisplayDate = csModel.OfferDisplayDate,
+                    OfferStartDate = csModel.OfferStartDate,
+                    OfferEndDate = csModel.OfferEndDate,
+                    CompanyId = csModel.CompanyId,
+                    OldPrice = csModel.OldPrice,
+                    Price = csModel.Price,
+                    Image = csModel.Image,
+                    IsPublished = csModel.IsPublished,
+                    SortOrder = csModel.SortOrder,
+                    IsDeleted = false,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = csModel.CreatorUserId
+
+                };
+                _dbContext.CompanyOffers.Add(cs);
+                _dbContext.SaveChanges();
+                result.Data = cs.Id;
+                result.Message = "Company Offers Added.";
+            }
+            else
+            {
+                csObj.OfferNameEng = csModel.OfferNameEng;
+                csObj.OfferNameArb = csModel.OfferNameArb;
+                csObj.OfferDescriptionEng = csModel.OfferDescriptionEng;
+                csObj.OfferDescriptionArb = csModel.OfferDescriptionArb;
+                csObj.OfferShortDescriptionEng = csModel.OfferShortDescriptionEng;
+                csObj.OfferShortDescriptionArb = csModel.OfferShortDescriptionArb;
+                csObj.OfferDisplayDate = csModel.OfferDisplayDate;
+                csObj.OfferStartDate = csModel.OfferStartDate;
+                csObj.OfferEndDate = csModel.OfferEndDate;
+                csObj.CompanyId = csModel.CompanyId;
+                csObj.OldPrice = csModel.OldPrice;
+                csObj.Price = csModel.Price;
+                csObj.Image = csModel.Image;
+                csObj.IsPublished = csModel.IsPublished;
+                csObj.SortOrder = csModel.SortOrder;
+                csObj.IsDeleted = false;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.CreatorUserId = csModel.CreatorUserId;
+                _dbContext.SaveChanges();
+                result.Data = csObj.Id;
+                result.Message = "Company offer Updated.";
+            }
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyOffer(int Id)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyOffers.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj != null)
+            {
+                csObj.IsDeleted = true;
+                csObj.DeletionTime = DateTime.Now;
+                result.Message = "Company offer Deleted.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyOffer(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var cpList = _dbContext.CompanyOffers.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.IsDeleted == false).
+                            Select(s => new CompanyOffersViewModel
+                            {
+                                Id = s.o.Id,
+                                OfferNameEng = s.o.OfferNameEng,
+                                OfferNameArb = s.o.OfferNameArb,
+                                OfferDescriptionEng = s.o.OfferDescriptionEng,
+                                OfferDescriptionArb = s.o.OfferDescriptionArb,
+                                OfferShortDescriptionEng = s.o.OfferShortDescriptionEng,
+                                OfferShortDescriptionArb = s.o.OfferShortDescriptionArb,
+                                OfferDisplayDate = s.o.OfferDisplayDate,
+                                OfferStartDate = s.o.OfferStartDate,
+                                OfferEndDate = s.o.OfferEndDate,
+                                CompanyId = s.o.CompanyId,
+                                OldPrice = s.o.OldPrice,
+                                Price = s.o.Price,
+                                Image = s.o.Image,
+                                IsPublished = s.o.IsPublished,
+                                SortOrder = s.o.SortOrder,
+                                IsDeleted = false,
+                                CreationTime = DateTime.Now,
+                                CreatorUserId = s.o.CreatorUserId,
+                                CompanyName = s.c.NameEng
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+            var tot = _dbContext.CompanyOffers.Where(w => w.IsDeleted == false).CountAsync().Result;
+
+
+            result.IsSuccess = true;
+            result.Message = "Company Offers List.";
+            result.Data = cpList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyOfferById(int id)
+        {
+            GetResults result = new GetResults();
+            var cb = _dbContext.CompanyOffers.Where(w => w.Id == id && w.IsDeleted == false)
+                                                   .Select(s => new CompanyOffersViewModel
+                                                   {
+                                                       Id = s.Id,
+                                                       OfferNameEng = s.OfferNameEng,
+                                                       OfferNameArb = s.OfferNameArb,
+                                                       OfferDescriptionEng = s.OfferDescriptionEng,
+                                                       OfferDescriptionArb = s.OfferDescriptionArb,
+                                                       OfferShortDescriptionEng = s.OfferShortDescriptionEng,
+                                                       OfferShortDescriptionArb = s.OfferShortDescriptionArb,
+                                                       OfferDisplayDate = s.OfferDisplayDate,
+                                                       OfferStartDate = s.OfferStartDate,
+                                                       OfferEndDate = s.OfferEndDate,
+                                                       CompanyId = s.CompanyId,
+                                                       OldPrice = s.OldPrice,
+                                                       Price = s.Price,
+                                                       Image = s.Image,
+                                                       IsPublished = s.IsPublished,
+                                                       SortOrder = s.SortOrder,
+                                                       IsDeleted = false,
+                                                       CreationTime = DateTime.Now,
+                                                       CreatorUserId = s.CreatorUserId
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Company Offer Found.";
+            result.Data = cb;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
+
+        #region CompanyLinks
+        public async Task<GetResults> AddEditCompanyLink(CompanyLinksRequestModel csModel)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyLinks.Where(w => w.Id == csModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj == null)
+            {
+                CompanyLinks cs = new CompanyLinks()
+                {
+
+                    CompanyId = csModel.CompanyId,
+                    LinkNameEng = csModel.LinkNameEng,
+                    LinkNameArb = csModel.LinkNameArb,
+                    EnglishUrl = csModel.EnglishUrl,
+                    ArabicUrl = csModel.ArabicUrl,
+                    Target = csModel.Target,
+                    IsPublished = csModel.IsPublished,
+                    SortOrder = csModel.SortOrder,
+                    IsDeleted = false,
+                    CreationTime = DateTime.Now,
+                    CreatorUserId = csModel.CreatorUserId
+
+                };
+                _dbContext.CompanyLinks.Add(cs);
+                _dbContext.SaveChanges();
+                result.Data = cs.Id;
+                result.Message = "Company Links Added.";
+            }
+            else
+            {
+                csObj.CompanyId = csModel.CompanyId;
+                csObj.LinkNameEng = csModel.LinkNameEng;
+                csObj.LinkNameArb = csModel.LinkNameArb;
+                csObj.EnglishUrl = csModel.EnglishUrl;
+                csObj.ArabicUrl = csModel.ArabicUrl;
+                csObj.Target = csModel.Target;
+                csObj.IsPublished = csModel.IsPublished;
+                csObj.SortOrder = csModel.SortOrder;
+                csObj.IsDeleted = false;
+                csObj.CreationTime = DateTime.Now;
+                csObj.CreatorUserId = csModel.CreatorUserId;
+                _dbContext.SaveChanges();
+                result.Data = csObj.Id;
+                result.Message = "Company Links Updated.";
+            }
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyLinks(int Id)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyLinks.Where(w => w.Id == Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            if (csObj != null)
+            {
+                csObj.IsDeleted = true;
+                csObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Links Deleted.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyLink(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var cpList = _dbContext.CompanyLinks.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.IsDeleted == false).
+                            Select(s => new CompanyLinkViewModel
+                            {
+                                Id = s.o.Id,
+                                CompanyId = s.o.CompanyId,
+                                LinkNameEng = s.o.LinkNameEng,
+                                LinkNameArb = s.o.LinkNameArb,
+                                EnglishUrl = s.o.EnglishUrl,
+                                ArabicUrl = s.o.ArabicUrl,
+                                Target = s.o.Target,
+                                IsPublished = s.o.IsPublished,
+                                SortOrder = s.o.SortOrder,
+                                IsDeleted = false,
+                                CreationTime = DateTime.Now,
+                                CreatorUserId = s.o.CreatorUserId,
+                                CompanyName = s.c.NameEng
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+            var tot = _dbContext.CompanyLinks.Where(w => w.IsDeleted == false).CountAsync().Result;
+
+
+            result.IsSuccess = true;
+            result.Message = "Company Link List.";
+            result.Data = cpList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyLinkById(int id)
+        {
+            GetResults result = new GetResults();
+            var cb = _dbContext.CompanyLinks.Where(w => w.Id == id && w.IsDeleted == false)
+                                                   .Select(s => new CompanyLinkViewModel
+                                                   {
+                                                       Id = s.Id,
+                                                       CompanyId = s.CompanyId,
+                                                       LinkNameEng = s.LinkNameEng,
+                                                       LinkNameArb = s.LinkNameArb,
+                                                       EnglishUrl = s.EnglishUrl,
+                                                       ArabicUrl = s.ArabicUrl,
+                                                       Target = s.Target,
+                                                       IsPublished = s.IsPublished,
+                                                       SortOrder = s.SortOrder,
+                                                       IsDeleted = false,
+                                                       CreationTime = DateTime.Now,
+                                                       CreatorUserId = s.CreatorUserId,
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Company Link Found.";
+            result.Data = cb;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
+
+        #region FreeListing
+
+        public async Task<GetResults> GetFreeListing(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults();
+            var obj = _dbContext.FreeListing.Where(w => !string.IsNullOrEmpty(searchValue) ? w.CompanyName.ToLower().Contains(searchValue.ToLower()) : w.CompanyName == w.CompanyName).Select(s => new CompanyFreeListingViewModel
+            {
+                Id = s.Id,
+                CompanyName = s.CompanyName,
+                CompanyAddress = s.CompanyAddress,
+                CompanyPhone = s.CompanyPhone,
+                IsActive = s.IsActive,
+                CreationTime = s.CreationTime
+            }).Skip(page * limit).Take(limit).ToListAsync().Result;
+            var tot = _dbContext.FreeListing.Where(w => w.IsDeleted == false).CountAsync().Result;
+
+
+            result.IsSuccess = true;
+            result.Message = "Free Listing.";
+            result.Data = obj;
+            result.Total = tot;
+            return await Task.FromResult(result);
+
+        }
+
+        #endregion
     }
 }
+
