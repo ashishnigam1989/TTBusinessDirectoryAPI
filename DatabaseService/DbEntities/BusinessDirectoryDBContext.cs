@@ -2,10 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
-// If you have enabled NRTs for your project, then un-comment the following line:
-// #nullable disable
-
 namespace DatabaseService.DbEntities
 {
     public partial class BusinessDirectoryDBContext : DbContext
@@ -24,17 +20,23 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<CategoryIndustry> CategoryIndustry { get; set; }
         public virtual DbSet<Company> Company { get; set; }
+        public virtual DbSet<CompanyAddress> CompanyAddress { get; set; }
+        public virtual DbSet<CompanyAwards> CompanyAwards { get; set; }
         public virtual DbSet<CompanyBanners> CompanyBanners { get; set; }
         public virtual DbSet<CompanyBrand> CompanyBrand { get; set; }
         public virtual DbSet<CompanyCategory> CompanyCategory { get; set; }
         public virtual DbSet<CompanyDynamicMenu> CompanyDynamicMenu { get; set; }
+        public virtual DbSet<CompanyEvents> CompanyEvents { get; set; }
         public virtual DbSet<CompanyGalleryAttachment> CompanyGalleryAttachment { get; set; }
         public virtual DbSet<CompanyLinks> CompanyLinks { get; set; }
+        public virtual DbSet<CompanyNewsArticle> CompanyNewsArticle { get; set; }
         public virtual DbSet<CompanyOffers> CompanyOffers { get; set; }
         public virtual DbSet<CompanyPackage> CompanyPackage { get; set; }
         public virtual DbSet<CompanyProduct> CompanyProduct { get; set; }
         public virtual DbSet<CompanyReviewLike> CompanyReviewLike { get; set; }
         public virtual DbSet<CompanyService> CompanyService { get; set; }
+        public virtual DbSet<CompanyTags> CompanyTags { get; set; }
+        public virtual DbSet<CompanyTeams> CompanyTeams { get; set; }
         public virtual DbSet<CompanyUsers> CompanyUsers { get; set; }
         public virtual DbSet<CompanyVideos> CompanyVideos { get; set; }
         public virtual DbSet<CompanyVouchers> CompanyVouchers { get; set; }
@@ -73,6 +75,9 @@ namespace DatabaseService.DbEntities
         {
             modelBuilder.Entity<Brand>(entity =>
             {
+                entity.HasIndex(e => e.NameEng)
+                    .HasName("NonClusteredIndex-NameEng");
+
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
@@ -113,6 +118,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<Category>(entity =>
             {
+                entity.HasIndex(e => e.NameEng)
+                    .HasName("NonClusteredIndex-NameEng");
+
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
@@ -155,6 +163,12 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<Company>(entity =>
             {
+                entity.HasIndex(e => e.CountryId)
+                    .HasName("NonClusteredIndex-CountryId");
+
+                entity.HasIndex(e => e.NameEng)
+                    .HasName("NonClusteredIndex-NameEng");
+
                 entity.Property(e => e.Address).HasMaxLength(150);
 
                 entity.Property(e => e.AppleStoreUrl).HasMaxLength(250);
@@ -236,6 +250,54 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.WindowsStoreUrl).HasMaxLength(250);
             });
 
+            modelBuilder.Entity<CompanyAddress>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.AddressDesc)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Contact)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.GoogleLocation).IsUnicode(false);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Website)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<CompanyAwards>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.AwardDesc).IsRequired();
+
+                entity.Property(e => e.AwardTitle)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<CompanyBanners>(entity =>
             {
                 entity.Property(e => e.ArabicUrl).HasColumnName("ArabicURL");
@@ -280,6 +342,48 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<CompanyEvents>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.EndTime)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EventDesc).IsRequired();
+
+                entity.Property(e => e.EventLocationUrl)
+                    .HasColumnName("EventLocationURL")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EventTitle)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EventUrl)
+                    .HasColumnName("EventURL")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.StartDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.StartTime)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<CompanyGalleryAttachment>(entity =>
             {
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
@@ -310,6 +414,28 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.LinkNameEng).HasMaxLength(250);
 
                 entity.Property(e => e.Target).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<CompanyNewsArticle>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.NewsDesc).IsRequired();
+
+                entity.Property(e => e.NewsTitle)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NewsUrl).HasColumnName("NewsURL");
             });
 
             modelBuilder.Entity<CompanyOffers>(entity =>
@@ -352,6 +478,12 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyProduct>(entity =>
             {
+                entity.HasIndex(e => e.CompanyId)
+                    .HasName("NonClusteredIndex-CompanyId");
+
+                entity.HasIndex(e => e.NameEng)
+                    .HasName("NonClusteredIndex-NameEng");
+
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
@@ -392,6 +524,12 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyService>(entity =>
             {
+                entity.HasIndex(e => e.CompanyId)
+                    .HasName("NonClusteredIndex-CompanyId");
+
+                entity.HasIndex(e => e.NameEng)
+                    .HasName("NonClusteredIndex-NameEng");
+
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
@@ -417,6 +555,46 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.ShortDescriptionArb).HasMaxLength(250);
 
                 entity.Property(e => e.ShortDescriptionEng).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<CompanyTags>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.TagName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<CompanyTeams>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Designation)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FullName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<CompanyUsers>(entity =>
@@ -857,16 +1035,16 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.Password).HasMaxLength(256);
 
                 entity.Property(e => e.PasswordResetCode).HasMaxLength(328);
-            });
 
-            modelBuilder.Entity<SearchDBModel>(entity =>
-            {
-                entity.HasNoKey();
-            });
+                modelBuilder.Entity<SearchDBModel>(entity =>
+                {
+                    entity.HasNoKey();
+                });
 
-            modelBuilder.Entity<SearchPageDBModel>(entity =>
-            {
-                entity.HasNoKey();
+                modelBuilder.Entity<SearchPageDBModel>(entity =>
+                {
+                    entity.HasNoKey();
+                });
             });
 
             OnModelCreatingPartial(modelBuilder);
