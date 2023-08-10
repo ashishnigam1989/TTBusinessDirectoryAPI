@@ -1041,7 +1041,7 @@ namespace TTBusinessAdminPanel.Controllers
                 _logger.Error(ex);
                 _notyfService.Error(ex.Message.ToString());
             }
-            return View("AddCompanyService", reqmodel);
+            return View("AddUpdateCompanyGallery", reqmodel);
         }
         public IActionResult EditCompanyGallery(int id)
         {
@@ -1111,17 +1111,327 @@ namespace TTBusinessAdminPanel.Controllers
 
         #endregion
 
-
-
+        #region CompanyOffers
         public IActionResult Offer()
         {
             return View();
         }
+        public IActionResult GetAllCompanyOffers()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyOffer(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyOffersViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
 
+        }
+        public IActionResult AddCompanyOffers()
+        {
+            BindCompany();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyOffers(CompanyOffersRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyoffers(reqmodel).Result;
+                    Helper.MoveFileToS3Server(EnumImageType.OfferImage, Convert.ToInt64(result.Data), reqmodel.Image);
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Offer", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyOffers", reqmodel);
+        }
+        public IActionResult EditCompanyOffers(int id)
+        {
+            CompanyOffersRequestModel cmodel = new CompanyOffersRequestModel();
+            try
+            {
+                BindCompany();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyOfferById(id).Result;
+                    var s = (CompanyOffersViewModel)company.Data;
+                    cmodel = new CompanyOffersRequestModel
+                    {
+                        Id=s.Id,
+                        OfferNameEng = s.OfferNameEng,
+                        OfferNameArb = s.OfferNameArb,
+                        OfferDescriptionEng = s.OfferDescriptionEng,
+                        OfferDescriptionArb = s.OfferDescriptionArb,
+                        OfferShortDescriptionEng = s.OfferShortDescriptionEng,
+                        OfferShortDescriptionArb = s.OfferShortDescriptionArb,
+                        OfferDisplayDate = s.OfferDisplayDate,
+                        OfferStartDate = s.OfferStartDate,
+                        OfferEndDate = s.OfferEndDate,
+                        CompanyId = s.CompanyId,
+                        OldPrice = s.OldPrice,
+                        Price = s.Price,
+                        Image = s.Image,
+                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        SortOrder = s.SortOrder,
+                        IsDeleted = false,
+                        CreationTime = DateTime.Now,
+                        CreatorUserId = s.CreatorUserId
+
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyOffers(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyOffer(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("Offer", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("Offer");
+        }
+
+        #endregion
+
+        #region CompanyLink
         public IActionResult Link()
         {
             return View();
         }
+        public IActionResult GetAllCompanyLink()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyLink(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyLinkViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyLink()
+        {
+            BindCompany();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyLink(CompanyLinksRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyLink(reqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Link", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyLink", reqmodel);
+        }
+        public IActionResult EditCompanyLink(int id)
+        {
+            CompanyLinksRequestModel cmodel = new CompanyLinksRequestModel();
+            try
+            {
+                BindCompany();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyLinkById(id).Result;
+                    var s = (CompanyLinkViewModel)company.Data;
+                    cmodel = new CompanyLinksRequestModel
+                    {
+                        CompanyId = s.CompanyId,
+                        LinkNameEng = s.LinkNameEng,
+                        LinkNameArb = s.LinkNameArb,
+                        EnglishUrl = s.EnglishUrl,
+                        ArabicUrl = s.ArabicUrl,
+                        Target = s.Target,
+                        IsPublished = s.IsPublished,
+                        SortOrder = s.SortOrder,
+                        IsDeleted = false,
+                        CreationTime = DateTime.Now,
+                        CreatorUserId = s.CreatorUserId
+
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyLink(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyLinks(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("Link", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("Offer");
+        }
+
+        #endregion
+
+
+        #region FreeListing
+
+        public IActionResult FreeListing()
+        {
+            return View();
+        }
+        public IActionResult GetAllFreeListing()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetFreeListing(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyFreeListingViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+
+        #endregion
+
+
         public IActionResult Package()
         {
             return View();

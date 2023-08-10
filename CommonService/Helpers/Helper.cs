@@ -93,6 +93,9 @@ namespace CommonService.Helpers
                 case EnumImageType.GalleryFile:
                     uploadPath = CommonConstants.GalleryFile;
                     break;
+                case EnumImageType.OfferImage:
+                    uploadPath = CommonConstants.OfferImages;
+                    break;
                 default:
                     uploadPath = string.Empty;
                     break;

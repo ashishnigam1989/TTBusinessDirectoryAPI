@@ -1,0 +1,233 @@
+﻿@model CommonService.RequestModel.CompanyOffersRequestModel
+
+@{
+    ViewData["Title"] = "Edit Offer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="block-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-7">
+            <h2>Edit Offer</h2>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">Company</li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Offer", "Company")">Offers</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("AddCompanyOffers", "Company")">Edit Offer</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="header">
+                <h2>Add Offer Details</h2>
+            </div>
+            <div class="body">
+                <form id="wizard_with_validation" asp-controller="Company" asp-action="AddUpdateCompanyOffers">
+                    
+                            <input type="hidden" id="Id" name="Id" asp-for="Id" />
+                    <h3>Basic Info</h3>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <img id="img" style="width:250px; height:170px;" />
+                                        <div class="fallback">
+                                            <input name="imageinput" id="imageinput" type="file" multiple />
+                                            <input type="hidden" id="Image" name="Image" asp-for="Image" />
+                                        </div> 
+                                    </div>
+                                    <label class="form-label">Image</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                            <div>
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <select asp-for="CompanyId" name="CompanyId" class="show-tick" required>
+                                            <option value="">Select Company</option>
+                                                @foreach (var company in @ViewBag.Companies)
+                                                {
+                                                    <option value="@company.Value">@company.Text</option>
+                                                }
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="CompanyId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OfferNameEng" type="text" class="form-control" name="OfferNameEng" required>
+                                        <label class="form-label">OfferNameEng</label>
+                                    </div>
+                                    <span asp-validation-for="OfferNameEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group form-float">
+                                        <div class="form-line focused">
+                                        <input asp-for="OfferNameArb" type="text" class="form-control" name="OfferNameArb">
+                                        <label class="form-label">OfferNameArb</label>
+                                    </div>
+                                    <span asp-validation-for="OfferNameArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OfferStartDate" type="date" class="form-control" name="OfferStartDate">
+                                        <label class="form-label focused">Offer Start Date</label>
+                                    </div>
+                                    <span asp-validation-for="OfferStartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OfferEndDate" type="date" class="form-control" name="OfferEndDate">
+                                        <label class="form-label">Offer End Date</label>
+                                    </div>
+                                    <span asp-validation-for="OfferEndDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OfferDisplayDate" type="date" class="form-control" name="OfferDisplayDate">
+                                        <label class="form-label">Offer Display Date</label>
+                                    </div>
+                                    <span asp-validation-for="OfferDisplayDate" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+                          <div class="col-md-3">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="Price" type="number" class="form-control" name="Price">
+                                        <label class="form-label">Price</label>
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OldPrice" type="number" class="form-control" name="OldPrice">
+                                        <label class="form-label">Old Price</label>
+                                    </div>
+                                    <span asp-validation-for="OldPrice" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="SortOrder" type="number" class="form-control" name="SortOrder">
+                                        <label class="form-label">SortOrder</label>
+                                    </div>
+                                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-float">
+                                    <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                    <label for="IsPublished" class="form-label">IsPublished</label>
+                                </div>
+                                <span asp-validation-for="IsPublished" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                    <h3>SEO</h3>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OfferDescriptionEng" type="text" class="form-control" name="OfferDescriptionEng">
+                                        <label class="form-label">Offer Description Eng</label>
+                                    </div>
+                                    <span asp-validation-for="OfferDescriptionEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OfferDescriptionArb" type="text" class="form-control" name="OfferDescriptionArb">
+                                        <label class="form-label">Offer Description Arb</label>
+                                    </div>
+                                    <span asp-validation-for="OfferDescriptionArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OfferShortDescriptionEng" type="text" class="form-control" name="OfferShortDescriptionEng">
+                                        <label class="form-label">Offer Short Description Eng</label>
+                                    </div>
+                                    <span asp-validation-for="OfferShortDescriptionEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="OfferShortDescriptionArb" type="text" class="form-control" name="OfferShortDescriptionArb">
+                                        <label class="form-label">Offer Shor tDescription Arb</label>
+                                    </div>
+                                    <span asp-validation-for="OfferShortDescriptionArb" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+        <script>
+            $(document).ready(function () {
+            $('#img').attr('src', '@Model.DisplayImage');
+                uploadImage();
+            });
+
+            function uploadImage() {
+                $('#imageinput').change(function () {
+                    var formdata = new FormData();
+                    var fileInput = document.getElementById('imageinput');
+                    for (i = 0; i < fileInput.files.length; i++) {
+                        formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                    }
+                    formdata.append("imgtype", "OfferImage");
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/Upload/Upload');
+                    xhr.send(formdata);
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            $('#Image').val(JSON.parse(xhr.responseText)[0]);
+                        }
+                    }
+                    return "";
+                });
+
+            }
+
+        </script>
+    }
