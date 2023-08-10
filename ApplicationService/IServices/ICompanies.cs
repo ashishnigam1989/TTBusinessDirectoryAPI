@@ -68,5 +68,7 @@ namespace ApplicationService.IServices
 
 
         Task<GetResults> GetFreeListing(int page, int limit, string searchValue);
+        Task<GetResults> ApproveRejectFreeListingCompany(int id);
+        Task<GetResults> DeleteFreeListing(int Id);
     }
 }
