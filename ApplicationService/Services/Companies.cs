@@ -1,22 +1,14 @@
 using ApplicationService.IServices;
 using AutoMapper;
 using CommonService.RequestModel;
-using CommonService.ViewModel;
 using CommonService.ViewModels;
+using CommonService.ViewModels.Company;
 using DatabaseService.DbEntities;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using NLog.Fluent;
-using NLog.Targets;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ApplicationService.Services
 {
@@ -374,7 +366,7 @@ namespace ApplicationService.Services
 
         }
 
-        public async Task<GetResults> GetFeaturedCompanies()
+        public async Task<GetResults> GetFeaturedCompanies(int limit)
         {
             List<CompanyModel> companylist = await _dbContext.Company.Where(w => w.IsPublished.Value && w.IsFeatured.Value).Select(s => new CompanyModel
             {
@@ -383,7 +375,7 @@ namespace ApplicationService.Services
                 Logo = s.Logo,
                 PrimaryWebsite = s.PrimaryWebsite,
                 id = s.Id
-            }).Distinct().OrderByDescending(o => o.id).Take(10).ToListAsync();
+            }).Distinct().OrderByDescending(o => o.id).Take(limit).ToListAsync();
 
             GetResults uobj = new GetResults
             {
@@ -1236,6 +1228,76 @@ namespace ApplicationService.Services
             result.Total = 1;
             return await Task.FromResult(result);
         }
+
+        public async Task<GetResults> GetAllKeywords()
+        {
+            GetResults result = new GetResults { IsSuccess = true, Message = "Keywords fetched."};
+            var cb = await _dbContext.Company.Where(w => w.IsFeatured.Value && !w.IsDeleted && !string.IsNullOrEmpty(w.MetaTitle))
+                .Select(s => new CompanyKewordModel { 
+                    //CompanyId = s.Id,
+                    Keyword = s.MetaTitle
+                }).Distinct().ToListAsync();
+
+            result.Data = cb;
+            result.Total = cb.Count;
+            return await Task.FromResult(result);
+        }
         #endregion
+
+        public async Task<GetResults> GetCompanyDetailsById(long companyId) 
+        {
+            GetResults result = new GetResults { IsSuccess = true };
+            CompanyDetailModel companyDetailModel =
+                await _dbContext.Company.Select(c => 
+                    new CompanyDetailModel 
+                    { 
+                        Id = c.Id, NameEng = c.NameEng, DescriptionEng = c.DescriptionEng,ShortDescriptionEng = c.ShortDescriptionEng,
+                        PrimaryEmail = c.PrimaryEmail, PrimaryPhone = c.PrimaryPhone, Logo = c.Logo,PrimaryWebsite = c.PrimaryWebsite ,
+                        OverallRating = c.OverallRating , TotalReviews = c.TotalReviews ,MetaTitle = c.MetaTitle, MetaDescription = c.MetaDescription,
+                        FacebookUrl = c.FacebookUrl, TwitterUrl = c.TwitterUrl,
+                        InstagramUrl= c.InstagramUrl, GooglePlusUrl= c.GooglePlusUrl,
+                        LinkedInUrl= c.LinkedInUrl
+                    }
+                    ).FirstOrDefaultAsync(c => c.Id == companyId);
+
+            companyDetailModel.CompanyProducts = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId)
+                .Select(c => new CompanyProductViewModel
+                {
+                    CompanyId = c.Id,
+                    NameEng = c.NameEng,
+                    DescriptionEng= c.DescriptionEng,
+                    ShortDescriptionEng= c.ShortDescriptionEng,
+                    Price= c.Price,
+                    Image = c.Image
+                }).ToListAsync();
+
+            companyDetailModel.CompanyServices = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId)
+                .Select(c => new CompanyServiceViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.Id,
+                    NameEng = c.NameEng,
+                    DescriptionEng = c.DescriptionEng,
+                    ShortDescriptionEng = c.ShortDescriptionEng,
+                    Price = c.Price,
+                    Image = c.Image
+                }).ToListAsync();
+
+            companyDetailModel.CompanyVideos = await _dbContext.CompanyVideos.Where(c => c.CompanyId == companyId)
+            .Select(c => new CompanyVideoViewModel
+            {
+                VideoNameEng= c.VideoNameEng,
+                Id= c.Id,
+                CompanyId= c.CompanyId,
+                ArabicUrl= c.ArabicUrl,
+                EnglishUrl= c.EnglishUrl, 
+                SortOrder= c.SortOrder,
+            }).ToListAsync();
+
+
+            result.Data = companyDetailModel;
+            result.Total = 1;
+            return result;
+        }
     }
 }

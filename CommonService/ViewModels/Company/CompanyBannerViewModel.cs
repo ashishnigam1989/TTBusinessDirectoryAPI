@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonService.ViewModels
+namespace CommonService.ViewModels.Company
 {
     public class CompanyBannerViewModel
     {
@@ -28,7 +28,7 @@ namespace CommonService.ViewModels
         public bool? IsPublished { get; set; }
         public DateTime? BannerStartDate { get; set; }
         public string DisplayEngImage => string.Format(CommonConstants.S3BaseURL + ImageEng, Id).Replace("com//", "com/");
-        public string DisplayArbImage => string.Format(CommonConstants.S3BaseURL + ImageArb, Id).Replace("com//","com/");
+        public string DisplayArbImage => string.Format(CommonConstants.S3BaseURL + ImageArb, Id).Replace("com//", "com/");
         public string CompanyName { get; set; }
     }
 }

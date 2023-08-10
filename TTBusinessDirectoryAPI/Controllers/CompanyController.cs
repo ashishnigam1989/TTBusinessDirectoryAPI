@@ -50,7 +50,7 @@ namespace TTBusinessDirectoryAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetUserById")]
+        [Route("GetCompanyById")]
         public async Task<GetResults> GetCompanyById(int companyid)
         {
             GetResults getResults = new GetResults();
@@ -286,10 +286,29 @@ namespace TTBusinessDirectoryAPI.Controllers
             GetResults getResults = new GetResults();
             try
             {
-                getResults = await _company.GetFeaturedCompanies();
+                getResults = await _company.GetFeaturedCompanies(limit);
                 logger.Info(getResults.Message);
                 getResults.IsSuccess = true;
                 getResults.Message = "Featured Company List";
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetCompanyDetailsById/{companyid}")]
+        public async Task<GetResults> GetCompanyDetailsById(long companyid)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = await _company.GetCompanyDetailsById(companyid);
+                getResults.Message = "Company Details found";
+                logger.Info(getResults.Message);
             }
             catch (Exception ex)
             {
