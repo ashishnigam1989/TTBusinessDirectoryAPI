@@ -1385,7 +1385,7 @@ namespace TTBusinessAdminPanel.Controllers
                 _notyfService.Error(ex.Message);
             }
 
-            return View("Offer");
+            return View("Link");
         }
 
         #endregion
@@ -1480,6 +1480,667 @@ namespace TTBusinessAdminPanel.Controllers
 
         #endregion
 
+        #region CompanyTeam
+        public IActionResult CompanyTeam()
+        {
+            return View();
+        }
+        public IActionResult GetAllCompanyTeam()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyTeam(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyTeamViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyTeam()
+        {
+            BindCompany();
+            BindRoles();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyTeam(CompanyTeamRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyTeam(reqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("CompanyTeam", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyTeam", reqmodel);
+        }
+        public IActionResult EditCompanyTeam(int id)
+        {
+            CompanyTeamRequestModel cmodel = new CompanyTeamRequestModel();
+            try
+            {
+                BindCompany();
+                BindRoles();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyTeamById(id).Result;
+                    var s = (CompanyTeamViewModel)company.Data;
+                    cmodel = new CompanyTeamRequestModel
+                    {
+                        Id = s.Id,
+                        CompanyId = s.CompanyId,
+                        FullName = s.FullName,
+                        Designation = s.Designation,
+                        ProfilePic = s.ProfilePic,
+                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        IsDeleted = false,
+                        CreationTime = DateTime.Now,
+                        CreatorUserId = s.CreatorUserId
+
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyTeam(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyTeam(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("CompanyTeam", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("CompanyTeam");
+        }
+
+        #endregion
+
+        #region CompanyAwards
+        public IActionResult CompanyAward()
+        {
+            return View();
+        }
+        public IActionResult GetAllCompanyAward()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyAwards(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyAwardsViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyAward()
+        {
+            BindCompany();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyAward(CompanyAwardsRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyAwards(reqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("CompanyAward", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyAward", reqmodel);
+        }
+        public IActionResult EditCompanyAward(int id)
+        {
+            CompanyAwardsRequestModel cmodel = new CompanyAwardsRequestModel();
+            try
+            {
+                BindCompany();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyAwardsById(id).Result;
+                    var s = (CompanyAwardsViewModel)company.Data;
+                    cmodel = new CompanyAwardsRequestModel
+                    {
+                        Id=s.Id,
+                        CompanyId = s.CompanyId,
+                        AwardTitle = s.AwardTitle,
+                        AwardDesc = s.AwardDesc,
+                        AwardFile = s.AwardFile,
+                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        IsDeleted = false,
+                        CreationTime = DateTime.Now,
+                        CreatorUserId = s.CreatorUserId
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyAward(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyAwards(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("CompanyAward", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("CompanyAward");
+        }
+
+        #endregion
+
+        #region CompanyAddress
+        public IActionResult CompanyAddress()
+        {
+            return View();
+        }
+        public IActionResult GetAllCompanyAddress()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyAddress(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyAddressViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyAddress()
+        {
+            BindCountries();
+            BindCompany();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyAddress(CompanyAddressRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyAddress(reqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("CompanyAddress", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyAddress", reqmodel);
+        }
+        public IActionResult EditCompanyAddress(int id)
+        {
+            CompanyAddressRequestModel cmodel = new CompanyAddressRequestModel();
+            try
+            {
+                BindCountries();
+                BindCompany();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyAddressById(id).Result;
+                    var s = (CompanyAddressViewModel)company.Data;
+                    cmodel = new CompanyAddressRequestModel
+                    {
+                        Id=s.Id,
+                        CompanyId = s.CompanyId,
+                        AddressDesc = s.AddressDesc,
+                        CountryId = s.CountryId,
+                        Contact = s.Contact,
+                        GoogleLocation = s.GoogleLocation,
+                        Website = s.Website,
+                        RegionId = s.RegionId,
+                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyAddress(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyAddress(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("CompanyAddress", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("CompanyAddress");
+        }
+
+        #endregion
+
+        #region CompanyVideo
+        public IActionResult CompanyVideo()
+        {
+            return View();
+        }
+        public IActionResult GetAllCompanyVideo()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyVideo(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyVideoViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyVideo()
+        {
+            BindCompany();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyAddress(CompanyVideoRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyVideo(reqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("CompanyVideo", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyVideo", reqmodel);
+        }
+        public IActionResult EditCompanyVideo(int id)
+        {
+            CompanyVideoRequestModel cmodel = new CompanyVideoRequestModel();
+            try
+            {
+                BindCompany();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyVideoById(id).Result;
+                    var s = (CompanyVideoViewModel)company.Data;
+                    cmodel = new CompanyVideoRequestModel
+                    {
+                        Id=s.Id,
+                        CompanyId = s.CompanyId,
+                        VideoNameArb = s.VideoNameArb,
+                        VideoNameEng = s.VideoNameEng,
+                        EnglishUrl = s.EnglishUrl,
+                        ArabicUrl = s.ArabicUrl,
+                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyVideo(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyVideo(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("CompanyVideo", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("CompanyVideo");
+        }
+
+        #endregion
+
+        #region CompanyNewsArticle
+        public IActionResult CompanyNews()
+        {
+            return View();
+        }
+        public IActionResult GetAllCompanyNews()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyNewsArticle(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyNewsArticleViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
+
+        }
+        public IActionResult AddCompanyNews()
+        {
+            BindCompany();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyNews(CompanyNewsArticleRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyNewsArtical(reqmodel).Result;
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("CompanyNews", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyNews", reqmodel);
+        }
+        public IActionResult EditCompanyNews(int id)
+        {
+            CompanyNewsArticleRequestModel cmodel = new CompanyNewsArticleRequestModel();
+            try
+            {
+                BindCompany();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyNewsArticleById(id).Result;
+                    var s = (CompanyNewsArticleViewModel)company.Data;
+                    cmodel = new CompanyNewsArticleRequestModel
+                    {
+                        Id = s.Id,
+                        CompanyId = s.CompanyId,
+                        NewsTitle = s.NewsTitle,
+                        NewsDesc = s.NewsDesc,
+                        NewsUrl = s.NewsUrl,
+                        IsPublished = s.IsPublished
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyNews(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyNewsArtical(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("CompanyNews", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("CompanyNews");
+        }
+
+        #endregion
+
+
 
         public IActionResult Package()
         {
@@ -1504,6 +2165,22 @@ namespace TTBusinessAdminPanel.Controllers
         public IActionResult ReviewLike()
         {
             return View();
+        }
+
+
+
+        private void BindRoles()
+        {
+            try
+            {
+                List<RoleModel> roles = new List<RoleModel>();
+                roles = _master.GetMasterRoles().Result;
+                ViewBag.Roles = new SelectList(roles, "Id", "DisplayName");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
         }
     }
 }

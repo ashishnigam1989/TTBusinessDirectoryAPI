@@ -15,7 +15,9 @@ namespace CommonService.Enums
         BannerArb=7,
         GalleryImage=8,
         GalleryFile=9,
-        OfferImage=10
+        OfferImage=10,
+        TeamPicture=11,
+        AwardFile=12
 
     }
 }
