@@ -70,5 +70,35 @@ namespace ApplicationService.IServices
         Task<GetResults> GetFreeListing(int page, int limit, string searchValue);
         Task<GetResults> ApproveRejectFreeListingCompany(int id);
         Task<GetResults> DeleteFreeListing(int Id);
+
+        Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel);
+        Task<GetResults> DeleteCompanyTeam(int Id);
+        Task<GetResults> GetAllCompanyTeam(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyTeamById(int id);
+
+
+        Task<GetResults> AddEditCompanyAwards(CompanyAwardsRequestModel ctModel);
+        Task<GetResults> DeleteCompanyAwards(int Id);
+        Task<GetResults> GetAllCompanyAwards(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyAwardsById(int id);
+
+
+        Task<GetResults> AddEditCompanyAddress(CompanyAddressRequestModel ctModel);
+        Task<GetResults> DeleteCompanyAddress(int Id);
+        Task<GetResults> GetAllCompanyAddress(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyAddressById(int id);
+
+
+        Task<GetResults> AddEditCompanyVideo(CompanyVideoRequestModel ctModel);
+        Task<GetResults> DeleteCompanyVideo(int Id);
+        Task<GetResults> GetAllCompanyVideo(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyVideoById(int id);
+
+
+        Task<GetResults> AddEditCompanyNewsArtical(CompanyNewsArticleRequestModel ctModel);
+        Task<GetResults> DeleteCompanyNewsArtical(int Id);
+        Task<GetResults> GetAllCompanyNewsArticle(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyNewsArticleById(int id); 
+
     }
 }

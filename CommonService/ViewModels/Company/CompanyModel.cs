@@ -88,7 +88,7 @@ namespace CommonService.ViewModels.Company
             CompanyServices = new List<CompanyServiceViewModel>();
             CompanyBrands = new List<CompanyBrandViewModel>();
             CompanyTeams = new List<CompanyTeamViewModel>();
-            CompanyAwards = new List<CompanyAwardViewModel> ();
+            CompanyAwards = new List<CompanyAwardsViewModel> ();
             CompanyAddresses = new List<CompanyAddressViewModel>();
             CompanyEvents = new List<CompanyEventViewModel>();
             CompanyNewsArticles = new List<CompanyNewsArticleViewModel>();
@@ -123,7 +123,7 @@ namespace CommonService.ViewModels.Company
         public List<CompanyServiceViewModel> CompanyServices { get; set; }
         public List<CompanyBrandViewModel> CompanyBrands { get; set; }
         public List<CompanyTeamViewModel> CompanyTeams { get; set; }
-        public List<CompanyAwardViewModel> CompanyAwards { get; set; }
+        public List<CompanyAwardsViewModel> CompanyAwards { get; set; }
         public List<CompanyAddressViewModel> CompanyAddresses { get; set; }
         public List<CompanyEventViewModel> CompanyEvents { get; set; }
         public List<CompanyNewsArticleViewModel> CompanyNewsArticles { get; set; }
