@@ -390,72 +390,6 @@ namespace ApplicationService.Services
 
         }
 
-        public async Task<GetResults> GetCompanyDetailsById(long companyId)
-        {
-            GetResults result = new GetResults { IsSuccess = true };
-            CompanyDetailModel companyDetailModel =
-                await _dbContext.Company.Select(c =>
-                    new CompanyDetailModel
-                    {
-                        Id = c.Id,
-                        NameEng = c.NameEng,
-                        DescriptionEng = c.DescriptionEng,
-                        ShortDescriptionEng = c.ShortDescriptionEng,
-                        PrimaryEmail = c.PrimaryEmail,
-                        PrimaryPhone = c.PrimaryPhone,
-                        Logo = c.Logo,
-                        PrimaryWebsite = c.PrimaryWebsite,
-                        OverallRating = c.OverallRating,
-                        TotalReviews = c.TotalReviews,
-                        MetaTitle = c.MetaTitle,
-                        MetaDescription = c.MetaDescription,
-                        FacebookUrl = c.FacebookUrl,
-                        TwitterUrl = c.TwitterUrl,
-                        InstagramUrl = c.InstagramUrl,
-                        GooglePlusUrl = c.GooglePlusUrl,
-                        LinkedInUrl = c.LinkedInUrl
-                    }
-                    ).FirstOrDefaultAsync(c => c.Id == companyId);
-
-            companyDetailModel.CompanyProducts = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId)
-                .Select(c => new CompanyProductViewModel
-                {
-                    CompanyId = c.Id,
-                    NameEng = c.NameEng,
-                    DescriptionEng = c.DescriptionEng,
-                    ShortDescriptionEng = c.ShortDescriptionEng,
-                    Price = c.Price,
-                    Image = c.Image
-                }).ToListAsync();
-
-            companyDetailModel.CompanyServices = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId)
-                .Select(c => new CompanyServiceViewModel
-                {
-                    Id = c.Id,
-                    CompanyId = c.Id,
-                    NameEng = c.NameEng,
-                    DescriptionEng = c.DescriptionEng,
-                    ShortDescriptionEng = c.ShortDescriptionEng,
-                    Price = c.Price,
-                    Image = c.Image
-                }).ToListAsync();
-
-            companyDetailModel.CompanyVideos = await _dbContext.CompanyVideos.Where(c => c.CompanyId == companyId)
-            .Select(c => new CompanyVideoViewModel
-            {
-                VideoNameEng = c.VideoNameEng,
-                Id = c.Id,
-                CompanyId = c.CompanyId,
-                ArabicUrl = c.ArabicUrl,
-                EnglishUrl = c.EnglishUrl,
-                SortOrder = c.SortOrder,
-            }).ToListAsync();
-
-
-            result.Data = companyDetailModel;
-            result.Total = 1;
-            return result;
-        }
         #endregion
 
         #region CompanyBrand
@@ -1281,9 +1215,7 @@ namespace ApplicationService.Services
         {
             GetResults result = new GetResults { IsSuccess = true, Message = "Keywords fetched." };
             var cb = await _dbContext.Company.Where(w => w.IsFeatured.Value && !w.IsDeleted && !string.IsNullOrEmpty(w.MetaTitle))
-                .Select(s => new CompanyKewordModel
-                {
-                    //CompanyId = s.Id,
+                .Select(s => new CompanyKeywordsViewModel { 
                     Keyword = s.MetaTitle
                 }).Distinct().ToListAsync();
 
@@ -1292,6 +1224,148 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
         }
         #endregion
+
+        public async Task<GetResults> GetCompanyDetailsById(long companyId) 
+        {
+            GetResults result = new GetResults { IsSuccess = true };
+            CompanyDetailModel companyDetailModel =
+                await _dbContext.Company.Select(c => 
+                    new CompanyDetailModel 
+                    { 
+                        Id = c.Id, NameEng = c.NameEng, DescriptionEng = c.DescriptionEng,ShortDescriptionEng = c.ShortDescriptionEng,
+                        PrimaryEmail = c.PrimaryEmail, PrimaryPhone = c.PrimaryPhone, Logo = c.Logo,PrimaryWebsite = c.PrimaryWebsite ,
+                        OverallRating = c.OverallRating , TotalReviews = c.TotalReviews ,MetaTitle = c.MetaTitle, MetaDescription = c.MetaDescription,
+                        FacebookUrl = c.FacebookUrl, TwitterUrl = c.TwitterUrl,
+                        InstagramUrl= c.InstagramUrl, GooglePlusUrl= c.GooglePlusUrl,
+                        LinkedInUrl= c.LinkedInUrl
+                    }
+                    ).FirstOrDefaultAsync(c => c.Id == companyId);
+
+            companyDetailModel.CompanyProducts = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId && !c.IsDeleted)
+                .Select(c => new CompanyProductViewModel
+                {
+                    CompanyId = c.Id,
+                    NameEng = c.NameEng,
+                    DescriptionEng= c.DescriptionEng,
+                    ShortDescriptionEng= c.ShortDescriptionEng,
+                    Price= c.Price,
+                    Image = c.Image
+                }).ToListAsync();
+
+            companyDetailModel.CompanyServices = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId && !c.IsDeleted)
+                .Select(c => new CompanyServiceViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.Id,
+                    NameEng = c.NameEng,
+                    DescriptionEng = c.DescriptionEng,
+                    ShortDescriptionEng = c.ShortDescriptionEng,
+                    Price = c.Price,
+                    Image = c.Image
+                }).ToListAsync();
+
+            companyDetailModel.CompanyVideos = await _dbContext.CompanyVideos.Where(c => c.CompanyId == companyId && !c.IsDeleted)
+                .Select(c => new CompanyVideoViewModel
+                {
+                    VideoNameEng= c.VideoNameEng,
+                    Id= c.Id,
+                    CompanyId= c.CompanyId,
+                    ArabicUrl= c.ArabicUrl,
+                    EnglishUrl= c.EnglishUrl, 
+                    SortOrder= c.SortOrder,
+                }).ToListAsync();
+
+            companyDetailModel.CompanyTeams = await _dbContext.CompanyTeams.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
+                .Select(c => new CompanyTeamViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    Designation = c.Designation,
+                    FullName = c.FullName,
+                    ProfilePic = c.ProfilePic,
+                }).ToListAsync();
+
+            companyDetailModel.CompanyTags = await _dbContext.CompanyTags.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
+              .Select(c => new CompanyTagViewModel
+              {
+                  Id = c.Id,
+                  CompanyId = c.CompanyId,
+                  TagName = c.TagName,
+              }).ToListAsync();
+
+            companyDetailModel.CompanyAddresses = await _dbContext.CompanyAddress.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
+                .Select(c => new CompanyAddressViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    AddressDesc = c.AddressDesc,
+                    Contact = c.Contact,
+                    CountryId= c.CountryId,
+                    GoogleLocation= c.GoogleLocation,
+                    RegionId= c.RegionId,
+                    Website = c.Website
+                }).ToListAsync();
+
+            companyDetailModel.CompanyEvents = await _dbContext.CompanyEvents
+                .Join(_dbContext.EventType, ev => ev.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new {ev, evmy})
+                .Where(c => c.ev.CompanyId == companyId && (!c.ev.IsDeleted.HasValue || !c.ev.IsDeleted.Value))
+                .Select(c => new CompanyEventViewModel
+                {
+                    Id = c.ev.Id,
+                    CompanyId = c.ev.CompanyId,
+                    EventImage= c.ev.EventImage,
+                    EventLocationUrl= c.ev.EventLocationUrl, 
+                    EndDate= c.ev.EndDate,
+                    EndTime = c.ev.EndTime, 
+                    EventDesc= c.ev.EventDesc,
+                    EventTitle= c.ev.EventTitle,
+                    EventTypeId= c.ev.EventTypeId,
+                    EventUrl = c.ev.EventUrl,
+                    StartDate = c.ev.StartDate,
+                    StartTime = c.ev.StartTime,
+                    EventType = c.evmy.EventTypeDesc
+                }).OrderByDescending(o => o.StartDate).ToListAsync();
+
+            companyDetailModel.CompanyBanners = await _dbContext.CompanyBanners.Where(c => c.CompanyId == companyId && !c.IsDeleted)
+              .Select(c => new CompanyBannerViewModel
+              {
+                  Id = c.Id,
+                  CompanyId = c.CompanyId,
+                  ArabicUrl= c.ArabicUrl,
+                  BannerNameEng = c.BannerNameArb,
+                  ImageArb = c.ImageArb,
+                  ImageEng = c.ImageEng,
+                  EnglishUrl = c.EnglishUrl,
+                  Target = c.Target,
+                  SortOrder= c.SortOrder,
+              }).ToListAsync();
+
+            companyDetailModel.CompanyNewsArticles = await _dbContext.CompanyNewsArticle.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
+                .Select(c => new CompanyNewsArticleViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    CreationTime = c.CreationTime,
+                    NewsDesc= c.NewsDesc,
+                    NewsTitle= c.NewsTitle,
+                    NewsUrl = c.NewsUrl
+                }).OrderByDescending(c => c.CreationTime).ToListAsync();
+
+            companyDetailModel.CompanyAwards = await _dbContext.CompanyAwards.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
+               .Select(c => new CompanyAwardsViewModel
+               {
+                   Id = c.Id,
+                   CompanyId = c.CompanyId,
+                   AwardDesc = c.AwardDesc,
+                   AwardFile = c.AwardFile,
+                   AwardTitle = c.AwardTitle
+               }).ToListAsync();
+
+
+            result.Data = companyDetailModel;
+            result.Total = 1;
+            return result;
+        }
 
         #region CompanyOffers
         public async Task<GetResults> AddEditCompanyoffers(CompanyOffersRequestModel csModel)

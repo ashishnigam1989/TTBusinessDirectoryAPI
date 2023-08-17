@@ -86,12 +86,16 @@ namespace CommonService.ViewModels.Company
         {
             CompanyProducts = new List<CompanyProductViewModel>();
             CompanyServices = new List<CompanyServiceViewModel>();
+            CompanyBrands = new List<CompanyBrandViewModel>();
             CompanyTeams = new List<CompanyTeamViewModel>();
             CompanyAwards = new List<CompanyAwardsViewModel> ();
             CompanyAddresses = new List<CompanyAddressViewModel>();
             CompanyEvents = new List<CompanyEventViewModel>();
-            CompanyArticles = new List<CompanyNewsArticleViewModel>();
+            CompanyNewsArticles = new List<CompanyNewsArticleViewModel>();
             CompanyVideos = new List<CompanyVideoViewModel>();
+            CompanyTags= new List<CompanyTagViewModel>();
+            CompanyBanners = new List<CompanyBannerViewModel>();
+            CompanyKeywords = new List<CompanyKeywordsViewModel>();
         }
         public long Id { get; set; }
         public string NameEng { get; set; }
@@ -122,8 +126,12 @@ namespace CommonService.ViewModels.Company
         public List<CompanyAwardsViewModel> CompanyAwards { get; set; }
         public List<CompanyAddressViewModel> CompanyAddresses { get; set; }
         public List<CompanyEventViewModel> CompanyEvents { get; set; }
-        public List<CompanyNewsArticleViewModel> CompanyArticles { get; set; }
+        public List<CompanyNewsArticleViewModel> CompanyNewsArticles { get; set; }
         public List<CompanyVideoViewModel> CompanyVideos { get; set; }
+        public List<CompanyTagViewModel> CompanyTags { get; set; }
+        public List<CompanyKeywordsViewModel> CompanyKeywords { get; set; }
+
+        public List<CompanyBannerViewModel> CompanyBanners { get; set; }
 
     }
 }
