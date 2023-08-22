@@ -148,6 +148,8 @@ namespace TTBusinessDirectoryAPI.Controllers
                 {
                     var imgType = (EnumImageType)Enum.Parse(typeof(EnumImageType), Convert.ToString(Request.Form["imgtype"]));
                     string filetempPath = Helper.GetFileUploadDetails(imgType);
+                    filetempPath = String.Format(filetempPath, "freelisting");
+
                     string tempPath = CommonConstants.FileTempPath + "/" + filetempPath;
                     if (!Directory.Exists(tempPath))
                     {
