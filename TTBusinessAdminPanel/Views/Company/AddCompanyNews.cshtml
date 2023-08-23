@@ -47,19 +47,43 @@
                                     </div>
                                 <span asp-validation-for="NewsTitle" class="text-danger"></span>
                                 </div>
-                                <div class="form-group form-float">
+                             @*   <div class="form-group form-float">
                                     <div class="form-line">
                                     <input asp-for="NewsDesc" type="text" class="form-control" name="NewsDesc">
                                     <label class="form-label">News Description</label>
                                     </div>
                                 <span asp-validation-for="NewsDesc" class="text-danger"></span>
+                                </div>*@
+
+                            <div class="row clearfix">
+                                <div class="col-lg-12">
+
+                                    <div class="card">
+                                        <div class="form-group form-float">
+                                            <label class="form-label">News Description</label>
+
+                                            <div class="form-line">
+
+                                        <div class="body">
+                                            <textarea id="ckeditor" asp-for="NewsDesc"></textarea>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+
                             <div class="form-group form-float">
-                                <div class="form-line">
-                                    <input asp-for="NewsUrl" type="text" class="form-control" name="NewsUrl">
-                                    <label class="form-label">News Url</label>
+                                <div>
+                                    <img id="img" style="width:250px; height:170px;" />
+                                    <div class="fallback">
+                                        <input name="file" id="imageinput" type="file" multiple />
+                                        <input type="hidden" id="NewsUrl" name="NewsUrl" asp-for="NewsUrl" />
+                                    </div>
+
                                 </div>
-                                <span asp-validation-for="NewsUrl" class="text-danger"></span>
+
+                                <label class="form-label">News Image</label>
                             </div>
                              
                             </div>
@@ -73,4 +97,36 @@
         </div>
     </div>
 </div>
- 
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            uploadImage();
+        });
+         
+
+
+        function uploadImage() {
+            $('#imageinput').change(function () {
+                var formdata = new FormData();
+                var fileInput = document.getElementById('imageinput');
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                formdata.append("imgtype", "NewsImage");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Upload/Upload');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () {
+                    debugger;
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#NewsUrl').val(JSON.parse(xhr.responseText)[0]);
+                    }
+                }
+                return "";
+            });
+
+        }
+    </script>
+   
+    }

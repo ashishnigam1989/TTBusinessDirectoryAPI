@@ -15,7 +15,7 @@ namespace ApplicationService.IServices
         Task<GetResults> DeleteCompany(int id);
         Task<GetResults> VerifyCompany(int id);
         Task<GetResults> GetMasterCompanies();
-
+        Task<GetResults> GetMasterEventType();
 
         Task<GetResults> AddEditCompanyBrand(CompanyBrandRequestModel cbModel);
         Task<GetResults> GetAllCompanyBrand(int page, int limit, string searchValue);
@@ -98,7 +98,12 @@ namespace ApplicationService.IServices
         Task<GetResults> AddEditCompanyNewsArtical(CompanyNewsArticleRequestModel ctModel);
         Task<GetResults> DeleteCompanyNewsArtical(int Id);
         Task<GetResults> GetAllCompanyNewsArticle(int page, int limit, string searchValue);
-        Task<GetResults> GetCompanyNewsArticleById(int id); 
+        Task<GetResults> GetCompanyNewsArticleById(int id);
+
+        Task<GetResults> AddEditCompanyEvent(CompanyEventRequestModel ctModel);
+        Task<GetResults> DeleteCompanyEvent(int Id);
+        Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue);
+        Task<GetResults> GetCompanyEventById(int id);
 
     }
 }

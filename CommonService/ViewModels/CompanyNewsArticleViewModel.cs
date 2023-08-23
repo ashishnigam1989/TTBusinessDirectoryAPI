@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,5 +21,7 @@ namespace CommonService.ViewModels
         public long CreatorUserId { get; set; }
         public bool? IsPublished { get; set; }
         public string CompanyName { get; set; }
+        public string DisplayNewsImage => string.Format(CommonConstants.S3BaseURL + NewsUrl, Id).Replace("com//", "com/");
+
     }
 }

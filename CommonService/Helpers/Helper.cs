@@ -102,6 +102,12 @@ namespace CommonService.Helpers
                 case EnumImageType.AwardFile:
                     uploadPath = CommonConstants.AwardFile;
                     break;
+                case EnumImageType.NewsImage:
+                    uploadPath = CommonConstants.NewsImage;
+                    break; 
+                case EnumImageType.EventImage:
+                    uploadPath = CommonConstants.EventImage;
+                    break;
                 default:
                     uploadPath = string.Empty;
                     break;
