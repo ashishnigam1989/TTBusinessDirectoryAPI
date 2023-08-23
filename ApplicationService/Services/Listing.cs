@@ -69,7 +69,7 @@ namespace ApplicationService.Services
                 var freeListingModel = newBusinessDetails.FreeListingDetails;
                 newBusinessDetails.FreeListingDetails.CreatorUserId = userId;
 
-                var freeListing = await _dbContext.FreeListing.FirstOrDefaultAsync(w => w.CompanyName == freeListingModel.CompanyName);
+                var freeListing = await _dbContext.FreeListing.FirstOrDefaultAsync(w => w.CompanyName == freeListingModel.CompanyName && w.PrimaryEmail == freeListingModel.PrimaryEmail);
                 if (freeListing == null)
                 {
                     freeListing = new FreeListing

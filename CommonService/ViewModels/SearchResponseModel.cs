@@ -14,6 +14,7 @@ namespace CommonService.ViewModels
     {
         public string Type { get; set; }
         public long Id { get; set; }
+        public long CompanyId { get; set; }
         public string Name { get; set; }
         public bool? IsFeatured { get; set; }
         public string CategoryName { get; set; }
