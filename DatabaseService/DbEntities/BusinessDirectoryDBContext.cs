@@ -59,7 +59,6 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<UserSocialLogins> UserSocialLogins { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<SearchDBModel> SearchModel { get; set; }
-
         public virtual DbSet<SearchPageDBModel> SearchPageModel { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -252,8 +251,6 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyAddress>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.AddressDesc)
                     .IsRequired()
                     .HasMaxLength(500)
@@ -269,8 +266,6 @@ namespace DatabaseService.DbEntities
 
                 entity.Property(e => e.GoogleLocation).IsUnicode(false);
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Website)
@@ -280,8 +275,6 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyAwards>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.AwardDesc).IsRequired();
 
                 entity.Property(e => e.AwardTitle)
@@ -292,8 +285,6 @@ namespace DatabaseService.DbEntities
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
@@ -344,8 +335,6 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyEvents>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
@@ -372,8 +361,6 @@ namespace DatabaseService.DbEntities
                     .HasColumnName("EventURL")
                     .HasMaxLength(500)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -418,13 +405,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyNewsArticle>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -559,13 +542,9 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyTags>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
 
@@ -576,8 +555,6 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CompanyTeams>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CreationTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletionTime).HasColumnType("datetime");
@@ -591,8 +568,6 @@ namespace DatabaseService.DbEntities
                     .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
             });
@@ -703,8 +678,6 @@ namespace DatabaseService.DbEntities
 
             modelBuilder.Entity<CountryCode>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.CodeIcon)
                     .HasMaxLength(256)
                     .IsUnicode(false);
@@ -713,8 +686,6 @@ namespace DatabaseService.DbEntities
                     .IsRequired()
                     .HasMaxLength(10)
                     .IsUnicode(false);
-
-                entity.Property(e => e.CountryCodeId).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<Districts>(entity =>
