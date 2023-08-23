@@ -24,6 +24,7 @@
             </div>
             <div class="body">
                 <form id="addTeamform" asp-controller="Company" asp-action="AddUpdateCompanyAddress">
+                    <input type="hidden" id="Id" name="Id" asp-for="Id" />
 
                     <div class="row col-md-12">
 
@@ -120,6 +121,11 @@
 @section Scripts
     {
     <script>
+        $(document).ready(function () {
+           
+            BindRegion(@Model.CountryId); 
+        });
+
         function BindRegion(id) {
             var reqObj = {
                 Id: id

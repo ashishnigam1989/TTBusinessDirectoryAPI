@@ -1,3 +1,4 @@
+using Amazon.S3;
 using ApplicationService.IServices;
 using AutoMapper;
 using CommonService.RequestModel;
@@ -365,6 +366,24 @@ namespace ApplicationService.Services
             {
                 Total = companylist.Count,
                 Data = companylist
+            };
+            return await Task.FromResult(uobj);
+
+        }
+
+        public async Task<GetResults> GetMasterEventType()
+        {
+            var eventlist = _dbContext.EventType.Select(s => new EventViewModel
+            {
+                NameEng = s.EventTypeDesc,
+                Id = s.EventTypeId
+            }).Distinct().OrderByDescending(o => o.Id).Take(10).ToListAsync().Result;
+
+
+            GetResults uobj = new GetResults
+            {
+                Total = eventlist.Count,
+                Data = eventlist
             };
             return await Task.FromResult(uobj);
 
@@ -1215,7 +1234,8 @@ namespace ApplicationService.Services
         {
             GetResults result = new GetResults { IsSuccess = true, Message = "Keywords fetched." };
             var cb = await _dbContext.Company.Where(w => w.IsFeatured.Value && !w.IsDeleted && !string.IsNullOrEmpty(w.MetaTitle))
-                .Select(s => new CompanyKeywordsViewModel { 
+                .Select(s => new CompanyKeywordsViewModel
+                {
                     Keyword = s.MetaTitle
                 }).Distinct().ToListAsync();
 
@@ -1225,19 +1245,30 @@ namespace ApplicationService.Services
         }
         #endregion
 
-        public async Task<GetResults> GetCompanyDetailsById(long companyId) 
+        public async Task<GetResults> GetCompanyDetailsById(long companyId)
         {
             GetResults result = new GetResults { IsSuccess = true };
             CompanyDetailModel companyDetailModel =
-                await _dbContext.Company.Select(c => 
-                    new CompanyDetailModel 
-                    { 
-                        Id = c.Id, NameEng = c.NameEng, DescriptionEng = c.DescriptionEng,ShortDescriptionEng = c.ShortDescriptionEng,
-                        PrimaryEmail = c.PrimaryEmail, PrimaryPhone = c.PrimaryPhone, Logo = c.Logo,PrimaryWebsite = c.PrimaryWebsite ,
-                        OverallRating = c.OverallRating , TotalReviews = c.TotalReviews ,MetaTitle = c.MetaTitle, MetaDescription = c.MetaDescription,
-                        FacebookUrl = c.FacebookUrl, TwitterUrl = c.TwitterUrl,
-                        InstagramUrl= c.InstagramUrl, GooglePlusUrl= c.GooglePlusUrl,
-                        LinkedInUrl= c.LinkedInUrl
+                await _dbContext.Company.Select(c =>
+                    new CompanyDetailModel
+                    {
+                        Id = c.Id,
+                        NameEng = c.NameEng,
+                        DescriptionEng = c.DescriptionEng,
+                        ShortDescriptionEng = c.ShortDescriptionEng,
+                        PrimaryEmail = c.PrimaryEmail,
+                        PrimaryPhone = c.PrimaryPhone,
+                        Logo = c.Logo,
+                        PrimaryWebsite = c.PrimaryWebsite,
+                        OverallRating = c.OverallRating,
+                        TotalReviews = c.TotalReviews,
+                        MetaTitle = c.MetaTitle,
+                        MetaDescription = c.MetaDescription,
+                        FacebookUrl = c.FacebookUrl,
+                        TwitterUrl = c.TwitterUrl,
+                        InstagramUrl = c.InstagramUrl,
+                        GooglePlusUrl = c.GooglePlusUrl,
+                        LinkedInUrl = c.LinkedInUrl
                     }
                     ).FirstOrDefaultAsync(c => c.Id == companyId);
 
@@ -1246,9 +1277,9 @@ namespace ApplicationService.Services
                 {
                     CompanyId = c.Id,
                     NameEng = c.NameEng,
-                    DescriptionEng= c.DescriptionEng,
-                    ShortDescriptionEng= c.ShortDescriptionEng,
-                    Price= c.Price,
+                    DescriptionEng = c.DescriptionEng,
+                    ShortDescriptionEng = c.ShortDescriptionEng,
+                    Price = c.Price,
                     Image = c.Image
                 }).ToListAsync();
 
@@ -1267,12 +1298,12 @@ namespace ApplicationService.Services
             companyDetailModel.CompanyVideos = await _dbContext.CompanyVideos.Where(c => c.CompanyId == companyId && !c.IsDeleted)
                 .Select(c => new CompanyVideoViewModel
                 {
-                    VideoNameEng= c.VideoNameEng,
-                    Id= c.Id,
-                    CompanyId= c.CompanyId,
-                    ArabicUrl= c.ArabicUrl,
-                    EnglishUrl= c.EnglishUrl, 
-                    SortOrder= c.SortOrder,
+                    VideoNameEng = c.VideoNameEng,
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    ArabicUrl = c.ArabicUrl,
+                    EnglishUrl = c.EnglishUrl,
+                    SortOrder = c.SortOrder,
                 }).ToListAsync();
 
             companyDetailModel.CompanyTeams = await _dbContext.CompanyTeams.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
@@ -1300,26 +1331,26 @@ namespace ApplicationService.Services
                     CompanyId = c.CompanyId,
                     AddressDesc = c.AddressDesc,
                     Contact = c.Contact,
-                    CountryId= c.CountryId,
-                    GoogleLocation= c.GoogleLocation,
-                    RegionId= c.RegionId,
+                    CountryId = c.CountryId,
+                    GoogleLocation = c.GoogleLocation,
+                    RegionId = c.RegionId,
                     Website = c.Website
                 }).ToListAsync();
 
             companyDetailModel.CompanyEvents = await _dbContext.CompanyEvents
-                .Join(_dbContext.EventType, ev => ev.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new {ev, evmy})
+                .Join(_dbContext.EventType, ev => ev.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new { ev, evmy })
                 .Where(c => c.ev.CompanyId == companyId && (!c.ev.IsDeleted.HasValue || !c.ev.IsDeleted.Value))
                 .Select(c => new CompanyEventViewModel
                 {
                     Id = c.ev.Id,
                     CompanyId = c.ev.CompanyId,
-                    EventImage= c.ev.EventImage,
-                    EventLocationUrl= c.ev.EventLocationUrl, 
-                    EndDate= c.ev.EndDate,
-                    EndTime = c.ev.EndTime, 
-                    EventDesc= c.ev.EventDesc,
-                    EventTitle= c.ev.EventTitle,
-                    EventTypeId= c.ev.EventTypeId,
+                    EventImage = c.ev.EventImage,
+                    EventLocationUrl = c.ev.EventLocationUrl,
+                    EndDate = c.ev.EndDate,
+                    EndTime = c.ev.EndTime,
+                    EventDesc = c.ev.EventDesc,
+                    EventTitle = c.ev.EventTitle,
+                    EventTypeId = c.ev.EventTypeId,
                     EventUrl = c.ev.EventUrl,
                     StartDate = c.ev.StartDate,
                     StartTime = c.ev.StartTime,
@@ -1331,13 +1362,13 @@ namespace ApplicationService.Services
               {
                   Id = c.Id,
                   CompanyId = c.CompanyId,
-                  ArabicUrl= c.ArabicUrl,
+                  ArabicUrl = c.ArabicUrl,
                   BannerNameEng = c.BannerNameArb,
                   ImageArb = c.ImageArb,
                   ImageEng = c.ImageEng,
                   EnglishUrl = c.EnglishUrl,
                   Target = c.Target,
-                  SortOrder= c.SortOrder,
+                  SortOrder = c.SortOrder,
               }).ToListAsync();
 
             companyDetailModel.CompanyNewsArticles = await _dbContext.CompanyNewsArticle.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
@@ -1346,8 +1377,8 @@ namespace ApplicationService.Services
                     Id = c.Id,
                     CompanyId = c.CompanyId,
                     CreationTime = c.CreationTime,
-                    NewsDesc= c.NewsDesc,
-                    NewsTitle= c.NewsTitle,
+                    NewsDesc = c.NewsDesc,
+                    NewsTitle = c.NewsTitle,
                     NewsUrl = c.NewsUrl
                 }).OrderByDescending(c => c.CreationTime).ToListAsync();
 
@@ -1892,7 +1923,7 @@ namespace ApplicationService.Services
             var cpList = _dbContext.CompanyAwards.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.IsDeleted == false && w.o.AwardTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.AwardTitle)).
                             Select(s => new CompanyAwardsViewModel
                             {
-                                Id=s.o.Id,
+                                Id = s.o.Id,
                                 CompanyId = s.o.CompanyId,
                                 AwardTitle = s.o.AwardTitle,
                                 AwardDesc = s.o.AwardDesc,
@@ -2004,22 +2035,23 @@ namespace ApplicationService.Services
         {
             GetResults result = new GetResults();
             var cpList = _dbContext.CompanyAddress.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c })
-                            .Join(_dbContext.Country, cmp => cmp.o.CompanyId, cnt => cnt.Id, (cmp, cnt) => new { cmp,cnt})
-                            .Join(_dbContext.Region, cmp1 => cmp1.cmp.o.RegionId, rgn => rgn.Id, (cmp1, rgn) => new { cmp1, rgn })
-                            .Where(w => w.cmp1.cmp.o.IsDeleted == false && w.cmp1.cmp.o.AddressDesc.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.cmp1.cmp.o.AddressDesc)).
+                            // .Join(_dbContext.Country, cmp => cmp.o.CompanyId, cnt => cnt.Id, (cmp, cnt) => new { cmp,cnt})
+                            //   .Join(_dbContext.Region, cmp1 => cmp1.cmp.o.RegionId, rgn => rgn.Id, (cmp1, rgn) => new { cmp1, rgn })
+                            .Where(w => w.o.IsDeleted == false && w.o.AddressDesc.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.AddressDesc)).
                             Select(s => new CompanyAddressViewModel
                             {
-                                Id= s.cmp1.cmp.o.Id,
-                                CompanyId = s.cmp1.cmp.o.CompanyId,
-                                AddressDesc = s.cmp1.cmp.o.AddressDesc,
-                                CountryId = s.cmp1.cmp.o.CountryId,
-                                Contact = s.cmp1.cmp.o.Contact,
-                                GoogleLocation = s.cmp1.cmp.o.GoogleLocation,
-                                Website = s.cmp1.cmp.o.Website,
-                                RegionId = s.cmp1.cmp.o.RegionId,
-                                IsPublished = s.cmp1.cmp.o.IsPublished,
-                                CountryName=s.cmp1.cnt.CountryNameEng,
-                                RegionName=s.rgn.NameEng
+                                Id = s.o.Id,
+                                CompanyId = s.o.CompanyId,
+                                AddressDesc = s.o.AddressDesc,
+                                CountryId = s.o.CountryId,
+                                Contact = s.o.Contact,
+                                GoogleLocation = s.o.GoogleLocation,
+                                Website = s.o.Website,
+                                RegionId = s.o.RegionId,
+                                IsPublished = s.o.IsPublished,
+                                CompanyName = s.c.NameEng
+                                // CountryName=s.cnt.CountryNameEng,
+                                // RegionName=s.rgn.NameEng
 
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
             var tot = _dbContext.CompanyLinks.Where(w => w.IsDeleted == false).CountAsync().Result;
@@ -2126,7 +2158,7 @@ namespace ApplicationService.Services
                             Select(s => new CompanyVideoViewModel
                             {
 
-                                Id=s.o.Id,
+                                Id = s.o.Id,
                                 CompanyId = s.o.CompanyId,
                                 VideoNameArb = s.o.VideoNameArb,
                                 VideoNameEng = s.o.VideoNameEng,
@@ -2177,9 +2209,9 @@ namespace ApplicationService.Services
                 {
 
                     CompanyId = ctModel.CompanyId,
-                    NewsTitle=ctModel.NewsTitle,
-                    NewsDesc=ctModel.NewsDesc,
-                    NewsUrl=ctModel.NewsUrl,                  
+                    NewsTitle = ctModel.NewsTitle,
+                    NewsDesc = ctModel.NewsDesc,
+                    NewsUrl = ctModel.NewsUrl,
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
@@ -2230,13 +2262,13 @@ namespace ApplicationService.Services
             var cpList = _dbContext.CompanyNewsArticle.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.IsDeleted == false && w.o.NewsTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.NewsTitle)).
                             Select(s => new CompanyNewsArticleViewModel
                             {
-                                Id=s.o.Id,
+                                Id = s.o.Id,
                                 CompanyId = s.o.CompanyId,
                                 NewsTitle = s.o.NewsTitle,
                                 NewsDesc = s.o.NewsDesc,
                                 NewsUrl = s.o.NewsUrl,
-                                IsPublished =s.o.IsPublished,
-                                CompanyName= s.c.NameEng,
+                                IsPublished = s.o.IsPublished,
+                                CompanyName = s.c.NameEng,
 
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
             var tot = _dbContext.CompanyLinks.Where(w => w.IsDeleted == false).CountAsync().Result;
@@ -2263,6 +2295,129 @@ namespace ApplicationService.Services
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company News Found.";
+            result.Data = cb;
+            result.Total = 1;
+            return await Task.FromResult(result);
+        }
+        #endregion
+
+        #region CompanyEvent
+        public async Task<GetResults> AddEditCompanyEvent(CompanyEventRequestModel ctModel)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyEvents.Where(w => w.Id == ctModel.Id && (w.IsDeleted ==null|| w.IsDeleted == false)).FirstOrDefaultAsync().Result;
+            if (csObj == null)
+            {
+                CompanyEvents cs = new CompanyEvents()
+                {
+
+                    CompanyId = ctModel.CompanyId,
+                    EventTitle = ctModel.EventTitle,
+                    EventDesc = ctModel.EventDesc,
+                    EventImage = ctModel.EventImage,
+                    StartDate = ctModel.StartDate,
+                    StartTime = ctModel.StartTime,
+                    EndDate = ctModel.EndDate,
+                    EndTime = ctModel.EndTime,
+                    EventUrl = ctModel.EventUrl,
+                    EventTypeId = ctModel.EventTypeId,
+                    IsPublished = ctModel.IsPublished,
+                    IsDeleted = false,
+                    CreationTime =DateTime.Now,
+                    CreatorUserId = ctModel.CreatorUserId
+                };
+                _dbContext.CompanyEvents.Add(cs);
+                _dbContext.SaveChanges();
+                result.Data = cs.Id;
+                result.Message = "Company Events Added.";
+            }
+            else
+            {
+                csObj.CompanyId = ctModel.CompanyId;
+                csObj.EventTitle = ctModel.EventTitle;
+                csObj.EventDesc = ctModel.EventDesc;
+                csObj.EventImage = ctModel.EventImage;
+                csObj.StartDate = ctModel.StartDate;
+                csObj.StartTime = ctModel.StartTime;
+                csObj.EndDate = ctModel.EndDate;
+                csObj.EndTime = ctModel.EndTime;
+                csObj.EventUrl = ctModel.EventUrl;
+                csObj.EventTypeId = ctModel.EventTypeId;
+                csObj.IsPublished = ctModel.IsPublished;
+                csObj.IsDeleted = false;
+                csObj.CreationTime = DateTime.Now;
+                csObj.CreatorUserId = ctModel.CreatorUserId;
+                _dbContext.SaveChanges();
+                result.Data = csObj.Id;
+                result.Message = "Company Event Updated.";
+            }
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> DeleteCompanyEvent(int Id)
+        {
+            GetResults result = new GetResults();
+            var csObj = _dbContext.CompanyEvents.Where(w => w.Id == Id && (w.IsDeleted==null || w.IsDeleted == false)).FirstOrDefaultAsync().Result;
+            if (csObj != null)
+            {
+                csObj.IsDeleted = true;
+                csObj.DeletionTime = DateTime.Now;
+                result.Message = "Company Event Deleted.";
+            }
+            _dbContext.SaveChanges();
+            result.IsSuccess = true;
+            return await Task.FromResult(result);
+
+        }
+        public async Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue)
+        {
+            GetResults result = new GetResults(); 
+            var cpList = _dbContext.CompanyEvents.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w =>( w.o.IsDeleted==null || w.o.IsDeleted == false )&& w.o.EventTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.EventTitle)).
+                            Select(s => new CompanyEventViewModel
+                            {
+                                Id = s.o.Id,
+                                CompanyId = s.o.CompanyId,
+                                EventTitle = s.o.EventTitle,
+                                EventDesc = s.o.EventDesc,
+                                EventImage = s.o.EventImage,
+                                StartDate = s.o.StartDate,
+                                StartTime = s.o.StartTime,
+                                EndDate = s.o.EndDate,
+                                EndTime = s.o.EndTime,
+                                EventUrl = s.o.EventUrl,
+                                EventTypeId = s.o.EventTypeId,
+                                CompanyName=s.c.NameEng
+                            }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
+            var tot = _dbContext.CompanyEvents.Where(w => (w.IsDeleted == null || w.IsDeleted == false)).CountAsync().Result;
+
+
+            result.IsSuccess = true;
+            result.Message = "Company Event List.";
+            result.Data = cpList;
+            result.Total = tot;
+            return await Task.FromResult(result);
+        }
+        public async Task<GetResults> GetCompanyEventById(int id)
+        {
+            GetResults result = new GetResults();
+            var cb = _dbContext.CompanyEvents.Where(w => w.Id == id && (w.IsDeleted==null || w.IsDeleted == false))
+                                                   .Select(s => new CompanyEventViewModel
+                                                   {
+                                                       Id = s.Id,
+                                                       CompanyId = s.CompanyId,
+                                                       EventTitle = s.EventTitle,
+                                                       EventDesc = s.EventDesc,
+                                                       EventImage = s.EventImage,
+                                                       StartDate = s.StartDate,
+                                                       StartTime = s.StartTime,
+                                                       EndDate = s.EndDate,
+                                                       EndTime = s.EndTime,
+                                                       EventUrl = s.EventUrl,
+                                                       EventTypeId = s.EventTypeId
+                                                   }).FirstOrDefaultAsync().Result;
+            result.IsSuccess = true;
+            result.Message = "Company Event Found.";
             result.Data = cb;
             result.Total = 1;
             return await Task.FromResult(result);

@@ -86,7 +86,6 @@
 
                             <div class="form-group form-float">
                                 <div>
-                                    <input type="hidden" id="Id" name="Id" asp-for="Id" />
                                         <select asp-for="CountryId" id="CountryId" name="CountryId" class="show-tick" onchange="BindRegion(this.value)">
                                             <option value="0">Select Country</option>
                                             @foreach (var country in @ViewBag.Countries)

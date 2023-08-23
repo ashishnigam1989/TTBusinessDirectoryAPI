@@ -145,6 +145,11 @@ namespace TTBusinessAdminPanel.Controllers
             var Companies = (List<CompanyModel>)_company.GetMasterCompanies().Result.Data;
             ViewBag.Companies = new SelectList(Companies, "id", "NameEng");
         }
+        private void BindEventType()
+        {
+            var Companies = (List<EventViewModel>)_company.GetMasterEventType().Result.Data;
+            ViewBag.EventType = new SelectList(Companies, "Id", "NameEng");
+        }
 
         private void BindCountries()
         {
@@ -1529,6 +1534,8 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyTeam(reqmodel).Result;
+                    Helper.MoveFileToS3Server(EnumImageType.TeamPicture, Convert.ToInt64(result.Data), reqmodel.ProfilePic);
+
                     if (result.IsSuccess)
                     {
                         _notyfService.Success(result.Message);
@@ -1663,6 +1670,8 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyAwards(reqmodel).Result;
+                    Helper.MoveFileToS3Server(EnumImageType.AwardFile, Convert.ToInt64(result.Data), reqmodel.AwardFile);
+
                     if (result.IsSuccess)
                     {
                         _notyfService.Success(result.Message);
@@ -1922,7 +1931,7 @@ namespace TTBusinessAdminPanel.Controllers
             BindCompany();
             return View();
         }
-        public IActionResult AddUpdateCompanyAddress(CompanyVideoRequestModel reqmodel)
+        public IActionResult AddUpdateCompanyVideo(CompanyVideoRequestModel reqmodel)
         {
             try
             {
@@ -2059,6 +2068,8 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyNewsArtical(reqmodel).Result;
+                    Helper.MoveFileToS3Server(EnumImageType.NewsImage, Convert.ToInt64(result.Data), reqmodel.NewsUrl);
+
                     if (result.IsSuccess)
                     {
                         _notyfService.Success(result.Message);
@@ -2139,7 +2150,143 @@ namespace TTBusinessAdminPanel.Controllers
         }
 
         #endregion
+        #region CompanyEvent
+        public IActionResult Event()
+        {
+            return View();
+        }
+        public IActionResult GetAllCompanyEvent()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageNo = (skip / pageSize);
+                int recordsTotal = 0;
+                var allData = _company.GetAllCompanyEvent(pageNo, pageSize, searchValue).Result;
+                var cData = (List<CompanyEventViewModel>)allData.Data;
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    cData = cData.OrderBy(o => sortColumn + " " + sortColumnDirection).ToList();
+                }
+                recordsTotal = allData.Total;
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = cData };
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Ok(null);
 
+        }
+        public IActionResult AddCompanyEvent()
+        {
+            BindCompany();
+            BindEventType();
+            return View();
+        }
+        public IActionResult AddUpdateCompanyEvent(CompanyEventRequestModel reqmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _company.AddEditCompanyEvent(reqmodel).Result;
+                    Helper.MoveFileToS3Server(EnumImageType.NewsImage, Convert.ToInt64(result.Data), reqmodel.EventImage);
+
+                    if (result.IsSuccess)
+                    {
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Event", "Company");
+                    }
+                    else
+                    {
+                        _notyfService.Warning(result.Message);
+                    }
+                }
+                else
+                {
+                    _notyfService.Error("Validation Error !!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+            return View("AddCompanyEvent", reqmodel);
+        }
+        public IActionResult EditCompanyEvent(int id)
+        {
+            CompanyEventRequestModel cmodel = new CompanyEventRequestModel();
+            try
+            {
+                BindCompany();
+                BindEventType();
+                if (id > 0)
+                {
+
+                    var company = _company.GetCompanyEventById(id).Result;
+                    var s = (CompanyEventViewModel)company.Data;
+                    cmodel = new CompanyEventRequestModel
+                    {
+                        Id = s.Id,
+                        CompanyId = s.CompanyId,
+                        EventTitle = s.EventTitle,
+                        EventDesc = s.EventDesc,
+                        EventImage = s.EventImage,
+                        StartDate = s.StartDate,
+                        StartTime = s.StartTime,
+                        EndDate = s.EndDate,
+                        EndTime = s.EndTime,
+                        EventUrl = s.EventUrl,
+                        EventTypeId = s.EventTypeId
+                    };
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message.ToString());
+            }
+
+            return View(cmodel);
+
+        }
+        public IActionResult DeleteCompanyEvent(int id)
+        {
+            try
+            {
+                var resp = _company.DeleteCompanyEvent(id).Result;
+
+                if (resp.IsSuccess)
+                {
+                    _notyfService.Success(resp.Message);
+                    return RedirectToAction("Event", "Company");
+                }
+                else
+                {
+                    _notyfService.Warning(resp.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                _notyfService.Error(ex.Message);
+            }
+
+            return View("Event");
+        }
+
+        #endregion
 
 
         public IActionResult Package()
@@ -2158,10 +2305,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             return View();
         }
-        public IActionResult Event()
-        {
-            return View();
-        }
+       
         public IActionResult ReviewLike()
         {
             return View();
@@ -2182,5 +2326,6 @@ namespace TTBusinessAdminPanel.Controllers
                 _logger.Error(ex);
             }
         }
-    }
+         
+    } 
 }

@@ -113,7 +113,7 @@
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                           @* <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <select asp-for="CountryId" name="CountryId" class="show-tick">
@@ -126,11 +126,8 @@
                                     </div>
                                     <span asp-validation-for="CountryId" class="text-danger"></span>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
+                            </div>*@
+                             <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="OfferStartDate" type="date" class="form-control" name="OfferStartDate">
@@ -139,6 +136,10 @@
                                     <span asp-validation-for="OfferStartDate" class="text-danger"></span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row">
+                           
                             <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
@@ -148,7 +149,15 @@
                                     <span asp-validation-for="OfferEndDate" class="text-danger"></span>
                                 </div>
                             </div>
-
+                            <div class="col-md-2">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                        <label for="IsPublished" class="form-label">Is Published</label>
+                                    </div>
+                                    <span asp-validation-for="IsPublished" class="text-danger"></span>
+                                </div>
+                            </div>
                         </div>
 
                     </fieldset>

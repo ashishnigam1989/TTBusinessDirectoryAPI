@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonService.ViewModels.Company
+namespace CommonService.RequestModel
 {
-    public class CompanyEventViewModel
+    public class CompanyEventRequestModel
     {
         public long Id { get; set; }
         public long CompanyId { get; set; }
@@ -19,8 +19,14 @@ namespace CommonService.ViewModels.Company
         public string EventUrl { get; set; }
         public string EventLocationUrl { get; set; }
         public int? EventTypeId { get; set; }
-        public string EventType { get; set; }
-        public string CompanyName { get; set; }
+        public bool? IsDeleted { get; set; }
+        public long? DeleterUserId { get; set; }
+        public DateTime? DeletionTime { get; set; }
+        public DateTime? LastModificationTime { get; set; }
+        public long? LastModifierUserId { get; set; }
+        public DateTime CreationTime { get; set; }
+        public long CreatorUserId { get; set; }
+        public bool? IsPublished { get; set; }
         public string DisplayEventImage => string.Format(CommonConstants.S3BaseURL + EventImage, Id).Replace("com//", "com/");
 
     }

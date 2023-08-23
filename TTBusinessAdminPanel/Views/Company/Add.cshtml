@@ -90,7 +90,7 @@
                                     <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                           @* <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="Address" type="text" class="form-control" name="Address" required>
@@ -98,7 +98,7 @@
                                     </div>
                                     <span asp-validation-for="Address" class="text-danger"></span>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -184,7 +184,7 @@
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <div>
-                                            <select asp-for="RegionId" name="RegionId" id="RegionId" class="show-tick" onchange="BindDistrict(this.value)">
+                                            <select asp-for="RegionId" name="RegionId" id="RegionId" class="show-tick" >
                                                 <option value="0">Select Region</option>
                                             </select> 
                                         </div>
@@ -194,7 +194,7 @@
                                     <span asp-validation-for="RegionId" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                         @*   <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <div>
@@ -207,7 +207,7 @@
                                     </div>
                                     <span asp-validation-for="DistrictId" class="text-danger"></span>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                         <div class="row">
                             <div class="col-md-2">
@@ -537,24 +537,24 @@
             });
         }
 
-        function BindDistrict(id) { 
-            var reqObj = {
-                Id: id
-            };
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("BindDistricts")',
-                dataType: 'json',
-                data: reqObj,
-                success: function (data) {
-                    $('#DistrictId').html('');
-                    $.each(data, function (index, value) {
-                        $('#DistrictId').append('<option value="' + value.id + '">' + value.districtName + '</option>');
-                    });
-                    $('.show-tick').selectpicker('refresh');
-                }
-            });
-        }
+        //function BindDistrict(id) { 
+        //    var reqObj = {
+        //        Id: id
+        //    };
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '@Url.Action("BindDistricts")',
+        //        dataType: 'json',
+        //        data: reqObj,
+        //        success: function (data) {
+        //            $('#DistrictId').html('');
+        //            $.each(data, function (index, value) {
+        //                $('#DistrictId').append('<option value="' + value.id + '">' + value.districtName + '</option>');
+        //            });
+        //            $('.show-tick').selectpicker('refresh');
+        //        }
+        //    });
+        //}
 
         function uploadImage() {
             $('#imageinput').change(function () {

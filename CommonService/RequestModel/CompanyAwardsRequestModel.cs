@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,5 +20,7 @@ namespace CommonService.RequestModel
         public DateTime CreationTime { get; set; }
         public long CreatorUserId { get; set; }
         public bool IsPublished { get; set; }
+        public string DisplayAwardFile => string.Format(CommonConstants.S3BaseURL + AwardFile, Id).Replace("com//", "com/");
+
     }
 }
