@@ -54,7 +54,7 @@ namespace ApplicationService.IServices
 
         Task<GetResults> GetAllKeywords();
 
-        Task<GetResults> GetCompanyDetailsById(long companyId);
+        Task<GetResults> GetCompanyDetailsById(long companyId, int limit = 20);
 
         Task<GetResults> AddEditCompanyoffers(CompanyOffersRequestModel csModel);
         Task<GetResults> DeleteCompanyOffer(int Id);
@@ -104,6 +104,8 @@ namespace ApplicationService.IServices
         Task<GetResults> DeleteCompanyEvent(int Id);
         Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue);
         Task<GetResults> GetCompanyEventById(int id);
+
+        Task<GetResults> GetProductsByCompanyId(long companyId, int skip, int limit);
 
     }
 }

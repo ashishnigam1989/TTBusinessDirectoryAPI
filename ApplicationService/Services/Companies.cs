@@ -1245,7 +1245,7 @@ namespace ApplicationService.Services
         }
         #endregion
 
-        public async Task<GetResults> GetCompanyDetailsById(long companyId)
+        public async Task<GetResults> GetCompanyDetailsById(long companyId, int limit = 20)
         {
             GetResults result = new GetResults { IsSuccess = true };
             CompanyDetailModel companyDetailModel =
@@ -1275,25 +1275,29 @@ namespace ApplicationService.Services
             companyDetailModel.CompanyProducts = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId && !c.IsDeleted)
                 .Select(c => new CompanyProductViewModel
                 {
-                    CompanyId = c.Id,
+                    CompanyId = c.CompanyId,
                     NameEng = c.NameEng,
                     DescriptionEng = c.DescriptionEng,
                     ShortDescriptionEng = c.ShortDescriptionEng,
                     Price = c.Price,
-                    Image = c.Image
-                }).ToListAsync();
+                    Image = c.Image,
+                    WarrantyEng = c.WarrantyEng,
+                    OldPrice = c.OldPrice,
+                    PartNumber = c.PartNumber,
+                    Id = c.Id,
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyServices = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId && !c.IsDeleted)
                 .Select(c => new CompanyServiceViewModel
                 {
                     Id = c.Id,
-                    CompanyId = c.Id,
+                    CompanyId = c.CompanyId,
                     NameEng = c.NameEng,
                     DescriptionEng = c.DescriptionEng,
                     ShortDescriptionEng = c.ShortDescriptionEng,
                     Price = c.Price,
                     Image = c.Image
-                }).ToListAsync();
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyVideos = await _dbContext.CompanyVideos.Where(c => c.CompanyId == companyId && !c.IsDeleted)
                 .Select(c => new CompanyVideoViewModel
@@ -1304,7 +1308,7 @@ namespace ApplicationService.Services
                     ArabicUrl = c.ArabicUrl,
                     EnglishUrl = c.EnglishUrl,
                     SortOrder = c.SortOrder,
-                }).ToListAsync();
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyTeams = await _dbContext.CompanyTeams.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
                 .Select(c => new CompanyTeamViewModel
@@ -1314,7 +1318,7 @@ namespace ApplicationService.Services
                     Designation = c.Designation,
                     FullName = c.FullName,
                     ProfilePic = c.ProfilePic,
-                }).ToListAsync();
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyTags = await _dbContext.CompanyTags.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
               .Select(c => new CompanyTagViewModel
@@ -1322,7 +1326,7 @@ namespace ApplicationService.Services
                   Id = c.Id,
                   CompanyId = c.CompanyId,
                   TagName = c.TagName,
-              }).ToListAsync();
+              }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyAddresses = await _dbContext.CompanyAddress.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
                 .Select(c => new CompanyAddressViewModel
@@ -1335,7 +1339,7 @@ namespace ApplicationService.Services
                     GoogleLocation = c.GoogleLocation,
                     RegionId = c.RegionId,
                     Website = c.Website
-                }).ToListAsync();
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyEvents = await _dbContext.CompanyEvents
                 .Join(_dbContext.EventType, ev => ev.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new { ev, evmy })
@@ -1355,7 +1359,7 @@ namespace ApplicationService.Services
                     StartDate = c.ev.StartDate,
                     StartTime = c.ev.StartTime,
                     EventType = c.evmy.EventTypeDesc
-                }).OrderByDescending(o => o.StartDate).ToListAsync();
+                }).OrderByDescending(o => o.StartDate).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyBanners = await _dbContext.CompanyBanners.Where(c => c.CompanyId == companyId && !c.IsDeleted)
               .Select(c => new CompanyBannerViewModel
@@ -1369,7 +1373,7 @@ namespace ApplicationService.Services
                   EnglishUrl = c.EnglishUrl,
                   Target = c.Target,
                   SortOrder = c.SortOrder,
-              }).ToListAsync();
+              }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyNewsArticles = await _dbContext.CompanyNewsArticle.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
                 .Select(c => new CompanyNewsArticleViewModel
@@ -1380,7 +1384,7 @@ namespace ApplicationService.Services
                     NewsDesc = c.NewsDesc,
                     NewsTitle = c.NewsTitle,
                     NewsUrl = c.NewsUrl
-                }).OrderByDescending(c => c.CreationTime).ToListAsync();
+                }).OrderByDescending(c => c.CreationTime).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyAwards = await _dbContext.CompanyAwards.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
                .Select(c => new CompanyAwardsViewModel
@@ -1390,12 +1394,40 @@ namespace ApplicationService.Services
                    AwardDesc = c.AwardDesc,
                    AwardFile = c.AwardFile,
                    AwardTitle = c.AwardTitle
-               }).ToListAsync();
+               }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
 
             result.Data = companyDetailModel;
             result.Total = 1;
             return result;
+        }
+
+        public async Task<GetResults> GetProductsByCompanyId(long companyId, int skip, int limit)
+        {
+            GetResults result = new GetResults { Message = "Company Product List." };
+            result.Data = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId && !c.IsDeleted)
+                .Select(c => new CompanyProductViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    NameEng = c.NameEng,
+                    DescriptionEng = c.DescriptionEng,
+                    ShortDescriptionEng = c.ShortDescriptionEng,
+                    Price = c.Price,
+                    Image = c.Image,
+                    HasOffers= c.HasOffers,
+                    WarrantyEng = c.WarrantyEng,
+                    OldPrice= c.OldPrice,
+                    PartNumber = c.PartNumber,
+                })
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+            result.IsSuccess = true;
+            result.Total = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId && !c.IsDeleted).CountAsync();
+            return await Task.FromResult(result);
         }
 
         #region CompanyOffers
