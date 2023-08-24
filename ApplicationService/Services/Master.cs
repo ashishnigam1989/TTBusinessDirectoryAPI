@@ -112,7 +112,8 @@ namespace ApplicationService.Services
                     MetaTitleArb = s.MetaTitleArb,
                     MetaDescriptionArb = s.MetaDescriptionArb,
                     PageContentArb = s.PageContentArb,
-                    IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false
+                    IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false,
+                    Icon = s.Icon
 
                 }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
