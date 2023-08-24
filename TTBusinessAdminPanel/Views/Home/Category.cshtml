@@ -32,7 +32,7 @@
                         <tr>
                             <th></th>
                             <th>Name English</th>
-                            <th>Name Arabic</th>
+                            <th>Category Icon</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -64,7 +64,11 @@
                 "columns": [
                     { "data": "id", "name": "Id", "autoWidth": true },
                     { "data": "nameEng", "name": "nameEng", "autoWidth": true },
-                    { "data": "nameArb", "name": "nameArb", "autoWidth": true },
+                    {
+                        "render": function (data, row, d) {
+                            return "<img src='"+ d.DisplayIcon +"' width='60' height='50' />";
+                        }
+                    },
                     {
                         "render": function (data, row, d) {
                             return "<a href='/Home/EditCategory/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " + 
