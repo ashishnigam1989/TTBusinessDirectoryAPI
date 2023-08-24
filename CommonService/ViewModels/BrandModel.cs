@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -30,5 +31,6 @@ namespace CommonService.ViewModels
         public string MetaDescriptionArb { get; set; }
         public string PageContentArb { get; set; }
         public bool IsSelected { get; set; }
+        public string DisplayLogo => string.Concat(CommonConstants.S3BaseURL, Logo);
     }
 }

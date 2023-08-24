@@ -40,7 +40,9 @@ namespace TTBusinessAdminPanel.Controllers
                         if (postedFile != null)
                         {
                             string newName = string.Empty;
-                            newName = DateTime.Now.ToString("ddMMyyyyhhmmss")+"_"+postedFile.FileName;
+                            FileInfo fi = new FileInfo(postedFile.FileName);
+                            //newName = DateTime.Now.ToString("ddMMyyyyhhmmss")+"_"+ postedFile.FileName;
+                            newName = DateTime.Now.ToString("ddMMyyyyhhmmss") + fi.Extension;
                             string newPath=Path.Combine(tempPath,newName);
                             using (var stream = new FileStream(newPath, FileMode.Create))
                             {
