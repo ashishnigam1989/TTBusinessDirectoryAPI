@@ -42,6 +42,7 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<CompanyVouchers> CompanyVouchers { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<CountryCode> CountryCode { get; set; }
+        public virtual DbSet<Designations> Designations { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<EventPassType> EventPassType { get; set; }
         public virtual DbSet<EventRegion> EventRegion { get; set; }
@@ -60,6 +61,7 @@ namespace DatabaseService.DbEntities
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<SearchDBModel> SearchModel { get; set; }
         public virtual DbSet<SearchPageDBModel> SearchPageModel { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -688,6 +690,24 @@ namespace DatabaseService.DbEntities
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<Designations>(entity =>
+            {
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletionTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DesignationDesc)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DesignationName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LastModificationTime).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<Districts>(entity =>
             {
                 entity.HasKey(e => e.DistrictId);
@@ -1016,6 +1036,7 @@ namespace DatabaseService.DbEntities
                 {
                     entity.HasNoKey();
                 });
+
             });
 
             OnModelCreatingPartial(modelBuilder);
