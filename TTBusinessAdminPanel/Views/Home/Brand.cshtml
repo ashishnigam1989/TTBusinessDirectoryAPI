@@ -30,8 +30,8 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Name English</th>
-                            <th>Name Arabic</th>
+                            <th>Brand Name</th>
+                            <th>Image</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -63,7 +63,11 @@
                 "columns": [
                     { "data": "id", "name": "id", "autoWidth": true },
                     { "data": "nameEng", "name": "nameEng", "autoWidth": true },
-                    { "data": "nameArb", "name": "nameArb", "autoWidth": true },
+                    {
+                        "render": function (data, row, d) {
+                            return "<img src='" + d.displayLogo + "' width='60' height='50' />";
+                        }
+                    },
                     {
                         "render": function (data, row, d) {
                             return "<a href='/Home/EditBrand/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " + 

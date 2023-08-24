@@ -1,9 +1,11 @@
 ﻿using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Constants;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
 using Microsoft.EntityFrameworkCore;
+using NLog.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -430,6 +432,8 @@ namespace ApplicationService.Services
                     await _dbContext.SaveChangesAsync();
                     result.Message = "Brand added successfully";
                     result.Data = bobj.Id;
+                    bobj.Logo = string.Format(breqmodel.Logo, bobj.Id);
+                    await _dbContext.SaveChangesAsync();
                     result.IsSuccess = true;
                 }
                 else
@@ -466,6 +470,8 @@ namespace ApplicationService.Services
                     result.Message = "Brand updated successfully";
                     await _dbContext.SaveChangesAsync();
                     result.Data = brandobj.Id;
+                    brandobj.Logo = string.Format(breqmodel.Logo, brandobj.Id);
+                    await _dbContext.SaveChangesAsync();
                     result.IsSuccess = true;
                 }
                 else
