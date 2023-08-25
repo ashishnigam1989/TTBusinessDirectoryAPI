@@ -233,6 +233,13 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "ServiceLogo");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);

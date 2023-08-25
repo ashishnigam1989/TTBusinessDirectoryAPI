@@ -37,6 +37,7 @@ namespace ApplicationService.IServices
         Task<bool> AddUpdateBrandCategory(BrandCategoryModel _rModel);
         #endregion
 
+        Task<GetResults> GetMasterDesignation();
         Task<GetResults> GetSearchResults(string searchTerm, int countryId);
 
         Task<GetResults> GetSearchPageResult(SearchRequestModel searchRequest);

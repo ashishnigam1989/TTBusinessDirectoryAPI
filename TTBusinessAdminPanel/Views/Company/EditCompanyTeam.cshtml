@@ -73,9 +73,9 @@
                                     <div>
                                         <select asp-for="Designation" name="Designation" class="show-tick">
                                             <option value="">Select Designation</option>
-                                            @foreach (var role in ViewBag.Roles)
+                                            @foreach (var des in ViewBag.designation)
                                             {
-                                                <option value="@role.Text">@role.Text</option>
+                                                <option value="@des.Text">@des.Text</option>
                                             }
 
                                         </select>
@@ -119,6 +119,16 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "TeamPicture");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);

@@ -150,7 +150,6 @@ namespace TTBusinessAdminPanel.Controllers
             var Companies = (List<EventViewModel>)_company.GetMasterEventType().Result.Data;
             ViewBag.EventType = new SelectList(Companies, "Id", "NameEng");
         }
-
         private void BindCountries()
         {
             try
@@ -158,6 +157,19 @@ namespace TTBusinessAdminPanel.Controllers
                 var cntry = _location.GetMasterCountries().Result;
                 ViewBag.Countries = new SelectList(cntry, "Id", "CountryNameEng");
 
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+        private void BindDesignation()
+        {
+            try
+            {
+                List<DesignationViewModel> roles = new List<DesignationViewModel>();
+                roles = (List<DesignationViewModel>)_master.GetMasterDesignation().Result.Data;
+                ViewBag.designation = new SelectList(roles, "Id", "Designation");
             }
             catch (Exception ex)
             {
@@ -933,7 +945,7 @@ namespace TTBusinessAdminPanel.Controllers
                         Target = s.Target,
                         BannerStartDate = s.BannerStartDate,
                         BannerExpiryDate = s.BannerExpiryDate,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                         SortOrder = s.SortOrder
 
                     };
@@ -1060,7 +1072,7 @@ namespace TTBusinessAdminPanel.Controllers
                     var company = _company.GetCompanyGalleryById(id).Result;
                     var s = (CompanyGalleryViewModel)company.Data;
                     cmodel = new CompanyGalleryRequestModel
-                    { 
+                    {
                         Id = s.Id,
                         Image = s.Image,
                         YoutubeVideoUrl = s.YoutubeVideoUrl,
@@ -1200,7 +1212,7 @@ namespace TTBusinessAdminPanel.Controllers
                     var s = (CompanyOffersViewModel)company.Data;
                     cmodel = new CompanyOffersRequestModel
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         OfferNameEng = s.OfferNameEng,
                         OfferNameArb = s.OfferNameArb,
                         OfferDescriptionEng = s.OfferDescriptionEng,
@@ -1214,7 +1226,7 @@ namespace TTBusinessAdminPanel.Controllers
                         OldPrice = s.OldPrice,
                         Price = s.Price,
                         Image = s.Image,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                         SortOrder = s.SortOrder,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
@@ -1483,6 +1495,30 @@ namespace TTBusinessAdminPanel.Controllers
             return View("Offer");
         }
 
+        public IActionResult FreeListingDetails(int id)
+        {
+            FreelistingDetailModel fmodel = new FreelistingDetailModel();
+            if (id > 0)
+            {
+                try
+                {
+                    var allData = _company.GetFreeListingDetails(id).Result;
+                    fmodel = (FreelistingDetailModel)allData.Data;
+                    return View(fmodel);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    return View(fmodel);
+
+                }
+            }
+            return View(fmodel);
+
+
+
+        }
+
         #endregion
 
         #region CompanyTeam
@@ -1524,7 +1560,7 @@ namespace TTBusinessAdminPanel.Controllers
         public IActionResult AddCompanyTeam()
         {
             BindCompany();
-            BindRoles();
+            BindDesignation();
             return View();
         }
         public IActionResult AddUpdateCompanyTeam(CompanyTeamRequestModel reqmodel)
@@ -1564,7 +1600,7 @@ namespace TTBusinessAdminPanel.Controllers
             try
             {
                 BindCompany();
-                BindRoles();
+                BindDesignation();
                 if (id > 0)
                 {
 
@@ -1577,7 +1613,7 @@ namespace TTBusinessAdminPanel.Controllers
                         FullName = s.FullName,
                         Designation = s.Designation,
                         ProfilePic = s.ProfilePic,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
                         CreatorUserId = s.CreatorUserId
@@ -1707,12 +1743,12 @@ namespace TTBusinessAdminPanel.Controllers
                     var s = (CompanyAwardsViewModel)company.Data;
                     cmodel = new CompanyAwardsRequestModel
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         CompanyId = s.CompanyId,
                         AwardTitle = s.AwardTitle,
                         AwardDesc = s.AwardDesc,
                         AwardFile = s.AwardFile,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
                         CreatorUserId = s.CreatorUserId
@@ -1841,7 +1877,7 @@ namespace TTBusinessAdminPanel.Controllers
                     var s = (CompanyAddressViewModel)company.Data;
                     cmodel = new CompanyAddressRequestModel
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         CompanyId = s.CompanyId,
                         AddressDesc = s.AddressDesc,
                         CountryId = s.CountryId,
@@ -1849,7 +1885,7 @@ namespace TTBusinessAdminPanel.Controllers
                         GoogleLocation = s.GoogleLocation,
                         Website = s.Website,
                         RegionId = s.RegionId,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false
                     };
                 }
             }
@@ -1973,13 +2009,13 @@ namespace TTBusinessAdminPanel.Controllers
                     var s = (CompanyVideoViewModel)company.Data;
                     cmodel = new CompanyVideoRequestModel
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         CompanyId = s.CompanyId,
                         VideoNameArb = s.VideoNameArb,
                         VideoNameEng = s.VideoNameEng,
                         EnglishUrl = s.EnglishUrl,
                         ArabicUrl = s.ArabicUrl,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false
                     };
                 }
             }
@@ -2305,7 +2341,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             return View();
         }
-       
+
         public IActionResult ReviewLike()
         {
             return View();
@@ -2326,6 +2362,36 @@ namespace TTBusinessAdminPanel.Controllers
                 _logger.Error(ex);
             }
         }
-         
-    } 
+
+        [HttpPost]
+        public JsonResult searchname(string Prefix)
+        {
+            //Note : you can bind same list from database  
+            List<City> ObjList = new List<City>()
+            {
+
+                new City {Id=1,Name="Latur" },
+                new City {Id=2,Name="Mumbai" },
+                new City {Id=3,Name="mumne" },
+                new City {Id=4,Name="mumlhi" },
+                new City {Id=5,Name="Dehradun" },
+                new City {Id=6,Name="Noida" },
+                new City {Id=7,Name="New Delhi" }
+
+        };
+            //Searching records from list using LINQ query  
+
+            var names = ObjList.Where(w => w.Name.ToLower().StartsWith(Prefix.ToLower())).ToList();
+
+
+            return Json(names);
+        }
+
+    }
+    public class City
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+    }
 }

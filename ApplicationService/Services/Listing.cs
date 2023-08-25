@@ -99,7 +99,7 @@ namespace ApplicationService.Services
                     {
                         FreeListingDetails freeListingDetails = new FreeListingDetails
                         {
-                            CategoryId = Int64.Parse( productDetail.CategoryId),
+                            CategoryId = long.Parse( productDetail.CategoryId),
                             CreationTime = DateTime.Now,
                             CreatorUserId = freeListing.CreatorUserId,
                             IsDeleted = false,

@@ -209,6 +209,13 @@
                         formdata.append(fileInput.files[i].name, fileInput.files[i]);
                     }
                     formdata.append("imgtype", "GalleryImage");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', '/Upload/Upload');
                     xhr.send(formdata);
@@ -229,6 +236,13 @@
                         formdata.append(fileInput.files[i].name, fileInput.files[i]);
                     }
                     formdata.append("imgtype", "GalleryFile");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#imgfile').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', '/Upload/Upload');
                     xhr.send(formdata);

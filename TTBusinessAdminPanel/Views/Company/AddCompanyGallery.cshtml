@@ -97,7 +97,7 @@
                             <div class="col-md-3">
                                 <div class="form-group form-float">
                                     <div>
-                                        <img id="img" style="width:250px; height:170px;" />
+                                        <img id="imgfile" style="width:250px; height:170px;" />
                                         <div class="fallback">
                                             <input name="fileinput" id="fileinput" type="file" multiple />
                                             <input type="hidden" id="Fileupload" name="File" asp-for="File" />
@@ -206,6 +206,13 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "GalleryImage");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);
@@ -226,6 +233,16 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "GalleryFile");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#imgfile').attr('src', e.target.result);
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+                var xh
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);
