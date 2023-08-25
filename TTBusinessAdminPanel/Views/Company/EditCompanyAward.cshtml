@@ -33,7 +33,7 @@
                                     <div>
                                         <img id="img" style="width:250px; height:170px;" />
                                         <div class="fallback">
-                                            <input name="file" id="imageAwardFile" type="file" multiple />
+                                            <input name="file" id="imageAwardFile" type="file" />
                                             <input type="hidden" id="AwardFile" name="AwardFile" asp-for="AwardFile" />
                                         </div>
 
@@ -106,7 +106,7 @@
             uploadAwardFile();
         });
 
-        function uploadProfilePicture() {
+        function uploadAwardFile() {
             $('#imageAwardFile').change(function () {
                 var formdata = new FormData();
                 var fileInput = document.getElementById('imageAwardFile');
@@ -114,6 +114,13 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "AwardFile");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);

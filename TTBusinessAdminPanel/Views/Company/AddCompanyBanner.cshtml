@@ -114,7 +114,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-float">
                                             <div>
-                                                <img id="img" style="width:250px; height:170px;" />
+                                                <img id="imgeng" style="width:250px; height:170px;" />
                                                 <div class="fallback">
                                                     <input name="file" id="imageEnginput" type="file" multiple />
                                                     <input type="hidden" id="ImageEng" name="ImageEng" asp-for="ImageEng" />
@@ -129,7 +129,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-float">
                                             <div>
-                                                <img id="img" style="width:250px; height:170px;" />
+                                                <img id="imgarb" style="width:250px; height:170px;" />
                                                 <div class="fallback">
                                                     <input name="file" id="imageArbinput" type="file" multiple />
                                                     <input type="hidden" id="ImageArb" name="ImageArb" asp-for="ImageArb" />
@@ -169,6 +169,18 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "BannerEng");
+
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#imgeng').attr('src', e.target.result);
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+
+
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);
@@ -190,6 +202,15 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "BannerArb");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#imgarb').attr('src', e.target.result);
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);

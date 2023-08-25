@@ -1767,6 +1767,31 @@ namespace ApplicationService.Services
 
         }
 
+        public async Task<GetResults> GetFreeListingDetails(int id)
+        {
+            var result = new GetResults();  
+            var fDetail = _dbContext.FreeListingDetails.Join(_dbContext.Category, f => f.CategoryId, c => c.Id, (f, c) => new { f,c})
+                .Join(_dbContext.FreeListing, ff => ff.f.FreeListingId, fl => fl.Id, (ff, fl) => new {ff,fl})
+                .Where(w => w.ff.f.Id == id && w.ff.f.IsDeleted==false).Select(s=>new FreelistingDetailModel
+            { 
+                Id=s.ff.f.Id,
+                CategoryId=s.ff.f.CategoryId,
+                CategoryName=s.ff.c.NameEng,
+                RelatedService=s.ff.f.RelatedService,
+                RelatedProduct=s.ff.f.RelatedProduct,
+                Brand=s.ff.f.Brand,
+                CompanyName=s.fl.CompanyName
+
+            }).FirstOrDefault();
+
+            result.IsSuccess = true;
+            result.Message = "Free Listing Detail";
+            result.Data = fDetail;
+            result.Total = 1;
+            return await Task.FromResult(result);
+
+        }
+
         #endregion
         #region CompanyTeam
         public async Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel)

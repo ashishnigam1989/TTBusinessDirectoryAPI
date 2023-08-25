@@ -643,6 +643,15 @@ namespace ApplicationService.Services
             result = new GetResults { Data = alldistrict, Message = "Districts found", IsSuccess = true, Total = alldistrict.Count() };
             return await Task.FromResult(result);
         }
-   
+
+        public async Task<GetResults> GetMasterDesignation()
+        {
+            GetResults result = new GetResults();
+            var alldesignation = _dbContext.Designations.Select(s => new DesignationViewModel { Id = s.Id, Designation = s.DesignationName }).ToList();
+            result = new GetResults { Data = alldesignation, Message = "Designation found", IsSuccess = true, Total = alldesignation.Count() };
+            return await Task.FromResult(result);
+        }
+
+
     }
 }

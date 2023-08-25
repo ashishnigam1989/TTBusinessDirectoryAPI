@@ -1,5 +1,6 @@
 ﻿using CommonService.RequestModel;
 using CommonService.ViewModels;
+using DatabaseService.DbEntities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -70,6 +71,7 @@ namespace ApplicationService.IServices
         Task<GetResults> GetFreeListing(int page, int limit, string searchValue);
         Task<GetResults> ApproveRejectFreeListingCompany(int id);
         Task<GetResults> DeleteFreeListing(int Id);
+        Task<GetResults> GetFreeListingDetails(int id);
 
         Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel);
         Task<GetResults> DeleteCompanyTeam(int Id);

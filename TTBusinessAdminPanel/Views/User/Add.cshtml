@@ -76,9 +76,9 @@
                                 <div>
                                     <select asp-for="Designation" name="Designation" class="show-tick">
                                         <option value="">Select Designation</option>
-                                        @foreach (var role in ViewBag.Roles)
+                                        @foreach (var desig in ViewBag.designation)
                                         {
-                                            <option value="@role.Text">@role.Text</option>
+                                            <option value="@desig.Text">@desig.Text</option>
                                         }
 
                                     </select>

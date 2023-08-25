@@ -85,6 +85,7 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 _logger.Info("Add User Page Open.");
                 BindRoles();
+                BindDesignation();
             }
             catch (Exception ex)
             {
@@ -153,6 +154,7 @@ namespace TTBusinessAdminPanel.Controllers
                     };
                 }
                 BindRoles();
+                BindDesignation();
                 _logger.Info("User detail found.");
             }
             catch(Exception ex)
@@ -178,6 +180,19 @@ namespace TTBusinessAdminPanel.Controllers
                 ViewBag.Roles = new SelectList(roles, "Id", "DisplayName");
             }
             catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+        private void BindDesignation()
+        {
+            try
+            {
+                List<DesignationViewModel> roles = new List<DesignationViewModel>();
+                roles = (List<DesignationViewModel>)_master.GetMasterDesignation().Result.Data;
+                ViewBag.designation = new SelectList(roles, "Id", "Designation");
+            }
+            catch (Exception ex)
             {
                 _logger.Error(ex);
             }
