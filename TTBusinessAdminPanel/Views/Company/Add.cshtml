@@ -10,7 +10,7 @@
             <h2>Add Company</h2>
             <ul class="breadcrumb">
                 <li class="breadcrumb-item">Company</li>
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">All Companies</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Premium Companies</a></li>
                 <li class="breadcrumb-item"><a href="@Url.Action("Add", "Company")">Add Company</a></li>
             </ul>
         </div>
@@ -32,7 +32,7 @@
                             <div class="col-md-4">
                                 <img id="img" style="width:250px; height:170px;" />
                                 <div class="fallback">
-                                    <input name="file" id="imageinput" type="file" multiple />
+                                    <input name="file" id="imageinput" type="file" />
                                     <input type="hidden" id="Logo" name="Logo" asp-for="Logo" />
                                 </div>
                             </div>
@@ -41,12 +41,12 @@
                                     <div class="form-group form-float">
                                         <div class="form-line">
                                             <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
-                                            <label class="form-label">NameEng</label>
+                                            <label class="form-label">Company Name</label>
                                         </div>
                                         <span asp-validation-for="NameEng" class="text-danger"></span>
                                     </div>
                                 </div>
-                                <div>
+                                @*<div>
                                     <div class="form-group form-float">
                                         <div class="form-line">
                                             <input asp-for="NameArb" type="text" class="form-control" name="NameArb">
@@ -54,12 +54,12 @@
                                         </div>
                                         <span asp-validation-for="NameArb" class="text-danger"></span>
                                     </div>
-                                </div>
+                                </div>*@
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="UniqueName" type="text" class="form-control" name="UniqueName">
@@ -68,7 +68,7 @@
                                     <span asp-validation-for="UniqueName" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="PrimaryEmail" type="email" class="form-control" name="PrimaryEmail" required>
@@ -78,10 +78,7 @@
                                 </div>
                             </div>
 
-
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="PrimaryPhone" type="text" class="form-control" name="PrimaryPhone" required>
@@ -90,6 +87,9 @@
                                     <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            
                            @* <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line">
@@ -101,7 +101,7 @@
                             </div>*@
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="PrimaryWebsite" type="text" class="form-control" name="PrimaryWebsite">
@@ -110,7 +110,7 @@
                                     <span asp-validation-for="PrimaryWebsite" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="PrimaryFax" type="text" class="form-control" name="PrimaryFax">
@@ -119,9 +119,7 @@
                                     <span asp-validation-for="PrimaryFax" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="Pobox" type="text" class="form-control" name="Pobox" id="Pobox">
@@ -130,7 +128,9 @@
                                     <span asp-validation-for="Pobox" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="EstablishmentDate" type="date" class="form-control" name="EstablishmentDate">
@@ -139,9 +139,7 @@
                                     <span asp-validation-for="EstablishmentDate" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="PrimaryGpsLocation" type="text" class="form-control" name="PrimaryGpsLocation" id="PrimaryGpsLocation">
@@ -150,7 +148,7 @@
                                     <span asp-validation-for="PrimaryGpsLocation" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="Iso" type="text" class="form-control" name="Iso">
@@ -164,7 +162,35 @@
                             <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
-
+                                        <input asp-for="FoundedYear" type="text" class="form-control" name="FoundedYear">
+                                        <label class="form-label">Founded Year</label>
+                                    </div>
+                                    <span asp-validation-for="FoundedYear" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="FounderName" type="text" class="form-control" name="FounderName">
+                                        <label class="form-label">Founder Name</label>
+                                    </div>
+                                    <span asp-validation-for="FounderName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="EmployeeNum" type="text" class="form-control" name="EmployeeNum">
+                                        <label class="form-label">Employee No</label>
+                                    </div>
+                                    <span asp-validation-for="EmployeeNum" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
                                         <div>
                                             <select asp-for="CountryId" id="CountryId" name="CountryId" class="show-tick" onchange="BindRegion(this.value)">
                                                 <option value="0">Select Country</option>
@@ -175,12 +201,11 @@
                                             </select>
                                         </div>
                                         <span class="text-danger"></span>
-
                                     </div>
                                     <span class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <div>
@@ -279,16 +304,16 @@
                     <h3>Details</h3>
                     <fieldset>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="ShortDescriptionEng" type="text" class="form-control" name="ShortDescriptionEng">
-                                        <label class="form-label">Short Description Eng</label>
+                                        <label class="form-label">Short Description</label>
                                     </div>
                                     <span asp-validation-for="ShortDescriptionEng" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            @*<div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="ShortDescriptionArb" type="text" class="form-control" name="ShortDescriptionArb">
@@ -296,19 +321,19 @@
                                     </div>
                                     <span asp-validation-for="ShortDescriptionArb" class="text-danger"></span>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="DescriptionEng" type="text" class="form-control" name="DescriptionEng">
-                                        <label class="form-label">Description Eng</label>
+                                        <label class="form-label">Description</label>
                                     </div>
                                     <span asp-validation-for="DescriptionEng" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            @*<div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="DescriptionArb" type="text" class="form-control" name="DescriptionArb">
@@ -316,7 +341,7 @@
                                     </div>
                                     <span asp-validation-for="DescriptionArb" class="text-danger"></span>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                     </fieldset>
                     <h3>Social Media</h3>
@@ -481,7 +506,7 @@
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="DomainName" type="text" class="form-control" name="DomaiName">
-                                        <label class="form-label">Domai Name</label>
+                                        <label class="form-label">Domain Name</label>
                                     </div>
                                     <span asp-validation-for="DomainName" class="text-danger"></span>
                                 </div>

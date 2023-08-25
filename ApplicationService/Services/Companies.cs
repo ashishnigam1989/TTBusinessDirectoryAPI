@@ -42,7 +42,8 @@ namespace ApplicationService.Services
                 PrimaryEmail = s.PrimaryEmail,
                 PrimaryPhone = s.PrimaryPhone,
                 IsVerified = s.IsVerified,
-                id = s.Id
+                id = s.Id,
+                Logo = s.Logo
             }).Distinct().OrderByDescending(o => o.id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
             total = _dbContext.Company.Where(w => w.IsDeleted == false).Where(w =>
@@ -73,6 +74,9 @@ namespace ApplicationService.Services
                 PrimaryPhone = s.PrimaryPhone,
                 PrimaryEmail = s.PrimaryEmail,
                 PrimaryWebsite = s.PrimaryWebsite,
+                FoundedYear = s.FoundedYear,
+                FounderName = s.FounderName,
+                EmployeeNum = s.EmployeeNum,
                 IsVerified = s.IsVerified.HasValue ? s.IsVerified.Value : false,
                 VerifiedUserId = s.VerifiedUserId,
                 VerifiedTime = s.VerifiedTime,
@@ -152,6 +156,9 @@ namespace ApplicationService.Services
                         PrimaryPhone = creqmodel.PrimaryPhone,
                         PrimaryEmail = creqmodel.PrimaryEmail,
                         PrimaryWebsite = creqmodel.PrimaryWebsite,
+                        FoundedYear = creqmodel.FoundedYear,
+                        FounderName = creqmodel.FounderName,
+                        EmployeeNum = creqmodel.EmployeeNum,
                         IsGreen = creqmodel.IsGreen,
                         FacebookUrl = creqmodel.FacebookUrl,
                         LinkedInUrl = creqmodel.LinkedInUrl,
@@ -201,11 +208,14 @@ namespace ApplicationService.Services
 
                     };
                     _dbContext.Company.Add(cobj);
+                    _dbContext.SaveChanges();
+                    cobj.Logo = string.Format(creqmodel.Logo, cobj.Id);
+                    _dbContext.SaveChanges();
                     gobj = new GetResults()
                     {
+                        Data = cobj.Id,
                         IsSuccess = true,
                         Message = "Company Saved Successfully",
-                        Data = cobj.Id
                     };
                 }
                 else
@@ -229,6 +239,9 @@ namespace ApplicationService.Services
                     cdetail.PrimaryPhone = creqmodel.PrimaryPhone;
                     cdetail.PrimaryEmail = creqmodel.PrimaryEmail;
                     cdetail.PrimaryWebsite = creqmodel.PrimaryWebsite;
+                    cdetail.FoundedYear = creqmodel.FoundedYear;
+                    cdetail.FounderName = creqmodel.FounderName;
+                    cdetail.EmployeeNum = creqmodel.EmployeeNum;
                     cdetail.IsVerified = false;
                     cdetail.IsGreen = creqmodel.IsGreen;
                     cdetail.FacebookUrl = creqmodel.FacebookUrl;
@@ -275,6 +288,9 @@ namespace ApplicationService.Services
                     cdetail.IsVerified = creqmodel.IsVerified;
                     cdetail.DistrictId = creqmodel.DistrictId;
                     cdetail.CountryId = creqmodel.CountryId;
+                    _dbContext.SaveChanges();
+                    cdetail.Logo = string.Format(creqmodel.Logo, cdetail.Id);
+                    _dbContext.SaveChanges();
                     gobj = new GetResults()
                     {
                         IsSuccess = true,
@@ -291,15 +307,16 @@ namespace ApplicationService.Services
                     };
                 }
             }
-            try
-            {
+            //try
+            //{
 
-                var i = _dbContext.SaveChanges();
-            }
-            catch
-            {
-                throw;
-            }
+            //    var i = _dbContext.SaveChanges();
+
+            //}
+            //catch
+            //{
+            //    throw;
+            //}
             return await Task.FromResult(gobj);
         }
         public async Task<GetResults> DeleteCompany(int id)

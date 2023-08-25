@@ -13,9 +13,9 @@ namespace DatabaseService.DbEntities
         public int RegionId { get; set; }
         public int? DistrictId { get; set; }
         public string Pobox { get; set; }
-        public int? FoundedYear { get; set; }
+        public string FoundedYear { get; set; }
         public string FounderName { get; set; }
-        public int? EmployeeNum { get; set; }
+        public string EmployeeNum { get; set; }
         public DateTime? EstablishmentDate { get; set; }
         public string PrimaryWebsite { get; set; }
         public string Logo { get; set; }

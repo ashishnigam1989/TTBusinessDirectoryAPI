@@ -10,7 +10,7 @@
                 <h2>Company Management</h2>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item">Company</li>
-                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">All Companies</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Premium Companies</a></li>
                 </ul>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2 float-right">
@@ -33,6 +33,7 @@
                             <th>Company Name</th>
                             <th>EmailAddress</th>
                             <th>Phone</th>
+                            <th>Logo</th>
                             <th>Is Verified</th>
                             <th>Action</th>
                         </tr>
@@ -66,6 +67,11 @@
                     { "data": "nameEng", "name": "nameEng", "autoWidth": true },
                     { "data": "primaryEmail", "name": "primaryEmail", "autoWidth": true },
                     { "data": "primaryPhone", "name": "primaryPhone", "autoWidth": true },
+                    {
+                        "render": function (data, row, d) {
+                            return "<img src='" + d.displayLogo + "' width='60' height='50' />";
+                        }
+                    },
                     {
                         "render": function (data, row, d) {
                             if (d.isVerified) {
