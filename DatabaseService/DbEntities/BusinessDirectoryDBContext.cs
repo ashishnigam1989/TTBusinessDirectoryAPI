@@ -188,9 +188,13 @@ namespace DatabaseService.DbEntities
 
                 entity.Property(e => e.DomainName).HasMaxLength(150);
 
+                entity.Property(e => e.EmployeeNum).HasMaxLength(20);
+
                 entity.Property(e => e.EstablishmentDate).HasColumnType("datetime");
 
                 entity.Property(e => e.FacebookUrl).HasMaxLength(100);
+
+                entity.Property(e => e.FoundedYear).HasMaxLength(20);
 
                 entity.Property(e => e.FounderName).HasMaxLength(100);
 
@@ -242,9 +246,7 @@ namespace DatabaseService.DbEntities
 
                 entity.Property(e => e.TwitterUrl).HasMaxLength(100);
 
-                entity.Property(e => e.UniqueName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.UniqueName).HasMaxLength(50);
 
                 entity.Property(e => e.VerifiedTime).HasColumnType("datetime");
 

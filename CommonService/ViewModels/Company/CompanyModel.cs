@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -76,7 +77,7 @@ namespace CommonService.ViewModels.Company
         public DateTime? EstablishmentDate { get; set; }
         public string PrimaryWebsite { get; set; }
         public string Logo { get; set; }
-
+        public string DisplayLogo => string.Concat(CommonConstants.S3BaseURL, Logo);
 
     }
 
@@ -107,6 +108,7 @@ namespace CommonService.ViewModels.Company
         public DateTime? EstablishmentDate { get; set; }
         public string PrimaryWebsite { get; set; }
         public string Logo { get; set; }
+        public string DisplayLogo => string.Concat(CommonConstants.S3BaseURL, Logo);
         public string MetaKeywords { get; set; }
         public string MetaDescription { get; set; }
         public decimal OverallRating { get; set; }
@@ -130,7 +132,6 @@ namespace CommonService.ViewModels.Company
         public List<CompanyVideoViewModel> CompanyVideos { get; set; }
         public List<CompanyTagViewModel> CompanyTags { get; set; }
         public List<CompanyKeywordsViewModel> CompanyKeywords { get; set; }
-
         public List<CompanyBannerViewModel> CompanyBanners { get; set; }
 
     }
