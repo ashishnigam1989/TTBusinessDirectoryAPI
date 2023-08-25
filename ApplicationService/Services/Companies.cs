@@ -1430,6 +1430,32 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
         }
 
+        public async Task<GetResults> GetServicesByCompanyId(long companyId, int skip, int limit)
+        {
+            GetResults result = new GetResults { Message = "Company Service List." };
+            result.Data = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId && !c.IsDeleted)
+                .Select(c => new CompanyServiceViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    NameEng = c.NameEng,
+                    DescriptionEng = c.DescriptionEng,
+                    ShortDescriptionEng = c.ShortDescriptionEng,
+                    Price = c.Price,
+                    Image = c.Image,
+                    HasOffers = c.HasOffers,
+                    OldPrice = c.OldPrice,
+                })
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+            result.IsSuccess = true;
+            result.Total = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId && !c.IsDeleted).CountAsync();
+            return await Task.FromResult(result);
+        }
+
         #region CompanyOffers
         public async Task<GetResults> AddEditCompanyoffers(CompanyOffersRequestModel csModel)
         {

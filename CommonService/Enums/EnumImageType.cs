@@ -19,7 +19,8 @@ namespace CommonService.Enums
         TeamPicture=11,
         AwardFile=12,
         NewsImage=13,
-        EventImage=14
+        EventImage=14,
+        FreeListingLogo = 15
 
     }
 }

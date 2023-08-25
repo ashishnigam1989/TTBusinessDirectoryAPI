@@ -332,5 +332,65 @@ namespace TTBusinessDirectoryAPI.Controllers
             return await Task.FromResult(getResults);
         }
 
+
+        [HttpGet]
+        [Route("GetCompanyServices/{companyId:long}/{limit:int}/{skip:int}")]
+        public async Task<GetResults> GetCompanyServices(long companyId, int limit, int skip)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                var data = await _company.GetServicesByCompanyId(companyId, skip, limit);
+                getResults.Data = data;
+                getResults.IsSuccess = true;
+                getResults.Message = "Fetched company services.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [Route("GetCompanyProductById/{productId:int}")]
+        public async Task<GetResults> GetCompanyProductById(int productId)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                getResults = await _company.GetCompanyProductById(productId);
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+
+        [Route("GetCompanyServiceById/{serviceId:int}")]
+        public async Task<GetResults> GetCompanyServiceById(int serviceId)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                getResults = await _company.GetCompanyServiceById(serviceId);
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
     }
 }

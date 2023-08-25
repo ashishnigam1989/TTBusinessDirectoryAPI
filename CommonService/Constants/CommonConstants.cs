@@ -22,6 +22,7 @@ namespace CommonService.Constants
         public static string AwardFile = "Content/AwardFile/{0}/";
         public static string NewsImage = "Content/NewsImage/{0}/";
         public static string EventImage = "Content/EventImage/{0}/";
+        public static string FreeListingImage = "Content/FreeListing/{0}/";
 
         public static string S3BaseURL { get; set; } = "http://taazatadka.s3.ap-south-1.amazonaws.com/";
     }
