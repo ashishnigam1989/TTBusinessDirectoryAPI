@@ -148,7 +148,8 @@ namespace TTBusinessAdminPanel.Controllers
                         EmailAddress = user.EmailAddress,
                         Mobile = user.Mobile,
                         RoleId = user.RoleId,
-                        Designation=user.Designation
+                        Designation=user.Designation,
+                        Id = user.Id
                     };
                 }
                 BindRoles();
