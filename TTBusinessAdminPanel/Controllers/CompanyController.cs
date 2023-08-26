@@ -10,9 +10,11 @@ using CommonService.ViewModels.Company;
 using DatabaseService.DbEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -653,7 +655,8 @@ namespace TTBusinessAdminPanel.Controllers
                         OfferEndDate = s.OfferEndDate,
                         OfferShortDescriptionEng = s.OfferShortDescriptionEng,
                         OfferShortDescriptionArb = s.OfferShortDescriptionArb,
-                        OldPrice = s.OldPrice
+                        OldPrice = s.OldPrice,
+                        CompanyName=s.Company
 
                     };
                 }
@@ -806,7 +809,8 @@ namespace TTBusinessAdminPanel.Controllers
                         OfferStartDate = s.OfferStartDate,
                         OfferEndDate = s.OfferEndDate,
                         OfferShortDescriptionEng = s.OfferShortDescriptionEng,
-                        OfferShortDescriptionArb = s.OfferShortDescriptionArb
+                        OfferShortDescriptionArb = s.OfferShortDescriptionArb,
+                        CompanyName=s.Company
 
 
                     };
@@ -946,7 +950,8 @@ namespace TTBusinessAdminPanel.Controllers
                         BannerStartDate = s.BannerStartDate,
                         BannerExpiryDate = s.BannerExpiryDate,
                         IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
-                        SortOrder = s.SortOrder
+                        SortOrder = s.SortOrder,
+                        CompanyName=s.CompanyName
 
                     };
                 }
@@ -1086,7 +1091,8 @@ namespace TTBusinessAdminPanel.Controllers
                         DescriptionArb = s.DescriptionArb,
                         Target = s.Target,
                         TargetUrl = s.TargetUrl,
-                        IsPublished = s.IsPublished
+                        IsPublished = s.IsPublished,
+                        CompanyName=s.CompanyName
 
                     };
                 }
@@ -1227,10 +1233,7 @@ namespace TTBusinessAdminPanel.Controllers
                         Price = s.Price,
                         Image = s.Image,
                         IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
-                        SortOrder = s.SortOrder,
-                        IsDeleted = false,
-                        CreationTime = DateTime.Now,
-                        CreatorUserId = s.CreatorUserId
+                        CompanyName= s.CompanyName
 
                     };
                 }
@@ -1616,7 +1619,8 @@ namespace TTBusinessAdminPanel.Controllers
                         IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = s.CreatorUserId
+                        CreatorUserId = s.CreatorUserId,
+                        CompanyName=s.CompanyName
 
                     };
                 }
@@ -1751,7 +1755,8 @@ namespace TTBusinessAdminPanel.Controllers
                         IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = s.CreatorUserId
+                        CreatorUserId = s.CreatorUserId,
+                        CompanyName=s.CompanyName,
                     };
                 }
             }
@@ -1885,7 +1890,8 @@ namespace TTBusinessAdminPanel.Controllers
                         GoogleLocation = s.GoogleLocation,
                         Website = s.Website,
                         RegionId = s.RegionId,
-                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                        CompanyName=s.CompanyName
                     };
                 }
             }
@@ -2015,7 +2021,8 @@ namespace TTBusinessAdminPanel.Controllers
                         VideoNameEng = s.VideoNameEng,
                         EnglishUrl = s.EnglishUrl,
                         ArabicUrl = s.ArabicUrl,
-                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                        CompanyName=s.CompanyName
                     };
                 }
             }
@@ -2146,7 +2153,8 @@ namespace TTBusinessAdminPanel.Controllers
                         NewsTitle = s.NewsTitle,
                         NewsDesc = s.NewsDesc,
                         NewsUrl = s.NewsUrl,
-                        IsPublished = s.IsPublished
+                        IsPublished = s.IsPublished,
+                        CompanyName=s.CompanyName
                     };
                 }
             }
@@ -2283,7 +2291,8 @@ namespace TTBusinessAdminPanel.Controllers
                         EndDate = s.EndDate,
                         EndTime = s.EndTime,
                         EventUrl = s.EventUrl,
-                        EventTypeId = s.EventTypeId
+                        EventTypeId = s.EventTypeId,
+                        CompanyName=s.CompanyName
                     };
                 }
             }
@@ -2363,28 +2372,14 @@ namespace TTBusinessAdminPanel.Controllers
             }
         }
 
-        [HttpPost]
-        public JsonResult searchname(string Prefix)
+        [HttpGet]
+        public JsonResult SearchCompany(string term)
         {
-            //Note : you can bind same list from database  
-            List<City> ObjList = new List<City>()
-            {
+            var allData = _company.SearchCompany(term).Result;
+            var cData = (List<CompanyModel>)allData.Data;
+         
 
-                new City {Id=1,Name="Latur" },
-                new City {Id=2,Name="Mumbai" },
-                new City {Id=3,Name="mumne" },
-                new City {Id=4,Name="mumlhi" },
-                new City {Id=5,Name="Dehradun" },
-                new City {Id=6,Name="Noida" },
-                new City {Id=7,Name="New Delhi" }
-
-        };
-            //Searching records from list using LINQ query  
-
-            var names = ObjList.Where(w => w.Name.ToLower().StartsWith(Prefix.ToLower())).ToList();
-
-
-            return Json(names);
+            return Json(cData);
         }
 
     }

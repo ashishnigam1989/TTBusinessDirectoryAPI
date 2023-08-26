@@ -107,5 +107,8 @@ namespace ApplicationService.IServices
         Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue);
         Task<GetResults> GetCompanyEventById(int id);
 
+
+
+        Task<GetResults> SearchCompany(string searchValue);
     }
 }

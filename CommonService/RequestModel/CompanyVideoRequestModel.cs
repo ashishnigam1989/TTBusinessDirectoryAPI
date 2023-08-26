@@ -21,5 +21,6 @@ namespace CommonService.RequestModel
         public DateTime CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
         public bool IsPublished { get; set; }
+        public string CompanyName { get; set; }
     }
 }

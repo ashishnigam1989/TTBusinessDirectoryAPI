@@ -3,13 +3,21 @@
     ViewData["Title"] = "Add Event";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+
+      .ui-autocomplete {
+        max-height: 150px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        z-index: 1000 /*show the dropdown over the addform*/
+    }
+<</style>
 
 <div class="block-header">
     <div class="row">
         <div class="col-lg-12 col-md-6 col-sm-7">
             <h2>Add Event</h2>
-
-           
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Company</a></li>
                 <li class="breadcrumb-item"><a href="@Url.Action("Event", "Company")">Company Event</a></li>
@@ -23,6 +31,8 @@
         <div class="card">
             <div class="header">
                 <h2>Add Event</h2>
+
+              
             </div>
             <div class="body">
                 <form id="addTeamform" asp-controller="Company" asp-action="AddUpdateCompanyEvent">
@@ -45,21 +55,16 @@
                         <div class="col-md-8">
                             <div class="form-group form-float">
                                 <div class="form-line">
-                                    <input asp-for="EventTitle" type="text" class="form-control" name="EventTitle">
+                                    <input asp-for="EventTitle" type="text" class="form-control" id="search" name="EventTitle">
+                                    
                                     <label class="form-label">Event Title</label>
                                 </div>
                                 <span asp-validation-for="EventTitle" class="text-danger"></span>
                             </div>
-                            <div class="form-group form-float">
-                                <div class="form-line">
-                                    <input asp-for="EventTitle" id="search" type="text" class="form-control" name="EventTitle">
-                                    <label class="form-label">testEvent Title</label>
-                                </div>
-                                <span asp-validation-for="EventTitle" class="text-danger"></span>
-                            </div>
+                         
                             <div class="form-group form-float">
 
-                                <div class="form-line">
+                              @*  <div class="form-line">
                                     <select asp-for="CompanyId" name="CompanyId" class="show-tick" required>
                                         <option value="">Select Company</option>
                                         @foreach (var company in @ViewBag.Companies)
@@ -69,8 +74,16 @@
                                     </select>
                                     
                                 </div>
+                                <span asp-validation-for="CompanyId" class="text-danger"></span>*@
+
+                                <div class="form-line">
+                                    <input type="text" class="form-control" id="companyname" name="companyname">
+
+                                    <label class="form-label">Company Name</label>
+                                </div>
+                                <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
                                 <span asp-validation-for="CompanyId" class="text-danger"></span>
-                             
+
                             </div>
 
                             <div class="form-group form-float">
@@ -108,8 +121,6 @@
                                 <span asp-validation-for="EventTypeId" class="text-danger"></span>
                             </div>
                         </div>
-
-
                         <div class="col-md-12">
 
 
@@ -137,7 +148,7 @@
                             </div>
                             <div class="form-group form-float">
                                 <div class="form-line">
-                                    <input asp-for="EventDesc" type="text" class="form-control" name="EventDesc">
+                                    <input asp-for="EventDesc" type="text" class="form-control" name="EventDesc" required>
                                     <label class="form-label">Event Desc</label>
                                 </div>
                                 <span asp-validation-for="EventDesc" class="text-danger"></span>
@@ -145,7 +156,7 @@
                         </div>
                       
                         <button class="btn btn-raised btn-primary waves-effect" type="submit">SUBMIT</button>
-
+                </div>
                 </form>
             </div>
         </div>
@@ -156,13 +167,11 @@
 
 @section Scripts
     {
-  
-        
-           
+    
     <script>
         $(document).ready(function () {
             uploadEventImage();
-            Auto();
+            AutofillCompany();
         });
 
         function uploadEventImage() {
@@ -193,29 +202,31 @@
 
         }
 
-        function Auto()
+        function AutofillCompany()
         {
-            $("#search").autocomplete({
+            $("#companyname").autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: "/Company/searchname",
-                        type: "POST",
+                        url: "/Company/SearchCompany",
+                        type: "GET",
                         dataType: "json",
-                        data: { Prefix: request.term },
+                        data: { term: request.term },
                         success: function (data) {
-                            response($.map(data, function (item) {
-                                return { label: item.Name, value: item.Name };
+                            response($.map(data, function (item) { 
+                                var AC = new Object();
+                                AC.label = item.nameEng;
+                                AC.value = item.nameEng; 
+                                AC.id = item.id;
+                                return AC
                             }))
 
                         }
                     })
                 },
-                messages: {
-                    noResults: "",
-                    results: function (count) {
-                        return count + (count > 1 ? ' results' : ' result ') + ' found';
-                    }
-                }
+                select:function(e,i){
+                    $("#CompanyId").val(i.item.id); 
+                },
+                minLength:1              
             });
         }
        
