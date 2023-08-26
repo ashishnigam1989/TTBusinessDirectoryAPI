@@ -31,5 +31,6 @@ namespace CommonService.RequestModel
 
         public string DisplayEngImage => string.Format(CommonConstants.S3BaseURL + ImageEng, Id).Replace("com//", "com/");
         public string DisplayArbImage => string.Format(CommonConstants.S3BaseURL + ImageArb, Id).Replace("com//", "com/");
+        public string CompanyName { get; set; }
     }
 }

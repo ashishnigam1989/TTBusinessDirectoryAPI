@@ -32,7 +32,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                         <div class="form-group form-float">
-                                            <div class="form-line focused">
+                                        @*    <div class="form-line focused">
                                         <select asp-for="CompanyMenuId" name="CompanyMenuId" class="show-tick" required>
                                                     <option value="">Select Company</option>
                                             @foreach (var company in @ViewBag.Companies)
@@ -41,6 +41,13 @@
                                             }
                                                 </select>
                                             </div>
+                                    <span asp-validation-for="CompanyMenuId" class="text-danger"></span>*@
+                                    <div class="form-line focused">
+                                        <input type="text" class="form-control" id="companyname" name="companyname">
+
+                                        <label class="form-label">Company Name</label>
+                                    </div>
+                                    <input type="hidden" id="CompanyMenuId" name="CompanyMenuId" asp-for="CompanyMenuId" />
                                     <span asp-validation-for="CompanyMenuId" class="text-danger"></span>
                                         </div>
                                     </div>
@@ -197,8 +204,10 @@
             $(document).ready(function () {
           //  $('#imgfile').attr('src', window.URL.createObjectURL('@Model.DisplayFile'));
             $('#img').attr('src', '@Model.DisplayImage');
+            $("#companyname").val('@Model.CompanyName');
                 uploadImage();
                 uploadFile();
+            AutofillCompany();
             });
 
             function uploadImage() {
@@ -255,5 +264,31 @@
                 });
 
             }
+        function AutofillCompany() {
+            $("#companyname").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Company/SearchCompany",
+                        type: "GET",
+                        dataType: "json",
+                        data: { term: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                var AC = new Object();
+                                AC.label = item.nameEng;
+                                AC.value = item.nameEng;
+                                AC.id = item.id;
+                                return AC
+                            }))
+
+                        }
+                    })
+                },
+                select: function (e, i) {
+                    $("#CompanyMenuId").val(i.item.id);
+                },
+                minLength: 1
+            });
+        }
         </script>
     }

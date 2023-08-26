@@ -24,8 +24,9 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group form-float">
-                                <div>
-                                    <input type="hidden" id="Id" name="Id" asp-for="Id" />
+                                <input type="hidden" id="Id" name="Id" asp-for="Id" />
+                              @*  <div>
+                                    
                                     <select asp-for="CompanyId" name="CompanyId" class="show-tick" onchange="BindCategrories(this);">
                                         <option value="">Select Company</option>
                                         @foreach (var company in @ViewBag.Companies)
@@ -34,6 +35,13 @@
                                         }
                                     </select>
                                 </div>
+                                <span asp-validation-for="CompanyId" class="text-danger"></span>*@
+                                <div class="form-line">
+                                    <input type="text" class="form-control" id="companyname" name="companyname">
+
+                                    <label class="form-label">Company Name</label>
+                                </div>
+                                <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
                                 <span asp-validation-for="CompanyId" class="text-danger"></span>
 
                             </div>
@@ -95,6 +103,7 @@
     <script>
         $(document).ready(function () {
             BindCategrories();
+            AutofillCompany();
         });
         var categories;
         function BindCategrories(cat) {
@@ -189,7 +198,32 @@
             AddCheckBoxes(true);
         }
 
+        function AutofillCompany() {
+            $("#companyname").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Company/SearchCompany",
+                        type: "GET",
+                        dataType: "json",
+                        data: { term: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                var AC = new Object();
+                                AC.label = item.nameEng;
+                                AC.value = item.nameEng;
+                                AC.id = item.id;
+                                return AC
+                            }))
 
+                        }
+                    })
+                },
+                select: function (e, i) {
+                    $("#CompanyId").val(i.item.id);
+                },
+                minLength: 1
+            });
+        }
     </script>
 }
 

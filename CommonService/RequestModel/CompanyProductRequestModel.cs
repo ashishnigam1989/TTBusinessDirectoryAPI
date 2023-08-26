@@ -39,5 +39,6 @@ namespace CommonService.RequestModel
         public string OfferShortDescriptionArb { get; set; }
         public decimal OldPrice { get; set; }
         public string DisplayLogo=> string.Format(CommonConstants.S3BaseURL + Image, Id);
+        public string CompanyName { get; set; }
     }
 }
