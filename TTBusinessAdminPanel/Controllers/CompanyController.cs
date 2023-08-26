@@ -231,49 +231,50 @@ namespace TTBusinessAdminPanel.Controllers
                     var result = _company.AddEditCompanyBrand(reqmodel).Result;
                     if (result.IsSuccess)
                     {
-                        //_notyfService.Success(result.Message);
-                        //return RedirectToAction("Brand", "Company");
-                        res = new GetResults()
-                        {
-                            IsSuccess = true,
-                            Message = "Company Brand Mapping Successfull."
-                        };
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Brand", "Company");
+                        //res = new GetResults()
+                        //{
+                        //    IsSuccess = true,
+                        //    Message = "Company Brand Mapping Successfull."
+                        //};
                     }
                     else
                     {
-                        // _notyfService.Warning(result.Message);
-                        res = new GetResults()
-                        {
-                            IsSuccess = false,
-                            Message = "Company Brand Mapping Failed."
-                        };
+                         _notyfService.Warning(result.Message);
+                        //res = new GetResults()
+                        //{
+                        //    IsSuccess = false,
+                        //    Message = "Company Brand Mapping Failed."
+                        //};
                     }
                 }
                 else
                 {
-                    res = new GetResults()
-                    {
-                        IsSuccess = false,
-                        Message = "Company Brand Mapping Failed."
-                    };
-                    // _notyfService.Error("Validation Error !!!");
+                    //res = new GetResults()
+                    //{
+                    //    IsSuccess = false,
+                    //    Message = "Company Brand Mapping Failed."
+                    //};
+                     _notyfService.Error("Validation Error !!!");
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                //   _notyfService.Error(ex.Message.ToString());
-                res = new GetResults()
-                {
-                    IsSuccess = false,
-                    Message = "Company Brand Mapping Failed"
-                };
+                   _notyfService.Error(ex.Message.ToString());
+                //res = new GetResults()
+                //{
+                //    IsSuccess = false,
+                //    Message = "Company Brand Mapping Failed"
+                //};
             }
             BindCompanyAndBrand();
             _logger.Info(JsonConvert.SerializeObject(res));
-            return Json(res);// View("Category", reqmodel);
+            //return Json(res);
+            return View("Brand", reqmodel);
         }
-        public IActionResult GetAllCompanyBrand()
+        public IActionResult GetAllCompanyBrand(int companyId)
         {
             try
             {
@@ -287,7 +288,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyBrand(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyBrand(pageNo, pageSize, searchValue,companyId).Result;
                 var cData = (List<CompanyBrandViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -389,7 +390,7 @@ namespace TTBusinessAdminPanel.Controllers
             return Json(Companies);
 
         }
-        public IActionResult GetAllCompanyCategory()
+        public IActionResult GetAllCompanyCategory(int companyId)
         {
             try
             {
@@ -403,7 +404,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyCategory(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyCategory(pageNo, pageSize, searchValue, companyId).Result;
                 var cData = (List<CompanyCategoryViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -449,47 +450,48 @@ namespace TTBusinessAdminPanel.Controllers
                     var result = _company.AddEditCompanyCategory(reqmodel).Result;
                     if (result.IsSuccess)
                     {
-                        res = new GetResults()
-                        {
-                            IsSuccess = true,
-                            Message = "Company Category Mapping Successfull"
-                        };
-                        //_notyfService.Success(result.Message);
-                        //return RedirectToAction("Category", "Company");
+                        //res = new GetResults()
+                        //{
+                        //    IsSuccess = true,
+                        //    Message = "Company Category Mapping Successfull"
+                        //};
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Category", "Company");
                     }
                     else
                     {
-                        res = new GetResults()
-                        {
-                            IsSuccess = false,
-                            Message = "Company Category Mapping failed"
-                        };
-                        //_notyfService.Warning(result.Message);
+                        //res = new GetResults()
+                        //{
+                        //    IsSuccess = false,
+                        //    Message = "Company Category Mapping failed"
+                        //};
+                        _notyfService.Warning(result.Message);
                     }
                 }
                 else
                 {
-                    // _notyfService.Error("Validation Error !!!");
-                    res = new GetResults()
-                    {
-                        IsSuccess = false,
-                        Message = "Company Category Mapping failed"
-                    };
+                     _notyfService.Error("Validation Error !!!");
+                    //res = new GetResults()
+                    //{
+                    //    IsSuccess = false,
+                    //    Message = "Company Category Mapping failed"
+                    //};
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                res = new GetResults()
-                {
-                    IsSuccess = false,
-                    Message = "Company Category Mapping failed"
-                };
-                // _notyfService.Error(ex.Message.ToString());
+                //res = new GetResults()
+                //{
+                //    IsSuccess = false,
+                //    Message = "Company Category Mapping failed"
+                //};
+                 _notyfService.Error(ex.Message.ToString());
             }
             BindCompanyAndCategory();
             _logger.Info(JsonConvert.SerializeObject(res));
-            return Json(res);// View("Category", reqmodel);
+        //    return Json(res);
+            return View("Category", reqmodel);
         }
         public IActionResult DeleteCompanyCategory(int id)
         {
@@ -638,7 +640,7 @@ namespace TTBusinessAdminPanel.Controllers
                         WarrantyArb = s.WarrantyArb,
                         Image = s.Image,
                         SortOrder = s.SortOrder,
-                        IsPublished = s.IsPublished,
+                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
                         HasOffers = s.HasOffers,
                         IsDeleted = s.IsDeleted,
                         DeleterUserId = s.DeleterUserId,

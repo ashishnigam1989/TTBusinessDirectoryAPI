@@ -20,7 +20,7 @@ namespace CommonService.RequestModel
         public string WarrantyArb { get; set; }
         public string Image { get; set; }
         public int? SortOrder { get; set; }
-        public bool? IsPublished { get; set; }
+        public bool IsPublished { get; set; }
         public bool? HasOffers { get; set; }
         public bool IsDeleted { get; set; }
         public long? DeleterUserId { get; set; }
