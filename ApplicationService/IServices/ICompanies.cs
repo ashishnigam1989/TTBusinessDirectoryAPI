@@ -19,13 +19,13 @@ namespace ApplicationService.IServices
         Task<GetResults> GetMasterEventType();
 
         Task<GetResults> AddEditCompanyBrand(CompanyBrandRequestModel cbModel);
-        Task<GetResults> GetAllCompanyBrand(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyBrand(int page, int limit, string searchValue,int companyId);
         Task<GetResults> GetCompanyBrandById(int id);
         Task<GetResults> DeleteCompanyBrand(int Id);
         Task<List<long>> GetCompanyBrand(int companyid);
 
 
-        Task<GetResults> GetAllCompanyCategory(int pageNo, int pageSize, string searchValue);
+        Task<GetResults> GetAllCompanyCategory(int pageNo, int pageSize, string searchValue, int companyId);
         Task<GetResults> GetCompanyCategoryById(int id);
         Task<GetResults> DeleteCompanyCategory(int Id);
         Task<GetResults> AddEditCompanyCategory(CompanyCategoryRequestModel ccModel);
