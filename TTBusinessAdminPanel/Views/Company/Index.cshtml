@@ -85,7 +85,8 @@
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | "+
-                                "<a href='#' onclick=DeleteCompany(" + d.id + ") class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a>";
+                                "<a href='#' onclick=DeleteCompany(" + d.id + ") class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a> |"+
+                                "<a href='/Company/SetCompany/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-settings'></i></a> | " ;
                             if (d.isVerified!=true) {
                             btns+=" | <a href='#' onclick=VerifyCompany(" + d.id + ",'approve') class='icon' style='color:green' title='Verify'><i class='zmdi zmdi-assignment-check'></i></a>" ;
                             } 

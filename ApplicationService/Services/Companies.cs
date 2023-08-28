@@ -789,11 +789,11 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyProduct(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyProduct(int page, int limit, string searchValue,int id=0)
         {
             GetResults result = new GetResults();
             var cpList = _dbContext.CompanyProduct.Join(_dbContext.Company, cp => cp.CompanyId, cmny => cmny.Id, (cp, cmny) => new { cp, cmny }).
-                            Where(w => w.cp.IsDeleted == false && (
+                            Where(w =>w.cp.CompanyId==(id>0?id:w.cp.CompanyId) && w.cp.IsDeleted == false && (
                             (!string.IsNullOrEmpty(searchValue) ? w.cmny.NameEng.Contains(searchValue) : w.cmny.NameEng == w.cmny.NameEng))).
                             Select(s => new CompanyProductViewModel
                             {
@@ -806,7 +806,7 @@ namespace ApplicationService.Services
 
 
             var tot = _dbContext.CompanyProduct.Join(_dbContext.Company, cp => cp.CompanyId, cmny => cmny.Id, (cp, cmny) => new { cp, cmny }).
-                           Where(w => w.cp.IsDeleted == false).
+                           Where(w => w.cp.CompanyId == (id > 0 ? id : w.cp.CompanyId) && w.cp.IsDeleted == false).
                           CountAsync().Result;
 
             result.IsSuccess = true;

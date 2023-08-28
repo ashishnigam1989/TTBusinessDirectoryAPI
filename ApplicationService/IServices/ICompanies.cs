@@ -34,7 +34,7 @@ namespace ApplicationService.IServices
         Task<GetResults> AddEditCompanyProduct(CompanyProductRequestModel cpModel);
         Task<GetResults> DeleteCompanyProduct(int Id); 
         Task<GetResults> GetCompanyProductById(int id);
-        Task<GetResults> GetAllCompanyProduct(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyProduct(int page, int limit, string searchValue,int id);
 
 
         Task<GetResults> AddEditCompanyService(CompanyServiceRequestModel csModel);

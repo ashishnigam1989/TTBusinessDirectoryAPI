@@ -19,6 +19,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TTBusinessAdminPanel.Extensions;
 
 namespace TTBusinessAdminPanel.Controllers
 {
@@ -132,6 +133,8 @@ namespace TTBusinessAdminPanel.Controllers
             BindCountries();
             return View(cmodel);
         }
+
+       
         public IActionResult VerifyCompany(ChangeStatusModel cModel)
         {
             var resp = _company.VerifyCompany(cModel.Id).Result;
@@ -380,8 +383,7 @@ namespace TTBusinessAdminPanel.Controllers
         }
         public IActionResult Category()
         {
-            BindCompanyAndCategory();
-
+             BindCompanyAndCategory(); 
             return View();
         }
         public IActionResult CompanySuggestion()
@@ -390,10 +392,11 @@ namespace TTBusinessAdminPanel.Controllers
             return Json(Companies);
 
         }
-        public IActionResult GetAllCompanyCategory(int companyId)
+        public IActionResult GetAllCompanyCategory()
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -404,7 +407,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyCategory(pageNo, pageSize, searchValue, companyId).Result;
+                var allData = _company.GetAllCompanyCategory(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyCategoryViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -550,6 +553,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid =Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -560,7 +564,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyProduct(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyProduct(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyProductViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -589,6 +593,8 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
+                    reqmodel.CompanyId = cid;
                     var result = _company.AddEditCompanyProduct(reqmodel).Result;
                     Helper.MoveFileToS3Server(EnumImageType.ProductLogo, Convert.ToInt64(result.Data), reqmodel.Image);
                     if (result.IsSuccess)
@@ -2377,6 +2383,7 @@ namespace TTBusinessAdminPanel.Controllers
         [HttpGet]
         public JsonResult SearchCompany(string term)
         {
+            
             var allData = _company.SearchCompany(term).Result;
             var cData = (List<CompanyModel>)allData.Data;
          
@@ -2384,11 +2391,24 @@ namespace TTBusinessAdminPanel.Controllers
             return Json(cData);
         }
 
-    }
-    public class City
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        private CompanyRequestModel companydetail(int id)
+        {
 
+            CompanyRequestModel cmodel = new CompanyRequestModel();
+            var company = _company.GetCompanyById(id).Result;
+            cmodel = (CompanyRequestModel)company.Data;
+            return cmodel;
+        }
+        public IActionResult SetCompany(int id)
+        {
+            if (id > 0)
+            { 
+                var cdetail = companydetail(id);
+                ExtensionHelper.SetSession("Companyname", cdetail.NameEng);
+                ExtensionHelper.SetSession("CompanyMasterId", Convert.ToString(id));
+            }
+            return View("Index", "Company");
+        }
     }
+  
 }
