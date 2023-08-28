@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 
 namespace TTBusinessAdminPanel.Extensions
 {
     public static class ExtensionHelper
     {
-        private static IHttpContextAccessor httpContextAccessor; 
+        private static IHttpContextAccessor httpContextAccessor;
         public static void Help(IHttpContextAccessor accessor)
         {
             httpContextAccessor = accessor;
@@ -28,6 +29,22 @@ namespace TTBusinessAdminPanel.Extensions
             string jsonString = JsonConvert.SerializeObject(userObj);
 
             context.Session.SetString("UserDetail", jsonString);
+
+        }
+
+        public static void SetSession(string key, string value)
+        {
+            var context = httpContextAccessor.HttpContext;
+
+            context.Session.SetString(key, value);
+
+        }
+
+        public static string GetSession(string key)
+        {
+            var context = httpContextAccessor.HttpContext;
+
+            return Convert.ToString(context.Session.GetString(key));
 
         }
         public static UserSessionModel GetUserSession()

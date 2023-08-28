@@ -46,6 +46,12 @@
     {
     <script>
         $(document).ready(function () {
+
+                bindProducts();
+        });
+
+       function bindProducts(id)
+       {
             $("#product-datatable").DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -74,9 +80,8 @@
                     }
                 ]
             });
-        });
+       }
 
-       
     </script>
 }
 
