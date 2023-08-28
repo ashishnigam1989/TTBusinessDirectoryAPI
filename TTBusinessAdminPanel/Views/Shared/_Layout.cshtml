@@ -17,9 +17,9 @@
 
     <!-- JQuery DataTable Css -->
     <link href="~/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" /> 
-    
-  <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
-         rel = "stylesheet">
+    <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+
+    <link href="~/assets/select2/dist/css/select2.min.css" rel="stylesheet" />
 
 </head>
 <body class="theme-red">
@@ -478,6 +478,10 @@
     <script src="~/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/datatables/js/dataTables.bootstrap4.min.js"></script>
     @await Component.InvokeAsync("Notyf")
+    <script src="~/assets/select2/dist/js/select2.full.min.js"></script>
+    <script>
+        $(".select2").select2();
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

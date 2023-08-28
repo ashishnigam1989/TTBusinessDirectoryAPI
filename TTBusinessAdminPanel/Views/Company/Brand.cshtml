@@ -26,9 +26,6 @@
                             <div class="form-group form-float">
                                 <input type="hidden" id="Id" name="Id" asp-for="Id" />
                                 @* <div>
-
-
-
                                 <select asp-for="CompanyId" name="CompanyId" class="show-tick" onchange="BindCategrories(this);">
                                 <option value="">Select Company</option>
                                 @foreach (var company in @ViewBag.Companies)
@@ -40,7 +37,6 @@
                                 <span asp-validation-for="CompanyId" class="text-danger"></span>*@
                                 <div class="form-line">
                                     <input type="text" class="form-control" id="companyname" name="companyname">
-
                                     <label class="form-label">Company Name</label>
                                 </div>
                                 <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
@@ -51,7 +47,7 @@
                         <div class="col-md-4">
                             <div class="form-group form-float">
                                 <div>
-                                    <select asp-for="BrandId" name="BrandId" class="show-tick">
+                                    <select asp-for="BrandId" name="BrandId" class="form-control select2">
                                         <option value="">Select Brand</option>
                                         @foreach (var category in @ViewBag.Brands)
                                         {
@@ -242,7 +238,7 @@
         }
 
         function bindBrand() {
-            
+            var companyId = $("#CompanyId").val();
             $("#brand-datatable").DataTable({
                 "processing": true,
                 "serverSide": true,

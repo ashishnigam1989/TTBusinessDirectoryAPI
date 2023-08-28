@@ -456,7 +456,7 @@ namespace TTBusinessAdminPanel.Controllers
                         //    Message = "Company Category Mapping Successfull"
                         //};
                         _notyfService.Success(result.Message);
-                        return RedirectToAction("Category", "Company");
+                        return RedirectToAction("Category", "Company", new { id = reqmodel.CompanyId });
                     }
                     else
                     {
