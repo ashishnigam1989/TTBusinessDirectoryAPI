@@ -97,8 +97,7 @@ namespace ApplicationService.Services
                     _dbContext.FreeListing.Add(freeListing);
                     await _dbContext.SaveChangesAsync();
                     var listingId = freeListing.Id;
-                    Helper.MoveFileToS3Server(EnumImageType.FreeListingLogo, listingId, freeListingModel.Logo);
-
+                    var logoPath = Helper.MoveFileToS3Server(EnumImageType.FreeListingLogo, listingId, freeListingModel.Logo);
 
                     foreach (var productDetail in freeListingModel.FreeListingProductDetails)
                     {
@@ -114,6 +113,10 @@ namespace ApplicationService.Services
                         };
                         _dbContext.FreeListingDetails.Add(freeListingDetails);
                     }
+                    
+                    await _dbContext.SaveChangesAsync();
+                    freeListing.Logo = logoPath;
+                    _dbContext.FreeListing.Update(freeListing);
                     await _dbContext.SaveChangesAsync();
                 }
                 transaction.Commit();
