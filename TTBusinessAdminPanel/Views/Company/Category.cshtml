@@ -1,4 +1,5 @@
-﻿@model CommonService.RequestModel.CompanyCategoryRequestModel;
+﻿@using TTBusinessAdminPanel.Extensions
+@model CommonService.RequestModel.CompanyCategoryRequestModel;
 @{
     ViewData["Title"] = "Category";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -20,28 +21,35 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="body">
-                <form id="addcompanycategoryform">
+                <form id="addcompanycategoryform" asp-controller="Company" asp-action="AddUpdateCompanyCategory">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group form-float">
-                                <div>
-                                    <input type="hidden" id="Id" name="Id" asp-for="Id" />
-                                    <select asp-for="CompanyId" name="CompanyId" class="show-tick" onchange="BindCategrories(this);">
-                                        <option value="">Select Company</option>
-                                        @foreach (var company in @ViewBag.Companies)
-                                        {
-                                            <option value="@company.Value">@company.Text</option>
-                                        }
-                                    </select>
+                                <input type="hidden" id="Id" name="Id" asp-for="Id" />
+                                @*  <div>
+
+                                <select asp-for="CompanyId" name="CompanyId" class="show-tick" onchange="BindCategrories(this);">
+                                <option value="">Select Company</option>
+                                @foreach (var company in @ViewBag.Companies)
+                                {
+                                <option value="@company.Value">@company.Text</option>
+                                }
+                                </select>
                                 </div>
+                                <span asp-validation-for="CompanyId" class="text-danger"></span>*@
+                                <div id="companydiv" class="form-line">
+                                    <input type="text" class="form-control" id="companyname" name="companyname">
+                                    <label class="form-label">Company Name</label>
+                                </div>
+                                <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
                                 <span asp-validation-for="CompanyId" class="text-danger"></span>
 
                             </div>
                         </div>
-                       @* <div class="col-md-4">
+                        <div class="col-md-4">
                             <div class="form-group form-float">
                                 <div>
-                                    <select asp-for="CategoryId" name="CategoryId" class="show-tick">
+                                    <select asp-for="CategoryId" name="CategoryId" class="form-control select2">
                                         <option value="">Select Category</option>
                                         @foreach (var category in @ViewBag.Categories)
                                         {
@@ -52,18 +60,19 @@
                                 </div>
                                 <span asp-validation-for="CategoryId" class="text-danger"></span>
                             </div>
-                        </div>*@
+                        </div>
                         <div class="col-md-4">
-                            <div class="form-group form-float"> 
-                                    <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
-                                    <label for="IsPublished" class="form-label">IsPublished</label>
-                                </div>
-                                <span asp-validation-for="IsPublished" class="text-danger"></span>
-                                 
+                            <div class="form-group form-float">
+                                <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                <label for="IsPublished" class="form-label">IsPublished</label>
+                            </div>
+                            <span asp-validation-for="IsPublished" class="text-danger"></span>
+
                         </div>
                     </div>
 
-                 
+                    <button class="btn btn-raised btn-primary waves-effect" style="float:right" type="submit">SUBMIT</button>
+
                 </form>
 
             </div>
@@ -71,7 +80,7 @@
     </div>
 </div>
 
-<div class="row card">
+@*<div class="row card">
     <div class="col-md-12 body">
         <h3>Categories</h3>
         <div class="form-group form-float">
@@ -87,108 +96,97 @@
         <button class="btn btn-raised btn-primary waves-effect" style="float:right" onclick="SaveCompanyCategory()" type="submit">SUBMIT</button>
 
     </div>
-   </div>
+   </div>*@
 
+<div class="row card">
+    <div class="col-md-12 body">
+        <div class="body">
+            <table id="category-datatable" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Category Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
 
-
-    @section scripts {
+@section scripts {
     <script>
         $(document).ready(function () {
-            BindCategrories();
+
+            //var cid = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
+            var cid = @ExtensionHelper.GetSession("CompanyMasterId");
+            if (cid) {
+                var cname = '@ExtensionHelper.GetSession("Companyname")';
+                $("#companyname").prop("disabled", true);
+                $('#companyname').val(cname);
+                $("#CompanyId").val(cid);
+                $('#companydiv').addClass('focused');
+                bindcategory(); 
+            }
+            AutofillCompany();
         });
-        var categories;
-        function BindCategrories(cat) {
-            categories = [];
-            var categoryid = cat ? cat.value : undefined;
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Action("BindCompanyBrand","Company")',
-                dataType: 'json',
-                data: { id: categoryid },
-                success: function (data) {
-                    categories = data;
-                    AddCheckBoxes(false);
+        function AutofillCompany() {
+            $("#companyname").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Company/SearchCompany",
+                        type: "GET",
+                        dataType: "json",
+                        data: { term: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                var AC = new Object();
+                                AC.label = item.nameEng;
+                                AC.value = item.nameEng;
+                                AC.id = item.id;
+                                return AC
+                            }))
 
+                        }
+                    })
                 },
-                error: function (ex) {
-
-                }
+                select: function (e, i) {
+                    $("#CompanyId").val(i.item.id);
+                    bindcategory();
+                },
+                minLength: 1
             });
         }
-        function AddCheckBoxes(isAll) {
-            if (isAll) {
-                var isSelectAll = $('#chkselectAll').is(":checked");
-                for (var i = 0; i < categories.length; i++) {
-                    categories[i].isSelected = isSelectAll;
-                }
-            }
-
-            var list = '';
-            $('#catchklist').empty();
-            for (var i = 0; i < categories.length; i++) {
-                var id = 'chk' + categories[i].id;
-                if (categories[i].isSelected) {
-                    list += ' <input type="checkbox" id = "' + id + '" name = "' + id + '" checked onchange="SelectCategories(' + categories[i].id + ',this)" >'
-                }
-                else {
-                    list += ' <input type="checkbox" id = "' + id + '" name = "' + id + '" onchange="SelectCategories(' + categories[i].id + ',this)"  >'
-                }
-
-                list += '<label for= "' + id + '" > ' + categories[i].nameEng + '</label>'
-            }
-            $('#catchklist').append(list);
-        }
-        function SelectCategories(id, event) {
-            var foundIndex = categories.findIndex(x => x.id == id);
-            if (event.checked) {
-                categories[foundIndex].isSelected = true;
-            }
-            else {
-                categories[foundIndex].isSelected = false;
-            }
-        }
-        function SaveCompanyCategory() {
-            var selectedcategoryid = [];
-            var selected = categories.filter(function (item) { return item.isSelected === true; });
-            for (var i = 0; i < selected.length; i++) {
-                selectedcategoryid.push(selected[i].id);
-            }
-            var reqObj = {
-                CompanyId: $('#CompanyId').val() ? Number($('#CompanyId').val()) : undefined,
-                CategoryList: selectedcategoryid,
-                IsPublished:$('#IsPublished').is(":checked")
-            };
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("AddUpdateCompanyCategory","Company")',
-                dataType: 'json',
-                data: reqObj,
-                success: function (data) {
-                    if (data) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!!',
-                            text: 'Company Category Mapping Successful!!'
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!!',
-                            text: 'Not Saved!!'
-                        })
-                    }
+        function bindcategory() {
+            var companyId = $("#CompanyId").val();
+            $("#category-datatable").DataTable({
+                "processing": true,
+                "serverSide": true,
+                "filter": true,
+                "bDestroy": true,
+                "ajax": {
+                    "url": "/Company/GetAllCompanyCategory",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": { "companyId": companyId },
                 },
-                error: function (ex) {
-
-                }
+                "columnDefs": [{
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "category", "name": "Category", "autoWidth": true },
+                    {
+                        "render": function (data, row, d) {
+                            var btns = "<a href='/Company/DeleteCompanyCategory/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-delete'></i></a> ";
+                            return btns;
+                        }
+                    }
+                ]
             });
         }
-        function SelectAll(event) {
-            AddCheckBoxes(true);
-        }
-
 
     </script>
 }

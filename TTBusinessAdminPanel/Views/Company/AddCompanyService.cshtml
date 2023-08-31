@@ -40,7 +40,7 @@
                             <div class="col-md-8">
                                 <div>
                                     <div class="form-group form-float">
-                                        <div class="form-line">
+                                        @*<div class="form-line">
                                             <select asp-for="CompanyId" name="CompanyId" class="show-tick" required>
                                                 <option value="">Select Company</option>
                                                 @foreach (var company in @ViewBag.Companies)
@@ -49,6 +49,13 @@
                                                 }
                                             </select>
                                         </div>
+                                        <span asp-validation-for="CompanyId" class="text-danger"></span>*@
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="companyname" name="companyname">
+
+                                            <label class="form-label">Company Name</label>
+                                        </div>
+                                        <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
                                         <span asp-validation-for="CompanyId" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -223,6 +230,7 @@
     <script>
         $(document).ready(function () {
             uploadImage();
+            AutofillCompany();
         });
 
         function uploadImage() {
@@ -233,6 +241,13 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "ServiceLogo");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);
@@ -245,6 +260,32 @@
                 return "";
             });
 
+        }
+        function AutofillCompany() {
+            $("#companyname").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Company/SearchCompany",
+                        type: "GET",
+                        dataType: "json",
+                        data: { term: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                var AC = new Object();
+                                AC.label = item.nameEng;
+                                AC.value = item.nameEng;
+                                AC.id = item.id;
+                                return AC
+                            }))
+
+                        }
+                    })
+                },
+                select: function (e, i) {
+                    $("#CompanyId").val(i.item.id);
+                },
+                minLength: 1
+            });
         }
     </script>
     }

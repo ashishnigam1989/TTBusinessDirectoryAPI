@@ -32,7 +32,7 @@
                             <div class="col-md-4 center-align">
                                 <img id="img" style="width:250px; height:170px;" />
                                 <div class="fallback">
-                                    <input name="file" id="imageinput" type="file" multiple />
+                                    <input name="file" id="imageinput" type="file" />
                                     <input type="hidden" id="Logo" name="Logo" asp-for="Logo" />
                                 </div>
                             </div>
@@ -41,12 +41,12 @@
                                     <div class="form-group form-float">
                                         <div class="form-line focused">
                                             <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
-                                            <label class="form-label">NameEng</label>
+                                            <label class="form-label">Company Name</label>
                                         </div>
                                         <span asp-validation-for="NameEng" class="text-danger"></span>
                                     </div>
                                 </div>
-                                <div>
+                                @*<div>
                                     <div class="form-group form-float">
                                         <div class="form-line focused">
                                             <input asp-for="NameArb" type="text" class="form-control" name="NameArb">
@@ -54,11 +54,11 @@
                                         </div>
                                         <span asp-validation-for="NameArb" class="text-danger"></span>
                                     </div>
-                                </div>
+                                </div>*@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="UniqueName" type="text" class="form-control" name="UniqueName">
@@ -67,7 +67,7 @@
                                     <span asp-validation-for="UniqueName" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="PrimaryEmail" type="email" class="form-control" name="PrimaryEmail" required>
@@ -77,10 +77,7 @@
                                 </div>
                             </div>
 
-                          
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="PrimaryPhone" type="text" class="form-control" name="PrimaryPhone" required>
@@ -89,6 +86,9 @@
                                     <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            
                           @*  <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
@@ -160,10 +160,9 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
-
                                         <div>
                                             <select asp-for="CountryId" id="CountryId" name="CountryId" class="show-tick" onchange="BindRegion(this.value)">
                                                 <option value="0">Select Country</option>
@@ -179,7 +178,7 @@
                                     <span class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
 
@@ -280,16 +279,16 @@
                     <h3>Details</h3>
                     <fieldset>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="ShortDescriptionEng" type="text" class="form-control" name="ShortDescriptionEng">
-                                        <label class="form-label">Short Description Eng</label>
+                                        <label class="form-label">Short Description</label>
                                     </div>
                                     <span asp-validation-for="ShortDescriptionEng" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            @*<div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="ShortDescriptionArb" type="text" class="form-control" name="ShortDescriptionArb">
@@ -297,19 +296,19 @@
                                     </div>
                                     <span asp-validation-for="ShortDescriptionArb" class="text-danger"></span>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="DescriptionEng" type="text" class="form-control" name="DescriptionEng">
-                                        <label class="form-label">Description Eng</label>
+                                        <label class="form-label">Description</label>
                                     </div>
                                     <span asp-validation-for="DescriptionEng" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            @*<div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="DescriptionArb" type="text" class="form-control" name="DescriptionArb">
@@ -317,7 +316,7 @@
                                     </div>
                                     <span asp-validation-for="DescriptionArb" class="text-danger"></span>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                     </fieldset>
                     <h3>Social Media</h3>
@@ -482,7 +481,7 @@
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="DomainName" type="text" class="form-control" name="DomaiName">
-                                        <label class="form-label">Domai Name</label>
+                                        <label class="form-label">Domain Name</label>
                                     </div>
                                     <span asp-validation-for="DomainName" class="text-danger"></span>
                                 </div>
@@ -568,6 +567,13 @@
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
                 formdata.append("imgtype", "CompanyLogo");
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/Upload/Upload');
                 xhr.send(formdata);

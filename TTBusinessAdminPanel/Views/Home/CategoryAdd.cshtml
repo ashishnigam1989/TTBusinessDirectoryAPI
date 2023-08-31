@@ -32,17 +32,26 @@
                             <div class="col-md-4">
                                 <img id="img" style="width:250px; height:170px;" />
                                 <div class="fallback">
-                                    <input name="file" id="imageinput" type="file" multiple />
+                                    <input name="file" id="imageinput" type="file" />
                                     <input type="hidden" id="Icon" name="Icon" asp-for="Icon" />
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
-                                        <label class="form-label">NameEng</label>
+                                        <label class="form-label">Category Name</label>
                                     </div>
                                     <span asp-validation-for="NameEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="Unspsccode" type="text" class="form-control" name="Unspsccode">
+                                        <label class="form-label">UNSPSC Code</label>
+                                    </div>
+                                    <span asp-validation-for="Unspsccode" class="text-danger"></span>
                                 </div>
                             </div>
                             @*<div class="col-md-4">
@@ -56,33 +65,11 @@
                             </div>*@
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="Unspsccode" type="text" class="form-control" name="Unspsccode">
-                                        <label class="form-label">UNSPSC Code</label>
-                                    </div>
-                                    <span asp-validation-for="Unspsccode" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="email" class="form-control" name="PrimaryEmail">
-                                        <label class="form-label">Search Term</label>
-                                    </div>
-                                    <span class="text-danger"></span>
-                                </div>
-                            </div>
-
-
-                        </div>
-                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div>
                                         <input type="checkbox" asp-for="SeoEnabled" id="SeoEnabled" name="SeoEnabled">
-                                        <label for="SeoEnabled" class="form-label">SeoEnabled</label>
+                                        <label for="SeoEnabled" class="form-label">Seo Enabled</label>
                                     </div>
                                     <span asp-validation-for="SeoEnabled" class="text-danger"></span>
                                 </div>
@@ -91,7 +78,7 @@
                                 <div class="form-group form-float">
                                     <div>
                                         <input type="checkbox" asp-for="IsPublished" name="IsPublished" id="IsPublished">
-                                        <label for="IsPublished" class="form-label">IsPublished</label>
+                                        <label for="IsPublished" class="form-label">Is Published</label>
                                     </div>
                                     <span asp-validation-for="IsPublished" class="text-danger"></span>
                                 </div>
@@ -100,7 +87,7 @@
                                 <div class="form-group form-float">
                                     <div>
                                         <input type="checkbox" asp-for="IsFeatured" id="IsFeatured" name="IsFeatured">
-                                        <label for="IsFeatured" class="form-label">IsFeatured</label>
+                                        <label for="IsFeatured" class="form-label">Is Featured</label>
                                     </div>
                                     <span asp-validation-for="IsFeatured" class="text-danger"></span>
                                 </div>
@@ -114,7 +101,7 @@
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="MetaTitleEng" type="text" class="form-control" name="MetaTitleEng">
-                                        <label class="form-label">Meta Title Eng</label>
+                                        <label class="form-label">Meta Title</label>
                                     </div>
                                     <span asp-validation-for="MetaTitleEng" class="text-danger"></span>
                                 </div>
@@ -125,13 +112,13 @@
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="MetaDescriptionEng" type="text" class="form-control" name="MetaDescriptionEng">
-                                        <label class="form-label">MetaDescriptionEng</label>
+                                        <label class="form-label">Meta Description</label>
                                     </div>
                                     <span asp-validation-for="MetaDescriptionEng" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        @*<div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-float">
                                     <div class="form-line">
@@ -141,8 +128,9 @@
                                     <span asp-validation-for="MetaTitleArb" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
+                        </div>*@
+
+                        @*<div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-float">
                                     <div class="form-line">
@@ -152,7 +140,8 @@
                                     <span asp-validation-for="MetaDescriptionArb" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-float">
@@ -164,7 +153,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                     </fieldset> 
                 </form>

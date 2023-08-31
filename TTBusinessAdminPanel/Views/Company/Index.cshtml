@@ -10,7 +10,7 @@
                 <h2>Company Management</h2>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item">Company</li>
-                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">All Companies</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Premium Companies</a></li>
                 </ul>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2 float-right">
@@ -33,6 +33,7 @@
                             <th>Company Name</th>
                             <th>EmailAddress</th>
                             <th>Phone</th>
+                            <th>Logo</th>
                             <th>Is Verified</th>
                             <th>Action</th>
                         </tr>
@@ -68,6 +69,11 @@
                     { "data": "primaryPhone", "name": "primaryPhone", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
+                            return "<img src='" + d.displayLogo + "' width='60' height='50' />";
+                        }
+                    },
+                    {
+                        "render": function (data, row, d) {
                             if (d.isVerified) {
                                 return "<span>Yes</span>";
                             } 
@@ -79,7 +85,8 @@
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/Edit/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | "+
-                                "<a href='#' onclick=DeleteCompany(" + d.id + ") class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a>";
+                                "<a href='#' onclick=DeleteCompany(" + d.id + ") class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a> |"+
+                                "<a href='/Company/SetCompany/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-settings'></i></a> | " ;
                             if (d.isVerified!=true) {
                             btns+=" | <a href='#' onclick=VerifyCompany(" + d.id + ",'approve') class='icon' style='color:green' title='Verify'><i class='zmdi zmdi-assignment-check'></i></a>" ;
                             } 

@@ -1,5 +1,6 @@
 ﻿using CommonService.RequestModel;
 using CommonService.ViewModels;
+using DatabaseService.DbEntities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,13 +19,13 @@ namespace ApplicationService.IServices
         Task<GetResults> GetMasterEventType();
 
         Task<GetResults> AddEditCompanyBrand(CompanyBrandRequestModel cbModel);
-        Task<GetResults> GetAllCompanyBrand(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyBrand(int page, int limit, string searchValue,int companyId);
         Task<GetResults> GetCompanyBrandById(int id);
         Task<GetResults> DeleteCompanyBrand(int Id);
         Task<List<long>> GetCompanyBrand(int companyid);
 
 
-        Task<GetResults> GetAllCompanyCategory(int pageNo, int pageSize, string searchValue);
+        Task<GetResults> GetAllCompanyCategory(int pageNo, int pageSize, string searchValue, int companyId);
         Task<GetResults> GetCompanyCategoryById(int id);
         Task<GetResults> DeleteCompanyCategory(int Id);
         Task<GetResults> AddEditCompanyCategory(CompanyCategoryRequestModel ccModel);
@@ -33,7 +34,7 @@ namespace ApplicationService.IServices
         Task<GetResults> AddEditCompanyProduct(CompanyProductRequestModel cpModel);
         Task<GetResults> DeleteCompanyProduct(int Id); 
         Task<GetResults> GetCompanyProductById(int id);
-        Task<GetResults> GetAllCompanyProduct(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyProduct(int page, int limit, string searchValue,int id);
 
 
         Task<GetResults> AddEditCompanyService(CompanyServiceRequestModel csModel);
@@ -70,6 +71,7 @@ namespace ApplicationService.IServices
         Task<GetResults> GetFreeListing(int page, int limit, string searchValue);
         Task<GetResults> ApproveRejectFreeListingCompany(int id);
         Task<GetResults> DeleteFreeListing(int Id);
+        Task<GetResults> GetFreeListingDetails(int id);
 
         Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel);
         Task<GetResults> DeleteCompanyTeam(int Id);
@@ -105,6 +107,9 @@ namespace ApplicationService.IServices
         Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue);
         Task<GetResults> GetCompanyEventById(int id);
 
+
+
+        Task<GetResults> SearchCompany(string searchValue);
         Task<GetResults> GetProductsByCompanyId(long companyId, int skip, int limit);
         Task<GetResults> GetServicesByCompanyId(long companyId, int skip, int limit);
 

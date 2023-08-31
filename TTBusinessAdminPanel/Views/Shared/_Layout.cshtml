@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using TTBusinessAdminPanel.Extensions
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,15 +8,20 @@
     <!-- Favicon-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="~/assets/plugins/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="~/assets/plugins/jvectormap/jquery-jvectormap-2.0.3.css"/>
+    <link rel="stylesheet" href="~/assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/plugins/jvectormap/jquery-jvectormap-2.0.3.css" />
     <!-- Custom Css -->
     <link rel="stylesheet" href="~/assets/css/main.css">
     <link rel="stylesheet" href="~/assets/css/all-themes.css" />
     <!-- Bootstrap Select Css -->
-    <link  rel="stylesheet" href="~/assets/plugins/bootstrap-select/css/bootstrap-select.css">
+    <link rel="stylesheet" href="~/assets/plugins/bootstrap-select/css/bootstrap-select.css">
 
     <!-- JQuery DataTable Css -->
     <link href="~/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+
+    <link href="~/assets/select2/dist/css/select2.min.css" rel="stylesheet" />
+
 </head>
 <body class="theme-red">
     <div class="page-loader-wrapper">
@@ -37,133 +43,133 @@
     <div class="overlay"></div>
     <!-- #Float icon -->
     @*<ul id="f-menu" class="mfb-component--br mfb-zoomin" data-mfb-toggle="hover">
-        <li class="mfb-component__wrap"> <a href="#" class="mfb-component__button--main"> <i class="mfb-component__main-icon--resting zmdi zmdi-plus"></i> <i class="mfb-component__main-icon--active zmdi zmdi-close"></i> </a>
-            <ul class="mfb-component__list">
-                <li> <a href="mail-inbox.html" data-mfb-label="Inbox" class="mfb-component__button--child bg-blue"> <i class="zmdi zmdi-email mfb-component__child-icon"></i> </a> </li>
-                <li> <a href="chat.html" data-mfb-label="Chat App" class="mfb-component__button--child bg-orange"> <i class="zmdi zmdi-comments mfb-component__child-icon"></i> </a> </li>
-                <li> <a href="blog.html" data-mfb-label="Blogger" class="mfb-component__button--child bg-purple"> <i class="zmdi zmdi-blogger mfb-component__child-icon"></i> </a> </li>
-            </ul>
-        </li>
+    <li class="mfb-component__wrap"> <a href="#" class="mfb-component__button--main"> <i class="mfb-component__main-icon--resting zmdi zmdi-plus"></i> <i class="mfb-component__main-icon--active zmdi zmdi-close"></i> </a>
+    <ul class="mfb-component__list">
+    <li> <a href="mail-inbox.html" data-mfb-label="Inbox" class="mfb-component__button--child bg-blue"> <i class="zmdi zmdi-email mfb-component__child-icon"></i> </a> </li>
+    <li> <a href="chat.html" data-mfb-label="Chat App" class="mfb-component__button--child bg-orange"> <i class="zmdi zmdi-comments mfb-component__child-icon"></i> </a> </li>
+    <li> <a href="blog.html" data-mfb-label="Blogger" class="mfb-component__button--child bg-purple"> <i class="zmdi zmdi-blogger mfb-component__child-icon"></i> </a> </li>
+    </ul>
+    </li>
     </ul>*@
 
     <!-- Search  -->
     @*<div class="search-bar">
-        <div class="search-icon"> <i class="zmdi zmdi-search"></i> </div>
-        <input type="text" placeholder="Search...">
-        <div class="close-search"> <i class="zmdi zmdi-close"></i> </div>
+    <div class="search-icon"> <i class="zmdi zmdi-search"></i> </div>
+    <input type="text" placeholder="Search...">
+    <div class="close-search"> <i class="zmdi zmdi-close"></i> </div>
     </div>*@
-    
+
     <!-- Top Bar -->
     <nav class="navbar">
         <div class="col-12">
-            <div class="navbar-header">            
+            <div class="navbar-header">
                 <a href="javascript:void(0);" class="bars"></a>
                 <a class="navbar-brand" href="@Url.Action("Index", "Home")">TT Business Panel</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                @*<li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="zmdi zmdi-search"></i></a></li>  *@          
+                @*<li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="zmdi zmdi-search"></i></a></li>  *@
                 @*<li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" ><i class="zmdi zmdi-notifications"></i>
-                    <div class="notify"><span class="heartbit"></span><span class="point"></span></div>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="header">NOTIFICATIONS</li>
-                        <li class="body">
-                            <ul class="menu list-unstyled">
-                                <li> <a href="javascript:void(0);">
-                                    <div class="icon-circle bg-orange"> <i class="material-icons">person_add</i> </div>
-                                    <div class="menu-info">
-                                        <h4>12 new members joined</h4>
-                                        <p> <i class="material-icons">access_time</i> 14 mins ago </p>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <div class="icon-circle bg-cyan"> <i class="material-icons">add_shopping_cart</i> </div>
-                                    <div class="menu-info">
-                                        <h4>4 sales made</h4>
-                                        <p> <i class="material-icons">access_time</i> 22 mins ago </p>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <div class="icon-circle bg-blue"> <i class="material-icons">delete_forever</i> </div>
-                                    <div class="menu-info">
-                                        <h4><b>Nancy Doe</b> deleted account</h4>
-                                        <p> <i class="material-icons">access_time</i> 3 hours ago </p>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <div class="icon-circle bg-green"> <i class="material-icons">mode_edit</i> </div>
-                                    <div class="menu-info">
-                                        <h4><b>Nancy</b> changed name</h4>
-                                        <p> <i class="material-icons">access_time</i> 2 hours ago </p>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <div class="icon-circle bg-pink"> <i class="material-icons">comment</i> </div>
-                                    <div class="menu-info">
-                                        <h4><b>John</b> commented your post</h4>
-                                        <p> <i class="material-icons">access_time</i> 4 hours ago </p>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <div class="icon-circle bg-lime"> <i class="material-icons">cached</i> </div>
-                                    <div class="menu-info">
-                                        <h4><b>John</b> updated status</h4>
-                                        <p> <i class="material-icons">access_time</i> 3 hours ago </p>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <div class="icon-circle bg-purple"> <i class="material-icons">settings</i> </div>
-                                    <div class="menu-info">
-                                        <h4>Settings updated</h4>
-                                        <p> <i class="material-icons">access_time</i> Yesterday </p>
-                                    </div>
-                                    </a> </li>
-                            </ul>
-                        </li>
-                        <li class="footer"> <a href="javascript:void(0);">View All Notifications</a> </li>
-                    </ul>
+                <div class="notify"><span class="heartbit"></span><span class="point"></span></div>
+                </a>
+                <ul class="dropdown-menu">
+                <li class="header">NOTIFICATIONS</li>
+                <li class="body">
+                <ul class="menu list-unstyled">
+                <li> <a href="javascript:void(0);">
+                <div class="icon-circle bg-orange"> <i class="material-icons">person_add</i> </div>
+                <div class="menu-info">
+                <h4>12 new members joined</h4>
+                <p> <i class="material-icons">access_time</i> 14 mins ago </p>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <div class="icon-circle bg-cyan"> <i class="material-icons">add_shopping_cart</i> </div>
+                <div class="menu-info">
+                <h4>4 sales made</h4>
+                <p> <i class="material-icons">access_time</i> 22 mins ago </p>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <div class="icon-circle bg-blue"> <i class="material-icons">delete_forever</i> </div>
+                <div class="menu-info">
+                <h4><b>Nancy Doe</b> deleted account</h4>
+                <p> <i class="material-icons">access_time</i> 3 hours ago </p>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <div class="icon-circle bg-green"> <i class="material-icons">mode_edit</i> </div>
+                <div class="menu-info">
+                <h4><b>Nancy</b> changed name</h4>
+                <p> <i class="material-icons">access_time</i> 2 hours ago </p>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <div class="icon-circle bg-pink"> <i class="material-icons">comment</i> </div>
+                <div class="menu-info">
+                <h4><b>John</b> commented your post</h4>
+                <p> <i class="material-icons">access_time</i> 4 hours ago </p>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <div class="icon-circle bg-lime"> <i class="material-icons">cached</i> </div>
+                <div class="menu-info">
+                <h4><b>John</b> updated status</h4>
+                <p> <i class="material-icons">access_time</i> 3 hours ago </p>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <div class="icon-circle bg-purple"> <i class="material-icons">settings</i> </div>
+                <div class="menu-info">
+                <h4>Settings updated</h4>
+                <p> <i class="material-icons">access_time</i> Yesterday </p>
+                </div>
+                </a> </li>
+                </ul>
+                </li>
+                <li class="footer"> <a href="javascript:void(0);">View All Notifications</a> </li>
+                </ul>
                 </li>*@
                 @*<li class="dropdown hidden-sm-down"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" ><i class="zmdi zmdi-flag"></i>
-                    <div class="notify"><span class="heartbit"></span><span class="point"></span></div>
-                    </a>
-                    <ul class="dropdown-menu slideDown">
-                        <li class="header">TASKS</li>
-                        <li class="body">
-                            <ul class="menu tasks list-unstyled">
-                                <li> <a href="javascript:void(0);">
-                                    <h4> Footer display issue <small>72%</small> </h4>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <h4> Make new buttons <small>56%</small> </h4>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="56" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <h4> Create new dashboard <small>68%</small> </h4>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <h4> Solve transition issue <small>77%</small> </h4>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
-                                    </div>
-                                    </a> </li>
-                                <li> <a href="javascript:void(0);">
-                                    <h4> Answer GitHub questions <small>87%</small> </h4>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
-                                    </div>
-                                    </a> </li>
-                            </ul>
-                        </li>
-                        <li class="footer"> <a href="javascript:void(0);">View All Tasks</a> </li>
-                    </ul>
+                <div class="notify"><span class="heartbit"></span><span class="point"></span></div>
+                </a>
+                <ul class="dropdown-menu slideDown">
+                <li class="header">TASKS</li>
+                <li class="body">
+                <ul class="menu tasks list-unstyled">
+                <li> <a href="javascript:void(0);">
+                <h4> Footer display issue <small>72%</small> </h4>
+                <div class="progress">
+                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <h4> Make new buttons <small>56%</small> </h4>
+                <div class="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="56" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <h4> Create new dashboard <small>68%</small> </h4>
+                <div class="progress">
+                <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <h4> Solve transition issue <small>77%</small> </h4>
+                <div class="progress">
+                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
+                </div>
+                </a> </li>
+                <li> <a href="javascript:void(0);">
+                <h4> Answer GitHub questions <small>87%</small> </h4>
+                <div class="progress">
+                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100" style="width: 68%;"></div>
+                </div>
+                </a> </li>
+                </ul>
+                </li>
+                <li class="footer"> <a href="javascript:void(0);">View All Tasks</a> </li>
+                </ul>
                 </li>*@
                 <li><a href="@Url.Action("Logout","Account")" class="mega-menu" data-close="true"><i class="zmdi zmdi-power"></i></a></li>
                 @*<li><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="zmdi zmdi-settings zmdi-hc-spin"></i></a></li>*@
@@ -172,14 +178,15 @@
     </nav>
 
     <!-- Left Sidebar -->
-    <aside id="leftsidebar" class="sidebar"> 
+    <aside id="leftsidebar" class="sidebar">
         <!-- User Info -->
         <div class="user-info">
             @*<div class="image"> <img src="~/assets/images/random-avatar1.jpg" width="48" height="48" alt="User" /> </div>*@
             <div class="info-container">
                 <div class="name" data-toggle="dropdown">John Doe</div>
                 <div class="email">john.doe@example.com</div>
-                <div class="btn-group user-helper-dropdown"> <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
+                <div class="btn-group user-helper-dropdown">
+                    <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                     <ul class="dropdown-menu pull-right">
                         <li><a href="@Url.Action("Profile","Home")"><i class="material-icons">person</i>Profile</a></li>
                         @*<li class="divider"></li>
@@ -192,54 +199,60 @@
                 </div>
             </div>
         </div>
-        <!-- #User Info --> 
+        <!-- #User Info -->
         <!-- Menu -->
         <div class="menu">
             <ul class="list">
                 <li class="header">MAIN NAVIGATION</li>
                 <li class="active open"> <a href="@Url.Action("Index", "Home")"><i class="zmdi zmdi-home col-red"></i><span>Dashboard</span> </a> </li>
-                <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-delicious"></i><span>Masters</span> </a>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-delicious"></i><span>Masters</span> </a>
                     <ul class="ml-menu">
                         <li> <a href="@Url.Action("Role", "Home")">Roles</a></li>
                         <li> <a href="@Url.Action("Country", "Home")">Countries</a></li>
                         <li> <a href="@Url.Action("Region", "Home")">Regions/States</a></li>
-                     @*   <li> <a href="@Url.Action("District", "Home")">District</a></li>*@
+                        @*   <li> <a href="@Url.Action("District", "Home")">District</a></li> *@
                         <li> <a href="@Url.Action("Category", "Home")">Categories</a></li>
                         <li> <a href="@Url.Action("Brand", "Home")">Brands</a></li>
-                        <li> <a href="@Url.Action("BrandCategoryMapping", "Home")">Brand Category Mapping</a></li>
+                        @*<li> <a href="@Url.Action("BrandCategoryMapping", "Home")">Brand Category Mapping</a></li>*@
                     </ul>
                 </li>
-                <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-account"></i><span>User Management</span> </a>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-account"></i><span>User Management</span> </a>
                     <ul class="ml-menu">
                         <li><a href="@Url.Action("Index", "User")">View Users</a></li>
                         <li><a href="@Url.Action("Add", "User")">Add User</a></li>
-                        <li> <a href="@Url.Action("RoleMenuMap", "User")">Menu Role Mapping</a></li>
+                        @*<li> <a href="@Url.Action("RoleMenuMap", "User")">Menu Role Mapping</a></li>*@
                     </ul>
                 </li>
                 @*<li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-email"></i><span>Mail Box</span> </a>
-                    <ul class="ml-menu">
-                        <li><a href="mail-inbox.html">Inbox</a></li>
-                        <li><a href="mail-compose.html">Compose Mail</a></li>
-                        <li><a href="mail-single.html">Single Mail</a></li>
-                    </ul>
+                <ul class="ml-menu">
+                <li><a href="mail-inbox.html">Inbox</a></li>
+                <li><a href="mail-compose.html">Compose Mail</a></li>
+                <li><a href="mail-single.html">Single Mail</a></li>
+                </ul>
                 </li>*@
-                
-                <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-image"></i><span>Company</span> </a>
+
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-image"></i><span>Company</span> </a>
                     <ul class="ml-menu">
-                        <li> <a href="@Url.Action("Index", "Company")">All Companies</a> </li>
-                        <li> <a href="@Url.Action("Category", "Company")">Categories</a> </li>
-                        <li> <a href="@Url.Action("Brand", "Company")">Brands</a> </li>
-                        <li> <a href="@Url.Action("Product", "Company")">Products</a> </li>
-                        <li> <a href="@Url.Action("Service", "Company")">Services</a> </li>
-                        <li> <a href="@Url.Action("Banner", "Company")">Banners</a> </li>
-                        <li> <a href="@Url.Action("CompanyVideo", "Company")">Videos</a> </li>
-                        <li> <a href="@Url.Action("CompanyTeam", "Company")">Team</a> </li>
-                        <li> <a href="@Url.Action("CompanyAddress", "Company")">Address</a> </li>
-                        <li> <a href="@Url.Action("CompanyAward", "Company")">Award</a> </li>
-                        <li> <a href="@Url.Action("CompanyNews", "Company")">News Articles</a> </li>
-                        <li> <a href="@Url.Action("Event", "Company")">Events</a> </li>
-                        <li> <a href="@Url.Action("ReviewLike", "Company")">ReviewLikes</a> </li>
-                       @* <li> <a href="@Url.Action("Gallery", "Company")">Gallery</a> </li>
+                        <li> <a href="@Url.Action("Index", "Company")">Premium Companies</a> </li>
+                        
+                            
+                                <li> <a href="@Url.Action("Category", "Company")">Categories</a> </li>
+                                <li> <a href="@Url.Action("Brand", "Company")">Brands</a> </li>
+                                <li> <a href="@Url.Action("Product", "Company")">Products</a> </li>
+                                <li> <a href="@Url.Action("Service", "Company")">Services</a> </li>
+                                <li> <a href="@Url.Action("Banner", "Company")">Banners</a> </li>
+                                <li> <a href="@Url.Action("CompanyVideo", "Company")">Videos</a> </li>
+                                <li> <a href="@Url.Action("CompanyTeam", "Company")">Team</a> </li>
+                                <li> <a href="@Url.Action("CompanyAddress", "Company")">Address</a> </li>
+                                <li> <a href="@Url.Action("CompanyAward", "Company")">Award</a> </li>
+                                <li> <a href="@Url.Action("CompanyNews", "Company")">News Articles</a> </li>
+                                <li> <a href="@Url.Action("Event", "Company")">Events</a> </li>
+                         
+                        @*  <li> <a href="@Url.Action("ReviewLike", "Company")">ReviewLikes</a> </li>
+                        <li> <a href="@Url.Action("Gallery", "Company")">Gallery</a> </li>
                         <li> <a href="@Url.Action("Offer", "Company")">Offers</a> </li>
                         <li> <a href="@Url.Action("Package", "Company")">Packages</a> </li>
                         <li> <a href="@Url.Action("Link", "Company")">Links</a> </li>
@@ -248,8 +261,16 @@
 
                     </ul>
                 </li>
-                
-                <li> <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-delicious"></i><span>TT Insight</span> </a>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-image"></i><span>Free Company</span> </a>
+                    <ul class="ml-menu">
+
+                        <li> <a href="@Url.Action("FreeListing", "Company")">Free Listing</a> </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-delicious"></i><span>TT Insight</span> </a>
                     <ul class="ml-menu">
                         <li> <a href="@Url.Action("Blog", "Insight")">Blogs</a> </li>
                         <li> <a href="@Url.Action("Event", "Insight")">Events</a> </li>
@@ -258,7 +279,7 @@
                 </li>
             </ul>
         </div>
-        <!-- #Menu --> 
+        <!-- #Menu -->
     </aside>
 
     <!-- Right Sidebar -->
@@ -273,37 +294,47 @@
                 <div class="right_menu">
                     <ul class="choose-skin">
                         <h6>Flat Color</h6>
-                        <li data-theme="red"  class="active">
+                        <li data-theme="red" class="active">
                             <div class="red"></div>
-                            <span>Red</span> </li>
+                            <span>Red</span>
+                        </li>
                         <li data-theme="purple">
                             <div class="purple"></div>
-                            <span>Purple</span> </li>
+                            <span>Purple</span>
+                        </li>
                         <li data-theme="deep-purple">
                             <div class="deep-purple"></div>
-                            <span>Deep Purple</span> </li>
+                            <span>Deep Purple</span>
+                        </li>
                         <li data-theme="blue">
                             <div class="blue"></div>
-                            <span>Blue</span> </li>
+                            <span>Blue</span>
+                        </li>
                         <li data-theme="cyan">
                             <div class="cyan"></div>
-                            <span>Cyan</span> </li>
+                            <span>Cyan</span>
+                        </li>
                         <li data-theme="blue-grey">
                             <div class="blue-grey"></div>
-                            <span>Blue Grey</span> </li>
+                            <span>Blue Grey</span>
+                        </li>
                         <li data-theme="black">
                             <div class="black"></div>
-                            <span>Black</span> </li>
+                            <span>Black</span>
+                        </li>
                         <h6>Gradient Theme</h6>
                         <li data-theme="green">
                             <div class="green"></div>
-                            <span>Green</span> </li>
+                            <span>Green</span>
+                        </li>
                         <li data-theme="orange">
                             <div class="orange"></div>
-                            <span>Orange</span> </li>
+                            <span>Orange</span>
+                        </li>
                         <li data-theme="blush">
                             <div class="blush"></div>
-                            <span>Blush</span> </li>
+                            <span>Blush</span>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -319,19 +350,22 @@
                     <h6>Recent</h6>
                     <ul class="list-unstyled">
                         <li class="online">
-                            <div class="media"> <a class="float-left"> <img class="media-object " src="~/assets/images/random-avatar4.jpg" alt=""> </a>
+                            <div class="media">
+                                <a class="float-left"> <img class="media-object " src="~/assets/images/random-avatar4.jpg" alt=""> </a>
                                 <div class="media-body"> <span class="name">Claire Sassu</span> <span class="message">Can you share the...</span> <span class="badge badge-outline status"></span> </div>
                             </div>
                         </li>
                         <li class="online">
-                            <div class="media"> <a class="float-left"> <img class="media-object " src="~/assets/images/random-avatar5.jpg" alt=""> </a>
+                            <div class="media">
+                                <a class="float-left"> <img class="media-object " src="~/assets/images/random-avatar5.jpg" alt=""> </a>
                                 <div class="media-body">
                                     <div class="media-body"> <span class="name">Maggie jackson</span> <span class="message">Can you share the...</span> <span class="badge badge-outline status"></span> </div>
                                 </div>
                             </div>
                         </li>
                         <li class="online">
-                            <div class="media"> <a class="float-left"> <img class="media-object " src="~/assets/images/random-avatar3.jpg" alt=""> </a>
+                            <div class="media">
+                                <a class="float-left"> <img class="media-object " src="~/assets/images/random-avatar3.jpg" alt=""> </a>
                                 <div class="media-body">
                                     <div class="media-body"> <span class="name">Joel King</span> <span class="message">Ready for the meeti...</span> <span class="badge badge-outline status"></span> </div>
                                 </div>
@@ -341,21 +375,24 @@
                     <h6>Contacts</h6>
                     <ul class="list-unstyled">
                         <li class="offline">
-                            <div class="media"> <a class="float-left" > <img class="media-object " src="~/assets/images/random-avatar4.jpg" alt=""> </a>
+                            <div class="media">
+                                <a class="float-left"> <img class="media-object " src="~/assets/images/random-avatar4.jpg" alt=""> </a>
                                 <div class="media-body">
                                     <div class="media-body"> <span class="name">Joel King</span> <span class="badge badge-outline status"></span> </div>
                                 </div>
                             </div>
                         </li>
                         <li class="online">
-                            <div class="media"> <a class="float-left" > <img class="media-object " src="~/assets/images/random-avatar5.jpg" alt=""> </a>
+                            <div class="media">
+                                <a class="float-left"> <img class="media-object " src="~/assets/images/random-avatar5.jpg" alt=""> </a>
                                 <div class="media-body">
                                     <div class="media-body"> <span class="name">Joel King</span> <span class="badge badge-outline status"></span> </div>
                                 </div>
                             </div>
                         </li>
                         <li class="offline">
-                            <div class="media"> <a class="float-left " > <img class="media-object " src="~/assets/images/random-avatar6.jpg" alt=""> </a>
+                            <div class="media">
+                                <a class="float-left "> <img class="media-object " src="~/assets/images/random-avatar6.jpg" alt=""> </a>
                                 <div class="media-body">
                                     <div class="media-body"> <span class="name">Joel King</span> <span class="badge badge-outline status"></span> </div>
                                 </div>
@@ -368,52 +405,64 @@
                 <div class="right_menu">
                     <p class="text-left">GENERAL SETTINGS</p>
                     <ul class="setting-list">
-                        <li> <span>Report Panel Usage</span>
+                        <li>
+                            <span>Report Panel Usage</span>
                             <div class="switch">
                                 <label>
                                     <input type="checkbox" checked>
-                                    <span class="lever"></span></label>
+                                    <span class="lever"></span>
+                                </label>
                             </div>
                         </li>
-                        <li> <span>Email Redirect</span>
+                        <li>
+                            <span>Email Redirect</span>
                             <div class="switch">
                                 <label>
                                     <input type="checkbox">
-                                    <span class="lever"></span></label>
+                                    <span class="lever"></span>
+                                </label>
                             </div>
                         </li>
                     </ul>
                     <p class="text-left">SYSTEM SETTINGS</p>
                     <ul class="setting-list">
-                        <li> <span>Notifications</span>
+                        <li>
+                            <span>Notifications</span>
                             <div class="switch">
                                 <label>
                                     <input type="checkbox" checked>
-                                    <span class="lever"></span></label>
+                                    <span class="lever"></span>
+                                </label>
                             </div>
                         </li>
-                        <li> <span>Auto Updates</span>
+                        <li>
+                            <span>Auto Updates</span>
                             <div class="switch">
                                 <label>
                                     <input type="checkbox" checked>
-                                    <span class="lever"></span></label>
+                                    <span class="lever"></span>
+                                </label>
                             </div>
                         </li>
                     </ul>
                     <p class="text-left">ACCOUNT SETTINGS</p>
                     <ul class="setting-list">
-                        <li> <span>Offline</span>
+                        <li>
+                            <span>Offline</span>
                             <div class="switch">
                                 <label>
                                     <input type="checkbox">
-                                    <span class="lever"></span></label>
+                                    <span class="lever"></span>
+                                </label>
                             </div>
                         </li>
-                        <li> <span>Location Permission</span>
+                        <li>
+                            <span>Location Permission</span>
                             <div class="switch">
                                 <label>
                                     <input type="checkbox" checked>
-                                    <span class="lever"></span></label>
+                                    <span class="lever"></span>
+                                </label>
                             </div>
                         </li>
                     </ul>
@@ -426,7 +475,7 @@
     <section class="content home">
         <div class="container-fluid">
             @RenderBody()
-            
+
             <div class="row clearfix">
                 <div class="col-md-12">
                     <div class="card">
@@ -439,28 +488,24 @@
         </div>
     </section>
 
-    <!-- Jquery Core Js --> 
-    <script src="~/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js --> 
-    <script src="~/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js --> 
-
-    <script src="~/assets/plugins/jquery-validation/jquery.validate.js"></script> <!-- Jquery Validation Plugin Css --> 
+    <!-- Jquery Core Js -->
+    <script src="~/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+    <script src="~/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+    <script src="~/assets/plugins/jquery-validation/jquery.validate.js"></script> <!-- Jquery Validation Plugin Css -->
     <script src="~/assets/bundles/jvectormap.bundle.js"></script> <!-- JVectorMap Plugin Js -->
     <script src="~/assets/bundles/sparkline.bundle.js"></script> <!-- Sparkline Plugin Js -->
     <script src="~/assets/bundles/flotscripts.bundle.js"></script><!-- Flot Charts Plugin Js -->
-    
-    <script src="~/assets/plugins/jquery-validation/jquery.validate.js"></script> <!-- Jquery Validation Plugin Css -->
     <script src="~/assets/plugins/jquery-steps/jquery.steps.js"></script> <!-- JQuery Steps Plugin Js -->
-
-    <script src="~/assets/js/pages/forms/form-validation.js"></script> 
+    <script src="~/assets/js/pages/forms/form-validation.js"></script>
     <script src="~/assets/js/pages/forms/form-wizard.js"></script>
     <script src="~/assets/bundles/mainscripts.bundle.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-     
     <script src="~/assets/plugins/ckeditor/ckeditor.js"></script> <!-- Ckeditor -->
-     
     <script src="~/assets/js/pages/forms/editors.js"></script>
-     
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
+
     <script>
         $.validator.setDefaults({
             highlight: function (element) {
@@ -472,10 +517,14 @@
         });
     </script>
     <script src="~/js/sweetAlert.js"></script>
-    <!-- Jquery DataTable Plugin Js --> 
+    <!-- Jquery DataTable Plugin Js -->
     <script src="~/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/datatables/js/dataTables.bootstrap4.min.js"></script>
     @await Component.InvokeAsync("Notyf")
+    <script src="~/assets/select2/dist/js/select2.full.min.js"></script>
+    <script>
+        $(".select2").select2();
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

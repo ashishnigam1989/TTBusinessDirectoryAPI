@@ -31,5 +31,6 @@ namespace CommonService.RequestModel
         public string TargetUrl { get; set; }
         public string DisplayImage => string.Format(CommonConstants.S3BaseURL + Image, Id).Replace("com//", "com/").Replace("Gallery//", "Gallery/");
         public string DisplayFile => string.Format(CommonConstants.S3BaseURL + File, Id).Replace("com//", "com/").Replace("Gallery//", "Gallery/");
+        public string CompanyName { get; set; }
     }
 }

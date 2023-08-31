@@ -1,9 +1,11 @@
 ﻿using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Constants;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
 using Microsoft.EntityFrameworkCore;
+using NLog.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -162,9 +164,11 @@ namespace ApplicationService.Services
                     };
                     _dbContext.Category.Add(crobj);
                     await _dbContext.SaveChangesAsync();
-                    resp.Message = "Category Added Successfully.";
                     resp.Data = crobj.Id;
+                    crobj.Icon = string.Format(crModel.Icon, crobj.Id);
+                    await _dbContext.SaveChangesAsync();
                     resp.IsSuccess = true;
+                    resp.Message = "Category Added Successfully.";
                 }
                 else
                 {
@@ -196,9 +200,11 @@ namespace ApplicationService.Services
                     cdata.IsFeatured = crModel.IsFeatured;
                     cdata.Icon = crModel.Icon;
                     await _dbContext.SaveChangesAsync();
-                    resp.Message = "Category Updated Successfully.";
                     resp.Data = cdata.Id;
+                    cdata.Icon = string.Format(crModel.Icon, cdata.Id);
+                    await _dbContext.SaveChangesAsync();
                     resp.IsSuccess = true;
+                    resp.Message = "Category Updated Successfully.";
                 }
                 else
                 {
@@ -275,7 +281,7 @@ namespace ApplicationService.Services
                 {
                     Id = s.Id,
                     NameEng = s.NameEng
-                }).Distinct().OrderByDescending(o => o.Id).Take(10).ToListAsync().Result;
+                }).Distinct().OrderByDescending(o => o.Id).ToListAsync().Result;
 
 
             GetResults result = new GetResults
@@ -428,9 +434,11 @@ namespace ApplicationService.Services
                     };
                     _dbContext.Brand.Add(bobj);
                     await _dbContext.SaveChangesAsync();
-                    result.Message = "Brand added successfully";
                     result.Data = bobj.Id;
+                    bobj.Logo = string.Format(breqmodel.Logo, bobj.Id);
+                    await _dbContext.SaveChangesAsync();
                     result.IsSuccess = true;
+                    result.Message = "Brand added successfully";
                 }
                 else
                 {
@@ -463,10 +471,12 @@ namespace ApplicationService.Services
                     brandobj.KeywordsArb = breqmodel.KeywordsArb;
                     brandobj.MetaDescriptionArb = breqmodel.MetaDescriptionArb;
                     brandobj.PageContentArb = breqmodel.PageContentArb;
-                    result.Message = "Brand updated successfully";
                     await _dbContext.SaveChangesAsync();
                     result.Data = brandobj.Id;
+                    brandobj.Logo = string.Format(breqmodel.Logo, brandobj.Id);
+                    await _dbContext.SaveChangesAsync();
                     result.IsSuccess = true;
+                    result.Message = "Brand updated successfully";
                 }
                 else
                 {
@@ -505,7 +515,7 @@ namespace ApplicationService.Services
                 {
                     Id = s.Id,
                     NameEng = s.NameEng,
-                }).Distinct().OrderByDescending(o => o.Id).Take(10).ToListAsync().Result;
+                }).Distinct().OrderByDescending(o => o.Id).ToListAsync().Result;
 
 
             GetResults result = new GetResults
@@ -633,6 +643,15 @@ namespace ApplicationService.Services
             result = new GetResults { Data = alldistrict, Message = "Districts found", IsSuccess = true, Total = alldistrict.Count() };
             return await Task.FromResult(result);
         }
-   
+
+        public async Task<GetResults> GetMasterDesignation()
+        {
+            GetResults result = new GetResults();
+            var alldesignation = _dbContext.Designations.Select(s => new DesignationViewModel { Id = s.Id, Designation = s.DesignationName }).ToList();
+            result = new GetResults { Data = alldesignation, Message = "Designation found", IsSuccess = true, Total = alldesignation.Count() };
+            return await Task.FromResult(result);
+        }
+
+
     }
 }

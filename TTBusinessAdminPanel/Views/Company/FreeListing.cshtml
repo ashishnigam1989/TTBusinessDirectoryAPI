@@ -83,6 +83,7 @@
                     {
                         "render": function (data, row, d) {
                             var btns = "<a  href='/Company/DeleteFreeListing/" + d.id + "' class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-delete'></i></a> | ";
+                            btns += "<a  href='/Company/FreeListingDetails/" + d.id + "' class='icon' style='color:red' title='Delete'><i class='zmdi zmdi-eye'></i></a> | ";
 
                             if (d.isActive == true) {
                                        btns+= "<a  href='/Company/ApproveRejectFreeListing/" + d.id + "' class='icon' style='color:red' title='Reject'><i class='zmdi zmdi-close-circle'></i></a>";

@@ -10,13 +10,16 @@ using CommonService.ViewModels.Company;
 using DatabaseService.DbEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TTBusinessAdminPanel.Extensions;
 
 namespace TTBusinessAdminPanel.Controllers
 {
@@ -130,6 +133,8 @@ namespace TTBusinessAdminPanel.Controllers
             BindCountries();
             return View(cmodel);
         }
+
+       
         public IActionResult VerifyCompany(ChangeStatusModel cModel)
         {
             var resp = _company.VerifyCompany(cModel.Id).Result;
@@ -150,7 +155,6 @@ namespace TTBusinessAdminPanel.Controllers
             var Companies = (List<EventViewModel>)_company.GetMasterEventType().Result.Data;
             ViewBag.EventType = new SelectList(Companies, "Id", "NameEng");
         }
-
         private void BindCountries()
         {
             try
@@ -158,6 +162,19 @@ namespace TTBusinessAdminPanel.Controllers
                 var cntry = _location.GetMasterCountries().Result;
                 ViewBag.Countries = new SelectList(cntry, "Id", "CountryNameEng");
 
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+        private void BindDesignation()
+        {
+            try
+            {
+                List<DesignationViewModel> roles = new List<DesignationViewModel>();
+                roles = (List<DesignationViewModel>)_master.GetMasterDesignation().Result.Data;
+                ViewBag.designation = new SelectList(roles, "Id", "Designation");
             }
             catch (Exception ex)
             {
@@ -217,49 +234,50 @@ namespace TTBusinessAdminPanel.Controllers
                     var result = _company.AddEditCompanyBrand(reqmodel).Result;
                     if (result.IsSuccess)
                     {
-                        //_notyfService.Success(result.Message);
-                        //return RedirectToAction("Brand", "Company");
-                        res = new GetResults()
-                        {
-                            IsSuccess = true,
-                            Message = "Company Brand Mapping Successfull."
-                        };
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Brand", "Company");
+                        //res = new GetResults()
+                        //{
+                        //    IsSuccess = true,
+                        //    Message = "Company Brand Mapping Successfull."
+                        //};
                     }
                     else
                     {
-                        // _notyfService.Warning(result.Message);
-                        res = new GetResults()
-                        {
-                            IsSuccess = false,
-                            Message = "Company Brand Mapping Failed."
-                        };
+                         _notyfService.Warning(result.Message);
+                        //res = new GetResults()
+                        //{
+                        //    IsSuccess = false,
+                        //    Message = "Company Brand Mapping Failed."
+                        //};
                     }
                 }
                 else
                 {
-                    res = new GetResults()
-                    {
-                        IsSuccess = false,
-                        Message = "Company Brand Mapping Failed."
-                    };
-                    // _notyfService.Error("Validation Error !!!");
+                    //res = new GetResults()
+                    //{
+                    //    IsSuccess = false,
+                    //    Message = "Company Brand Mapping Failed."
+                    //};
+                     _notyfService.Error("Validation Error !!!");
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                //   _notyfService.Error(ex.Message.ToString());
-                res = new GetResults()
-                {
-                    IsSuccess = false,
-                    Message = "Company Brand Mapping Failed"
-                };
+                   _notyfService.Error(ex.Message.ToString());
+                //res = new GetResults()
+                //{
+                //    IsSuccess = false,
+                //    Message = "Company Brand Mapping Failed"
+                //};
             }
             BindCompanyAndBrand();
             _logger.Info(JsonConvert.SerializeObject(res));
-            return Json(res);// View("Category", reqmodel);
+            //return Json(res);
+            return View("Brand", reqmodel);
         }
-        public IActionResult GetAllCompanyBrand()
+        public IActionResult GetAllCompanyBrand(int companyId)
         {
             try
             {
@@ -273,7 +291,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyBrand(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyBrand(pageNo, pageSize, searchValue,companyId).Result;
                 var cData = (List<CompanyBrandViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -365,8 +383,7 @@ namespace TTBusinessAdminPanel.Controllers
         }
         public IActionResult Category()
         {
-            BindCompanyAndCategory();
-
+             BindCompanyAndCategory(); 
             return View();
         }
         public IActionResult CompanySuggestion()
@@ -379,6 +396,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -389,7 +407,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyCategory(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyCategory(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyCategoryViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -435,47 +453,48 @@ namespace TTBusinessAdminPanel.Controllers
                     var result = _company.AddEditCompanyCategory(reqmodel).Result;
                     if (result.IsSuccess)
                     {
-                        res = new GetResults()
-                        {
-                            IsSuccess = true,
-                            Message = "Company Category Mapping Successfull"
-                        };
-                        //_notyfService.Success(result.Message);
-                        //return RedirectToAction("Category", "Company");
+                        //res = new GetResults()
+                        //{
+                        //    IsSuccess = true,
+                        //    Message = "Company Category Mapping Successfull"
+                        //};
+                        _notyfService.Success(result.Message);
+                        return RedirectToAction("Category", "Company", new { id = reqmodel.CompanyId });
                     }
                     else
                     {
-                        res = new GetResults()
-                        {
-                            IsSuccess = false,
-                            Message = "Company Category Mapping failed"
-                        };
-                        //_notyfService.Warning(result.Message);
+                        //res = new GetResults()
+                        //{
+                        //    IsSuccess = false,
+                        //    Message = "Company Category Mapping failed"
+                        //};
+                        _notyfService.Warning(result.Message);
                     }
                 }
                 else
                 {
-                    // _notyfService.Error("Validation Error !!!");
-                    res = new GetResults()
-                    {
-                        IsSuccess = false,
-                        Message = "Company Category Mapping failed"
-                    };
+                     _notyfService.Error("Validation Error !!!");
+                    //res = new GetResults()
+                    //{
+                    //    IsSuccess = false,
+                    //    Message = "Company Category Mapping failed"
+                    //};
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                res = new GetResults()
-                {
-                    IsSuccess = false,
-                    Message = "Company Category Mapping failed"
-                };
-                // _notyfService.Error(ex.Message.ToString());
+                //res = new GetResults()
+                //{
+                //    IsSuccess = false,
+                //    Message = "Company Category Mapping failed"
+                //};
+                 _notyfService.Error(ex.Message.ToString());
             }
             BindCompanyAndCategory();
             _logger.Info(JsonConvert.SerializeObject(res));
-            return Json(res);// View("Category", reqmodel);
+        //    return Json(res);
+            return View("Category", reqmodel);
         }
         public IActionResult DeleteCompanyCategory(int id)
         {
@@ -534,6 +553,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid =Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -544,7 +564,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyProduct(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyProduct(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyProductViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -573,6 +593,8 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
+                    reqmodel.CompanyId = cid;
                     var result = _company.AddEditCompanyProduct(reqmodel).Result;
                     Helper.MoveFileToS3Server(EnumImageType.ProductLogo, Convert.ToInt64(result.Data), reqmodel.Image);
                     if (result.IsSuccess)
@@ -624,7 +646,7 @@ namespace TTBusinessAdminPanel.Controllers
                         WarrantyArb = s.WarrantyArb,
                         Image = s.Image,
                         SortOrder = s.SortOrder,
-                        IsPublished = s.IsPublished,
+                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
                         HasOffers = s.HasOffers,
                         IsDeleted = s.IsDeleted,
                         DeleterUserId = s.DeleterUserId,
@@ -641,7 +663,8 @@ namespace TTBusinessAdminPanel.Controllers
                         OfferEndDate = s.OfferEndDate,
                         OfferShortDescriptionEng = s.OfferShortDescriptionEng,
                         OfferShortDescriptionArb = s.OfferShortDescriptionArb,
-                        OldPrice = s.OldPrice
+                        OldPrice = s.OldPrice,
+                        CompanyName=s.Company
 
                     };
                 }
@@ -794,7 +817,8 @@ namespace TTBusinessAdminPanel.Controllers
                         OfferStartDate = s.OfferStartDate,
                         OfferEndDate = s.OfferEndDate,
                         OfferShortDescriptionEng = s.OfferShortDescriptionEng,
-                        OfferShortDescriptionArb = s.OfferShortDescriptionArb
+                        OfferShortDescriptionArb = s.OfferShortDescriptionArb,
+                        CompanyName=s.Company
 
 
                     };
@@ -933,8 +957,9 @@ namespace TTBusinessAdminPanel.Controllers
                         Target = s.Target,
                         BannerStartDate = s.BannerStartDate,
                         BannerExpiryDate = s.BannerExpiryDate,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
-                        SortOrder = s.SortOrder
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                        SortOrder = s.SortOrder,
+                        CompanyName=s.CompanyName
 
                     };
                 }
@@ -1060,7 +1085,7 @@ namespace TTBusinessAdminPanel.Controllers
                     var company = _company.GetCompanyGalleryById(id).Result;
                     var s = (CompanyGalleryViewModel)company.Data;
                     cmodel = new CompanyGalleryRequestModel
-                    { 
+                    {
                         Id = s.Id,
                         Image = s.Image,
                         YoutubeVideoUrl = s.YoutubeVideoUrl,
@@ -1074,7 +1099,8 @@ namespace TTBusinessAdminPanel.Controllers
                         DescriptionArb = s.DescriptionArb,
                         Target = s.Target,
                         TargetUrl = s.TargetUrl,
-                        IsPublished = s.IsPublished
+                        IsPublished = s.IsPublished,
+                        CompanyName=s.CompanyName
 
                     };
                 }
@@ -1200,7 +1226,7 @@ namespace TTBusinessAdminPanel.Controllers
                     var s = (CompanyOffersViewModel)company.Data;
                     cmodel = new CompanyOffersRequestModel
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         OfferNameEng = s.OfferNameEng,
                         OfferNameArb = s.OfferNameArb,
                         OfferDescriptionEng = s.OfferDescriptionEng,
@@ -1214,11 +1240,8 @@ namespace TTBusinessAdminPanel.Controllers
                         OldPrice = s.OldPrice,
                         Price = s.Price,
                         Image = s.Image,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
-                        SortOrder = s.SortOrder,
-                        IsDeleted = false,
-                        CreationTime = DateTime.Now,
-                        CreatorUserId = s.CreatorUserId
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                        CompanyName= s.CompanyName
 
                     };
                 }
@@ -1483,6 +1506,30 @@ namespace TTBusinessAdminPanel.Controllers
             return View("Offer");
         }
 
+        public IActionResult FreeListingDetails(int id)
+        {
+            FreelistingDetailModel fmodel = new FreelistingDetailModel();
+            if (id > 0)
+            {
+                try
+                {
+                    var allData = _company.GetFreeListingDetails(id).Result;
+                    fmodel = (FreelistingDetailModel)allData.Data;
+                    return View(fmodel);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    return View(fmodel);
+
+                }
+            }
+            return View(fmodel);
+
+
+
+        }
+
         #endregion
 
         #region CompanyTeam
@@ -1524,7 +1571,7 @@ namespace TTBusinessAdminPanel.Controllers
         public IActionResult AddCompanyTeam()
         {
             BindCompany();
-            BindRoles();
+            BindDesignation();
             return View();
         }
         public IActionResult AddUpdateCompanyTeam(CompanyTeamRequestModel reqmodel)
@@ -1564,7 +1611,7 @@ namespace TTBusinessAdminPanel.Controllers
             try
             {
                 BindCompany();
-                BindRoles();
+                BindDesignation();
                 if (id > 0)
                 {
 
@@ -1577,10 +1624,11 @@ namespace TTBusinessAdminPanel.Controllers
                         FullName = s.FullName,
                         Designation = s.Designation,
                         ProfilePic = s.ProfilePic,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = s.CreatorUserId
+                        CreatorUserId = s.CreatorUserId,
+                        CompanyName=s.CompanyName
 
                     };
                 }
@@ -1707,15 +1755,16 @@ namespace TTBusinessAdminPanel.Controllers
                     var s = (CompanyAwardsViewModel)company.Data;
                     cmodel = new CompanyAwardsRequestModel
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         CompanyId = s.CompanyId,
                         AwardTitle = s.AwardTitle,
                         AwardDesc = s.AwardDesc,
                         AwardFile = s.AwardFile,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = s.CreatorUserId
+                        CreatorUserId = s.CreatorUserId,
+                        CompanyName=s.CompanyName,
                     };
                 }
             }
@@ -1841,7 +1890,7 @@ namespace TTBusinessAdminPanel.Controllers
                     var s = (CompanyAddressViewModel)company.Data;
                     cmodel = new CompanyAddressRequestModel
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         CompanyId = s.CompanyId,
                         AddressDesc = s.AddressDesc,
                         CountryId = s.CountryId,
@@ -1849,7 +1898,8 @@ namespace TTBusinessAdminPanel.Controllers
                         GoogleLocation = s.GoogleLocation,
                         Website = s.Website,
                         RegionId = s.RegionId,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                        CompanyName=s.CompanyName
                     };
                 }
             }
@@ -1973,13 +2023,14 @@ namespace TTBusinessAdminPanel.Controllers
                     var s = (CompanyVideoViewModel)company.Data;
                     cmodel = new CompanyVideoRequestModel
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         CompanyId = s.CompanyId,
                         VideoNameArb = s.VideoNameArb,
                         VideoNameEng = s.VideoNameEng,
                         EnglishUrl = s.EnglishUrl,
                         ArabicUrl = s.ArabicUrl,
-                        IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false
+                        IsPublished = s.IsPublished.HasValue ? s.IsPublished.Value : false,
+                        CompanyName=s.CompanyName
                     };
                 }
             }
@@ -2110,7 +2161,8 @@ namespace TTBusinessAdminPanel.Controllers
                         NewsTitle = s.NewsTitle,
                         NewsDesc = s.NewsDesc,
                         NewsUrl = s.NewsUrl,
-                        IsPublished = s.IsPublished
+                        IsPublished = s.IsPublished,
+                        CompanyName=s.CompanyName
                     };
                 }
             }
@@ -2247,7 +2299,8 @@ namespace TTBusinessAdminPanel.Controllers
                         EndDate = s.EndDate,
                         EndTime = s.EndTime,
                         EventUrl = s.EventUrl,
-                        EventTypeId = s.EventTypeId
+                        EventTypeId = s.EventTypeId,
+                        CompanyName=s.CompanyName
                     };
                 }
             }
@@ -2305,7 +2358,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             return View();
         }
-       
+
         public IActionResult ReviewLike()
         {
             return View();
@@ -2326,6 +2379,36 @@ namespace TTBusinessAdminPanel.Controllers
                 _logger.Error(ex);
             }
         }
+
+        [HttpGet]
+        public JsonResult SearchCompany(string term)
+        {
+            
+            var allData = _company.SearchCompany(term).Result;
+            var cData = (List<CompanyModel>)allData.Data;
          
-    } 
+
+            return Json(cData);
+        }
+
+        private CompanyRequestModel companydetail(int id)
+        {
+
+            CompanyRequestModel cmodel = new CompanyRequestModel();
+            var company = _company.GetCompanyById(id).Result;
+            cmodel = (CompanyRequestModel)company.Data;
+            return cmodel;
+        }
+        public IActionResult SetCompany(int id)
+        {
+            if (id > 0)
+            { 
+                var cdetail = companydetail(id);
+                ExtensionHelper.SetSession("Companyname", cdetail.NameEng);
+                ExtensionHelper.SetSession("CompanyMasterId", Convert.ToString(id));
+            }
+            return View("Index", "Company");
+        }
+    }
+  
 }
