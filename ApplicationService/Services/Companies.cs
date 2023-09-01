@@ -1498,6 +1498,59 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
         }
 
+        public async Task<GetResults> GetCompanyNewsArticles(long companyId, int skip, int limit)
+        {
+            GetResults result = new GetResults { Message = "Company Service List." };
+            result.Data = await _dbContext.CompanyNewsArticle.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
+                .Select(c => new CompanyNewsArticleViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    NewsDesc = c.NewsDesc,
+                    NewsTitle = c.NewsTitle,
+                    NewsUrl= c.NewsUrl
+                })
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+            result.IsSuccess = true;
+            result.Total = await _dbContext.CompanyNewsArticle.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value)).CountAsync();
+            return await Task.FromResult(result);
+        }
+
+        public async Task<GetResults> GetCompanyEvents(long companyId, int skip, int limit)
+        {
+            GetResults result = new GetResults { Message = "Company Service List." };
+            result.Data = await _dbContext.CompanyEvents
+                .Join(_dbContext.EventType, ev => ev.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new { ev, evmy })
+                .Where(c => c.ev.CompanyId == companyId && (!c.ev.IsDeleted.HasValue || !c.ev.IsDeleted.Value))
+                .Select(c => new CompanyEventViewModel
+                {
+                    Id = c.ev.Id,
+                    CompanyId = c.ev.CompanyId,
+                    StartDate = c.ev.StartDate,
+                    StartTime= c.ev.StartTime,
+                    EndDate= c.ev.EndDate, 
+                    EndTime= c.ev.EndTime,
+                    EventDesc= c.ev.EventDesc,
+                    EventImage= c.ev.EventImage,
+                    EventTitle= c.ev.EventTitle,
+                    EventUrl= c.ev.EventUrl,
+                    EventLocationUrl= c.ev.EventLocationUrl,
+                    EventType= c.evmy.EventTypeDesc
+                })
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+            result.IsSuccess = true;
+            result.Total = await _dbContext.CompanyEvents.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value)).CountAsync();
+            return await Task.FromResult(result);
+        }
+
         #region CompanyOffers
         public async Task<GetResults> AddEditCompanyoffers(CompanyOffersRequestModel csModel)
         {

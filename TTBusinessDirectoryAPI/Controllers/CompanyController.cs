@@ -355,6 +355,50 @@ namespace TTBusinessDirectoryAPI.Controllers
             return await Task.FromResult(getResults);
         }
 
+        [HttpGet]
+        [Route("GetCompanyNewsArticles/{companyId:long}/{limit:int}/{skip:int}")]
+        public async Task<GetResults> GetCompanyNewsArticles(long companyId, int limit, int skip)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                var data = await _company.GetCompanyNewsArticles(companyId, skip, limit);
+                getResults.Data = data;
+                getResults.IsSuccess = true;
+                getResults.Message = "Fetched company services.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetCompanyEvents/{companyId:long}/{limit:int}/{skip:int}")]
+        public async Task<GetResults> GetCompanyEvents(long companyId, int limit, int skip)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                var data = await _company.GetCompanyEvents(companyId, skip, limit);
+                getResults.Data = data;
+                getResults.IsSuccess = true;
+                getResults.Message = "Fetched company services.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
         [Route("GetCompanyProductById/{productId:int}")]
         public async Task<GetResults> GetCompanyProductById(int productId)
         {

@@ -112,6 +112,8 @@ namespace ApplicationService.IServices
         Task<GetResults> SearchCompany(string searchValue);
         Task<GetResults> GetProductsByCompanyId(long companyId, int skip, int limit);
         Task<GetResults> GetServicesByCompanyId(long companyId, int skip, int limit);
+        Task<GetResults> GetCompanyEvents(long companyId, int skip, int limit);
 
+        Task<GetResults> GetCompanyNewsArticles(long companyId, int skip, int limit);
     }
 }
