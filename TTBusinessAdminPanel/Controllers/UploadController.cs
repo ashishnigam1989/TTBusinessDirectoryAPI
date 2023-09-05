@@ -27,7 +27,7 @@ namespace TTBusinessAdminPanel.Controllers
                 if (Request.Form.Files.Count > 0)
                 {
                     var imgType = (EnumImageType)Enum.Parse(typeof(EnumImageType), Convert.ToString(Request.Form["imgtype"])) ;
-                 string filetempPath = Helper.GetFileUploadDetails(imgType);
+                 string filetempPath = "/"+Helper.GetFileUploadDetails(imgType);
                    string tempPath =CommonConstants.FileTempPath+"/"+filetempPath;
                     if (!Directory.Exists(tempPath))
                     {
