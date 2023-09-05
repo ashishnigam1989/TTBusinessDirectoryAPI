@@ -21,7 +21,7 @@ namespace CommonService.ViewModels
         public long CreatorUserId { get; set; }
         public bool? IsPublished { get; set; }
         public string CompanyName { get; set; }
-        public string DisplayNewsImage => string.Format(CommonConstants.S3BaseURL + NewsUrl, Id).Replace("com//", "com/");
+        public string DisplayNewsImage => string.Concat(CommonConstants.S3BaseURL + NewsUrl).Replace("com//", "com/");
 
     }
 }

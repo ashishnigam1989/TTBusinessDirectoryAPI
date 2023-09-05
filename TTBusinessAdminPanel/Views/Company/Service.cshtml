@@ -10,7 +10,7 @@
                 <h2>Company Services</h2>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item">Company</li>
-                    <li class="breadcrumb-item"><a href="@Url.Action("Services", "Company")">All Products</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Service", "Company")">All Service</a></li>
                 </ul>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2 float-right">
@@ -32,6 +32,9 @@
                             <th></th>
                             <th>Service Name</th>
                             <th>Company</th>
+                            <th>Image</th>
+                            <th>Old Price<br />New Price</th>
+                            <th>Is Published</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -63,6 +66,17 @@
                     { "data": "id", "name": "Id", "autoWidth": true },
                     { "data": "nameEng", "name": "Product Name", "autoWidth": true },
                     { "data": "company", "name": "Company Name", "autoWidth": true },
+                    {
+                        "render": function (data, row, d) {
+                            return "<img src='" + d.displayLogo + "' width='60' height='50' />";
+                        }
+                    },
+                    {
+                        "render": function (data, row, d) {
+                            return "<span>" + d.oldPrice + "</span><br /><span>" + d.price + "</span>";
+                        }
+                    },
+                    { "data": "isPublished", "name": "Is Published", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/EditCompanyService/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " +

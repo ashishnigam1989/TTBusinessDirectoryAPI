@@ -7,16 +7,19 @@
 
 <div class="block-header">
     <div class="row">
-        <div class="col-lg-12 col-md-6 col-sm-7">
-            <h2>Company Category</h2>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item">Masters</li>
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Company</a></li>
-                <li class="breadcrumb-item"><a href="@Url.Action("Category", "Company")">Category</a></li>
-            </ul>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-10 col-md-10 col-sm-10 float-left">
+                <h2>Company Management</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">Company</li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Premium Companies</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Category", "Company")">Category</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+
 <div class="row clearfix">
     <div class="col-lg-12">
         <div class="card">
@@ -63,7 +66,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group form-float">
-                                <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished" checked="checked">
                                 <label for="IsPublished" class="form-label">IsPublished</label>
                             </div>
                             <span asp-validation-for="IsPublished" class="text-danger"></span>
@@ -106,6 +109,7 @@
                     <tr>
                         <th></th>
                         <th>Category Name</th>
+                        <th>Is Published</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -178,6 +182,7 @@
                 "columns": [
                     { "data": "id", "name": "Id", "autoWidth": true },
                     { "data": "category", "name": "Category", "autoWidth": true },
+                    { "data": "isPublished", "name": "IsPublished", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/DeleteCompanyCategory/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-delete'></i></a> ";

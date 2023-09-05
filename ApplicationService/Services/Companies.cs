@@ -476,7 +476,7 @@ namespace ApplicationService.Services
             //}
             //_dbContext.CompanyBrand.AddRange(cclist);
 
-            var cbObj = _dbContext.CompanyBrand.Where(w => w.Id == cbModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            var cbObj = _dbContext.CompanyBrand.Where(w => w.CompanyId == cbModel.CompanyId && w.BrandId == cbModel.BrandId && w.IsDeleted == false).FirstOrDefaultAsync().Result;
             if (cbObj == null)
             {
                 CompanyBrand cc = new CompanyBrand()
@@ -488,19 +488,22 @@ namespace ApplicationService.Services
                     CreatorUserId = cbModel.CreatorUserId
                 };
                 _dbContext.CompanyBrand.Add(cc);
+                _dbContext.SaveChanges();
+                result.IsSuccess = true;
                 result.Message = "Company Brand Added.";
             }
             else
             {
-                cbObj.CompanyId = cbModel.CompanyId;
-                cbObj.BrandId = cbModel.BrandId;
-                cbObj.IsPublished = cbModel.IsPublished;
-                cbObj.LastModificationTime = DateTime.Now;
-                cbObj.LastModifierUserId = cbModel.LastModifierUserId;
-                result.Message = "Company Brand Updated.";
+                //cbObj.CompanyId = cbModel.CompanyId;
+                //cbObj.BrandId = cbModel.BrandId;
+                //cbObj.IsPublished = cbModel.IsPublished;
+                //cbObj.LastModificationTime = DateTime.Now;
+                //cbObj.LastModifierUserId = cbModel.LastModifierUserId;
+                //result.Message = "Company Brand Updated.";
+                result.IsSuccess = false;
+                result.Message = "Company Brand Exists.";
             }
-            _dbContext.SaveChanges();
-            result.IsSuccess = true;
+            
             return await Task.FromResult(result);
 
         }
@@ -532,7 +535,8 @@ namespace ApplicationService.Services
                             {
                                 Id = s.ccat.cb.Id,
                                 Company = s.ccat.cmny.NameEng,
-                                Brand = s.brnd.NameEng
+                                Brand = s.brnd.NameEng,
+                                IsPublished = s.ccat.cb.IsPublished
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
 
@@ -601,7 +605,7 @@ namespace ApplicationService.Services
             //}
             //_dbContext.CompanyCategory.AddRange(cclist);
             //await _dbContext.SaveChangesAsync();
-            var ccObj = _dbContext.CompanyCategory.Where(w => w.Id == ccModel.Id && w.IsDeleted == false).FirstOrDefaultAsync().Result;
+            var ccObj = _dbContext.CompanyCategory.Where(w => w.CompanyId == ccModel.CompanyId && w.CategoryId == ccModel.CategoryId && w.IsDeleted == false).FirstOrDefaultAsync().Result;
             if (ccObj == null)
             {
                 CompanyCategory cc = new CompanyCategory()
@@ -613,19 +617,22 @@ namespace ApplicationService.Services
                     CreatorUserId = ccModel.CreatorUserId
                 };
                 _dbContext.CompanyCategory.Add(cc);
-                result.Message = "Company Category Added.";
+                _dbContext.SaveChanges();
+                result.IsSuccess = true;
+                result.Message = "Company Category Added !!!";
             }
             else
             {
-                ccObj.CompanyId = ccModel.CompanyId;
-                ccObj.CategoryId = ccModel.CategoryId;
-                ccObj.IsPublished = ccModel.IsPublished;
-                ccObj.LastModificationTime = DateTime.Now;
-                ccObj.LastModifierUserId = ccModel.LastModifierUserId;
-                result.Message = "Company Category Updated.";
+                //ccObj.CompanyId = ccModel.CompanyId;
+                //ccObj.CategoryId = ccModel.CategoryId;
+                //ccObj.IsPublished = ccModel.IsPublished;
+                //ccObj.LastModificationTime = DateTime.Now;
+                //ccObj.LastModifierUserId = ccModel.LastModifierUserId;
+                //result.Message = "Company Category Updated.";
+                result.IsSuccess = false;
+                result.Message = "Company Category exists !!!";
             }
-            _dbContext.SaveChanges();
-            result.IsSuccess = true;
+            
             return await Task.FromResult(result);
 
         }
@@ -656,7 +663,8 @@ namespace ApplicationService.Services
                             {
                                 Id = s.ccat.cc.Id,
                                 Company = s.ccat.cmny.NameEng,
-                                Category = s.cat.NameEng
+                                Category = s.cat.NameEng,
+                                IsPublished = s.ccat.cc.IsPublished,
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
             var tot = _dbContext.CompanyCategory.Join(_dbContext.Company, cc => cc.CompanyId, cmny => cmny.Id, (cc, cmny) => new { cc, cmny })
@@ -735,8 +743,11 @@ namespace ApplicationService.Services
                 };
                 _dbContext.CompanyProduct.Add(cp);
                 _dbContext.SaveChanges();
-                result.Message = "Company Product Added.";
                 result.Data = cp.Id;
+                cp.Image = string.Format(cpModel.Image, cp.Id);
+                _dbContext.SaveChanges();
+                result.Message = "Company Product Added.";
+                result.IsSuccess = true;
             }
             else
             {
@@ -767,10 +778,13 @@ namespace ApplicationService.Services
                 cpObj.OldPrice = cpModel.OldPrice;
 
                 _dbContext.SaveChanges();
-                result.Message = "Company Product Updated.";
                 result.Data = cpObj.Id;
+                cpObj.Image = string.Format(cpModel.Image, cpObj.Id);
+                _dbContext.SaveChanges();
+                result.Message = "Company Product Updated.";
+                result.IsSuccess = true;
             }
-            result.IsSuccess = true;
+
             return await Task.FromResult(result);
 
         }
@@ -801,7 +815,11 @@ namespace ApplicationService.Services
                                 Company = s.cmny.NameEng,
                                 NameEng = s.cp.NameEng,
                                 NameArb = s.cp.NameArb,
-                                PartNumber = s.cp.PartNumber
+                                Image = s.cp.Image,
+                                OldPrice = s.cp.OldPrice,
+                                Price = s.cp.Price,
+                                IsPublished = s.cp.IsPublished,
+                                HasOffers = s.cp.HasOffers,
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
 
@@ -898,7 +916,10 @@ namespace ApplicationService.Services
                 _dbContext.CompanyService.Add(cs);
                 _dbContext.SaveChanges();
                 result.Data = cs.Id;
+                cs.Image = string.Format(csModel.Image, cs.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Service Added.";
+                result.IsSuccess = true;
             }
             else
             {
@@ -926,9 +947,12 @@ namespace ApplicationService.Services
 
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
+                csObj.Image = string.Format(csObj.Image, csObj.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Serivce Updated.";
+                result.IsSuccess = true;
             }
-            result.IsSuccess = true;
+            
             return await Task.FromResult(result);
 
         }
@@ -947,20 +971,28 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue, int id = 0)
         {
             GetResults result = new GetResults();
             var cpList = _dbContext.CompanyService.Join(_dbContext.Company, cs => cs.CompanyId, cmny => cmny.Id, (cs, cmny) => new { cs, cmny }).
-                            Where(w => w.cs.IsDeleted == false && (!string.IsNullOrEmpty(searchValue) ? w.cmny.NameEng.Contains(searchValue) : w.cmny.NameEng == w.cmny.NameEng)).
+                            Where(w =>w.cs.CompanyId == (id > 0 ? id : w.cs.CompanyId) && w.cs.IsDeleted == false && (!string.IsNullOrEmpty(searchValue) ? w.cmny.NameEng.Contains(searchValue) : w.cmny.NameEng == w.cmny.NameEng)).
                             Select(s => new CompanyServiceViewModel
                             {
                                 Id = s.cs.Id,
                                 Company = s.cmny.NameEng,
                                 NameEng = s.cs.NameEng,
                                 NameArb = s.cs.NameArb,
+                                Image = s.cs.Image,
+                                OldPrice = s.cs.OldPrice,
+                                Price = s.cs.Price,
+                                IsPublished = s.cs.IsPublished,
+                                HasOffers = s.cs.HasOffers
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
-            var tot = _dbContext.CompanyService.Where(w => w.IsDeleted == false).CountAsync().Result;
+            //var tot = _dbContext.CompanyService.Where(w => w.IsDeleted == false).CountAsync().Result;
+            var tot = _dbContext.CompanyService.Join(_dbContext.Company, cs => cs.CompanyId, cmny => cmny.Id, (cs, cmny) => new { cs, cmny }).
+                           Where(w => w.cs.CompanyId == (id > 0 ? id : w.cs.CompanyId) && w.cs.IsDeleted == false).
+                          CountAsync().Result;
 
 
             result.IsSuccess = true;
@@ -1041,7 +1073,10 @@ namespace ApplicationService.Services
                 _dbContext.CompanyBanners.Add(cs);
                 _dbContext.SaveChanges();
                 result.Data = cs.Id;
+                cs.ImageEng = string.Format(csModel.ImageEng, cs.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Banner Added.";
+                result.IsSuccess = true;
             }
             else
             {
@@ -1063,9 +1098,12 @@ namespace ApplicationService.Services
 
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
+                csObj.ImageEng = string.Format(csModel.ImageEng, csObj.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Banner Updated.";
+                result.IsSuccess = true;
             }
-            result.IsSuccess = true;
+            
             return await Task.FromResult(result);
 
         }
@@ -1084,23 +1122,23 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue, int id=0)
         {
             GetResults result = new GetResults();
             var cpList = _dbContext.CompanyBanners.Join(_dbContext.Company, b => b.CompanyId, c => c.Id, (b, c) => new { b, c }).
-                            Where(w => w.b.IsDeleted == false).
+                            Where(w => w.b.CompanyId == (id > 0 ? id : w.b.CompanyId) && w.b.IsDeleted == false).
                             Select(s => new CompanyBannerViewModel
                             {
                                 Id = s.b.Id,
-                                BannerNameArb = s.b.BannerNameArb,
                                 BannerNameEng = s.b.BannerNameEng,
-                                ImageArb = s.b.ImageArb,
                                 ImageEng = s.b.ImageEng,
                                 CompanyId = s.b.CompanyId,
-                                CompanyName = s.c.NameEng
+                                CompanyName = s.c.NameEng, 
+                                EnglishUrl = s.b.EnglishUrl,
+                                IsPublished = s.b.IsPublished
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
-            var tot = _dbContext.CompanyBanners.Where(w => w.IsDeleted == false).CountAsync().Result;
+            var tot = _dbContext.CompanyBanners.Where(w => w.CompanyId ==(id > 0 ? id : w.CompanyId) && w.IsDeleted == false).CountAsync().Result;
 
 
             result.IsSuccess = true;
@@ -1839,7 +1877,10 @@ namespace ApplicationService.Services
                 _dbContext.CompanyTeams.Add(cs);
                 _dbContext.SaveChanges();
                 result.Data = cs.Id;
+                cs.ProfilePic = string.Format(ctModel.ProfilePic, cs.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Team Added.";
+                result.IsSuccess = true;
             }
             else
             {
@@ -1853,9 +1894,12 @@ namespace ApplicationService.Services
                 csObj.CreatorUserId = ctModel.CreatorUserId;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
+                csObj.ProfilePic = string.Format(ctModel.ProfilePic, csObj.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Team Updated.";
+                result.IsSuccess = true;
             }
-            result.IsSuccess = true;
+            
             return await Task.FromResult(result);
 
         }
@@ -1874,10 +1918,10 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyTeam(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyTeam(int page, int limit, string searchValue, int id=0)
         {
             GetResults result = new GetResults();
-            var cpList = _dbContext.CompanyTeams.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.IsDeleted == false && w.o.FullName.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.FullName)).
+            var cpList = _dbContext.CompanyTeams.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.CompanyId == (id > 0 ? id : w.o.CompanyId) && w.o.IsDeleted == false && w.o.FullName.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.FullName)).
                             Select(s => new CompanyTeamViewModel
                             {
                                 Id = s.o.Id,
@@ -1891,7 +1935,7 @@ namespace ApplicationService.Services
                                 CreatorUserId = s.o.CreatorUserId,
                                 CompanyName = s.c.NameEng
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
-            var tot = _dbContext.CompanyLinks.Where(w => w.IsDeleted == false).CountAsync().Result;
+            var tot = _dbContext.CompanyLinks.Where(w => w.CompanyId == (id > 0 ? id : w.CompanyId) && w.IsDeleted == false).CountAsync().Result;
 
 
             result.IsSuccess = true;
@@ -1948,7 +1992,10 @@ namespace ApplicationService.Services
                 _dbContext.CompanyAwards.Add(cs);
                 _dbContext.SaveChanges();
                 result.Data = cs.Id;
+                cs.AwardFile = string.Format(ctModel.AwardFile, cs.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Award Added.";
+                result.IsSuccess = true;
             }
             else
             {
@@ -1962,9 +2009,12 @@ namespace ApplicationService.Services
                 csObj.CreatorUserId = ctModel.CreatorUserId;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
+                csObj.AwardFile = string.Format(ctModel.AwardFile, csObj.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Award Updated.";
+                result.IsSuccess = true;
             }
-            result.IsSuccess = true;
+            
             return await Task.FromResult(result);
 
         }
@@ -1983,10 +2033,10 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyAwards(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyAwards(int page, int limit, string searchValue, int id=0)
         {
             GetResults result = new GetResults();
-            var cpList = _dbContext.CompanyAwards.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.IsDeleted == false && w.o.AwardTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.AwardTitle)).
+            var cpList = _dbContext.CompanyAwards.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.CompanyId == (id > 0 ? id : w.o.CompanyId) && w.o.IsDeleted == false && w.o.AwardTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.AwardTitle)).
                             Select(s => new CompanyAwardsViewModel
                             {
                                 Id = s.o.Id,
@@ -2000,7 +2050,7 @@ namespace ApplicationService.Services
                                 CreatorUserId = s.o.CreatorUserId,
                                 CompanyName = s.c.NameEng
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
-            var tot = _dbContext.CompanyLinks.Where(w => w.IsDeleted == false).CountAsync().Result;
+            var tot = _dbContext.CompanyLinks.Where(w => w.CompanyId == (id > 0 ? id : w.CompanyId) && w.IsDeleted == false).CountAsync().Result;
 
 
             result.IsSuccess = true;
@@ -2031,7 +2081,6 @@ namespace ApplicationService.Services
         }
         #endregion
 
-
         #region CompanyAddress
         public async Task<GetResults> AddEditCompanyAddress(CompanyAddressRequestModel ctModel)
         {
@@ -2059,6 +2108,7 @@ namespace ApplicationService.Services
                 _dbContext.SaveChanges();
                 result.Data = cs.Id;
                 result.Message = "Company Address Added.";
+                result.IsSuccess = true;
             }
             else
             {
@@ -2076,8 +2126,9 @@ namespace ApplicationService.Services
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Address Updated.";
+                result.IsSuccess = true;
             }
-            result.IsSuccess = true;
+            
             return await Task.FromResult(result);
 
         }
@@ -2096,13 +2147,13 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyAddress(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyAddress(int page, int limit, string searchValue, int id=0)
         {
             GetResults result = new GetResults();
             var cpList = _dbContext.CompanyAddress.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c })
                             // .Join(_dbContext.Country, cmp => cmp.o.CompanyId, cnt => cnt.Id, (cmp, cnt) => new { cmp,cnt})
                             //   .Join(_dbContext.Region, cmp1 => cmp1.cmp.o.RegionId, rgn => rgn.Id, (cmp1, rgn) => new { cmp1, rgn })
-                            .Where(w => w.o.IsDeleted == false && w.o.AddressDesc.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.AddressDesc)).
+                            .Where(w => w.o.CompanyId == (id > 0 ? id : w.o.CompanyId) && w.o.IsDeleted == false && w.o.AddressDesc.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.AddressDesc)).
                             Select(s => new CompanyAddressViewModel
                             {
                                 Id = s.o.Id,
@@ -2119,7 +2170,7 @@ namespace ApplicationService.Services
                                 // RegionName=s.rgn.NameEng
 
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
-            var tot = _dbContext.CompanyLinks.Where(w => w.IsDeleted == false).CountAsync().Result;
+            var tot = _dbContext.CompanyLinks.Where(w => w.CompanyId == (id > 0 ? id : w.CompanyId) && w.IsDeleted == false).CountAsync().Result;
 
 
             result.IsSuccess = true;
@@ -2151,7 +2202,6 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
         }
         #endregion
-
 
         #region CompanyVideo
         public async Task<GetResults> AddEditCompanyVideo(CompanyVideoRequestModel ctModel)
@@ -2213,10 +2263,10 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyVideo(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyVideo(int page, int limit, string searchValue, int id=0)
         {
             GetResults result = new GetResults();
-            var cpList = _dbContext.CompanyVideos.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.IsDeleted == false && (
+            var cpList = _dbContext.CompanyVideos.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.CompanyId == (id > 0 ? id : w.o.CompanyId) && w.o.IsDeleted == false && (
             w.o.VideoNameEng.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.VideoNameEng) ||
              w.o.VideoNameArb.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.VideoNameArb)
 
@@ -2234,7 +2284,7 @@ namespace ApplicationService.Services
                                 CompanyName = s.c.NameEng
 
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
-            var tot = _dbContext.CompanyLinks.Where(w => w.IsDeleted == false).CountAsync().Result;
+            var tot = _dbContext.CompanyLinks.Where(w => w.CompanyId == (id > 0 ? id : w.CompanyId) && w.IsDeleted == false).CountAsync().Result;
 
 
             result.IsSuccess = true;
@@ -2288,6 +2338,8 @@ namespace ApplicationService.Services
                 _dbContext.CompanyNewsArticle.Add(cs);
                 _dbContext.SaveChanges();
                 result.Data = cs.Id;
+                cs.NewsUrl = string.Format(ctModel.NewsUrl, cs.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company News Artical Added.";
             }
             else
@@ -2302,6 +2354,8 @@ namespace ApplicationService.Services
                 csObj.CreatorUserId = ctModel.CreatorUserId;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
+                csObj.NewsUrl = string.Format(ctModel.NewsUrl, csObj.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company News Artical Updated.";
             }
             result.IsSuccess = true;
@@ -2323,10 +2377,10 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyNewsArticle(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyNewsArticle(int page, int limit, string searchValue, int id=0)
         {
             GetResults result = new GetResults();
-            var cpList = _dbContext.CompanyNewsArticle.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.IsDeleted == false && w.o.NewsTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.NewsTitle)).
+            var cpList = _dbContext.CompanyNewsArticle.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.CompanyId == (id > 0 ? id : w.o.CompanyId) && w.o.IsDeleted == false && w.o.NewsTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.NewsTitle)).
                             Select(s => new CompanyNewsArticleViewModel
                             {
                                 Id = s.o.Id,
@@ -2338,7 +2392,7 @@ namespace ApplicationService.Services
                                 CompanyName = s.c.NameEng,
 
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
-            var tot = _dbContext.CompanyLinks.Where(w => w.IsDeleted == false).CountAsync().Result;
+            var tot = _dbContext.CompanyLinks.Where(w => w.CompanyId == (id > 0 ? id : w.CompanyId) && w.IsDeleted == false).CountAsync().Result;
 
 
             result.IsSuccess = true;
@@ -2390,14 +2444,18 @@ namespace ApplicationService.Services
                     EventUrl = ctModel.EventUrl,
                     EventTypeId = ctModel.EventTypeId,
                     IsPublished = ctModel.IsPublished,
+                    EventLocationUrl = ctModel.EventLocationUrl,
                     IsDeleted = false,
                     CreationTime =DateTime.Now,
                     CreatorUserId = ctModel.CreatorUserId
                 };
                 _dbContext.CompanyEvents.Add(cs);
                 _dbContext.SaveChanges();
+                cs.EventImage = string.Format(ctModel.EventImage, cs.Id);
+                _dbContext.SaveChanges();
                 result.Data = cs.Id;
                 result.Message = "Company Events Added.";
+                result.IsSuccess = true;
             }
             else
             {
@@ -2410,6 +2468,7 @@ namespace ApplicationService.Services
                 csObj.EndDate = ctModel.EndDate;
                 csObj.EndTime = ctModel.EndTime;
                 csObj.EventUrl = ctModel.EventUrl;
+                csObj.EventLocationUrl = ctModel.EventLocationUrl;
                 csObj.EventTypeId = ctModel.EventTypeId;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
@@ -2417,9 +2476,12 @@ namespace ApplicationService.Services
                 csObj.CreatorUserId = ctModel.CreatorUserId;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
+                csObj.EventImage = string.Format(ctModel.EventImage, csObj.Id);
+                _dbContext.SaveChanges();
                 result.Message = "Company Event Updated.";
+                result.IsSuccess = true;
             }
-            result.IsSuccess = true;
+            
             return await Task.FromResult(result);
 
         }
@@ -2438,10 +2500,10 @@ namespace ApplicationService.Services
             return await Task.FromResult(result);
 
         }
-        public async Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue)
+        public async Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue, int id = 0)
         {
             GetResults result = new GetResults(); 
-            var cpList = _dbContext.CompanyEvents.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w =>( w.o.IsDeleted==null || w.o.IsDeleted == false )&& w.o.EventTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.EventTitle)).
+            var cpList = _dbContext.CompanyEvents.Join(_dbContext.Company, o => o.CompanyId, c => c.Id, (o, c) => new { o, c }).Where(w => w.o.CompanyId == (id > 0 ? id : w.o.CompanyId) && ( w.o.IsDeleted==null || w.o.IsDeleted == false )&& w.o.EventTitle.Contains(!string.IsNullOrEmpty(searchValue) ? searchValue : w.o.EventTitle)).
                             Select(s => new CompanyEventViewModel
                             {
                                 Id = s.o.Id,
@@ -2455,9 +2517,10 @@ namespace ApplicationService.Services
                                 EndTime = s.o.EndTime,
                                 EventUrl = s.o.EventUrl,
                                 EventTypeId = s.o.EventTypeId,
-                                CompanyName=s.c.NameEng
+                                CompanyName=s.c.NameEng,
+                                IsPublished = s.o.IsPublished.HasValue ? true : false,
                             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
-            var tot = _dbContext.CompanyEvents.Where(w => (w.IsDeleted == null || w.IsDeleted == false)).CountAsync().Result;
+            var tot = _dbContext.CompanyEvents.Where(w => w.CompanyId == (id > 0 ? id : w.CompanyId) && (w.IsDeleted == null || w.IsDeleted == false)).CountAsync().Result;
 
 
             result.IsSuccess = true;
@@ -2482,8 +2545,10 @@ namespace ApplicationService.Services
                                                        EndDate = s.a.EndDate,
                                                        EndTime = s.a.EndTime,
                                                        EventUrl = s.a.EventUrl,
+                                                       EventLocationUrl = s.a.EventLocationUrl,
                                                        EventTypeId = s.a.EventTypeId,
-                                                       CompanyName=s.c.NameEng
+                                                       CompanyName=s.c.NameEng,
+                                                       IsPublished = s.a.IsPublished.HasValue ? true : false,
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company Event Found.";

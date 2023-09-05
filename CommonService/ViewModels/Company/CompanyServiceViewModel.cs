@@ -35,7 +35,7 @@ namespace CommonService.ViewModels.Company
         public string OfferShortDescriptionEng { get; set; }
         public string OfferShortDescriptionArb { get; set; }
         public string Company { get; set; }
-        public string DisplayLogo => string.Format(CommonConstants.S3BaseURL + Image, Id);
+        public string DisplayLogo => string.Concat(CommonConstants.S3BaseURL + Image);
 
     }
 }

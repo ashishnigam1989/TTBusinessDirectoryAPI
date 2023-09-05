@@ -26,8 +26,8 @@ namespace CommonService.RequestModel
         public long? LastModifierUserId { get; set; }
         public DateTime CreationTime { get; set; }
         public long CreatorUserId { get; set; }
-        public bool? IsPublished { get; set; }
-        public string DisplayEventImage => string.Format(CommonConstants.S3BaseURL + EventImage, Id).Replace("com//", "com/");
+        public bool IsPublished { get; set; }
+        public string DisplayEventImage => string.Concat(CommonConstants.S3BaseURL + EventImage).Replace("com//", "com/");
         public string CompanyName { get; set; }
 
     }

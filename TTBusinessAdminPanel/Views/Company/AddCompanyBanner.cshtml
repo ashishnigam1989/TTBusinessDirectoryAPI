@@ -1,19 +1,22 @@
-﻿@model CommonService.RequestModel.CompanyBannerRequestModel
+﻿@using TTBusinessAdminPanel.Extensions
+@model CommonService.RequestModel.CompanyBannerRequestModel
 
 @{
     ViewData["Title"] = "Add Banner";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="block-header">
     <div class="row">
-        <div class="col-lg-12 col-md-6 col-sm-7">
-            <h2>Add Banner</h2>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item">Company</li>
-                <li class="breadcrumb-item"><a href="@Url.Action("Banner", "Company")">All Banners</a></li>
-                <li class="breadcrumb-item"><a href="@Url.Action("AddCompanyBanner", "Company")">Add Banner</a></li>
-            </ul>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-10 col-md-10 col-sm-10 float-left">
+                <h2>Company Management</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">Company</li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Premium Companies</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Banner", "Company")">All Banners</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("AddCompanyBanner", "Company")">Add Banner</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
@@ -28,9 +31,8 @@
                 <div class="card">
                     <div class="body">
                         <form  asp-controller="Company" asp-action="AddUpdateCompanyBanner">
-                            
-                                <div class="row">
-                                    <div class="col-md-3">
+                             <div class="row">
+                                    <div class="col-md-6">
                                         <div class="form-group form-float">
                                           @*  <div class="form-line">
                                                 <select asp-for="CompanyId" name="CompanyId" class="show-tick" required>
@@ -42,72 +44,36 @@
                                                 </select>
                                             </div>
                                             <span asp-validation-for="CompanyId" class="text-danger"></span>*@
-                                        <div class="form-line">
+                                        <div class="form-line focused">
                                             <input type="text" class="form-control" id="companyname" name="companyname">
-
                                             <label class="form-label">Company Name</label>
                                         </div>
                                         <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
                                         <span asp-validation-for="CompanyId" class="text-danger"></span>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input asp-for="BannerNameEng" type="text" class="form-control" name="BannerNameEng" required>
-                                                <label class="form-label">BannerNameEng</label>
+                                                <label class="form-label">Banner Name</label>
                                             </div>
                                             <span asp-validation-for="BannerNameEng" class="text-danger"></span>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input asp-for="BannerNameArb" type="text" class="form-control" name="BannerNameArb">
-                                                <label class="form-label">BannerNameArb</label>
-                                            </div>
-                                            <span asp-validation-for="BannerNameArb" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                         <div class="form-group form-float">
-                                        <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
-                                        <label for="IsPublished" class="form-label">IsPublished</label>
-                                        </div>
-                                        <span asp-validation-for="IsPublished" class="text-danger"></span>
-                                        
-                                    </div>
+                                    
                                 </div>
                             <div class="row">
-                                 
-                                <div class="col-md-3">
-                                    <div class="form-group form-float">
-                                        <div class="form-line">
-                                            <input asp-for="Target" type="text" class="form-control" name="Target" >
-                                            <label class="form-label">Target</label>
-                                        </div>
-                                        <span asp-validation-for="Target" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-float">
-                                        <div class="form-line">
-                                            <input asp-for="SortOrder" type="number" class="form-control" name="SortOrder">
-                                            <label class="form-label">SortOrder</label>
-                                        </div>
-                                        <span asp-validation-for="SortOrder" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <div class="form-group form-float">
                                         <div class="form-line focused">
                                             <input asp-for="BannerStartDate" type="date" class="form-control" name="BannerStartDate">
-                                            <label class="form-label">Banner Star Date</label>
+                                            <label class="form-label">Banner Start Date</label>
                                         </div>
                                         <span asp-validation-for="BannerStartDate" class="text-danger"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <div class="form-group form-float">
                                         <div class="form-line focused">
                                             <input asp-for="BannerExpiryDate" type="date" class="form-control" name="BannerExpiryDate">
@@ -116,42 +82,41 @@
                                         <span asp-validation-for="BannerExpiryDate" class="text-danger"></span>
                                     </div>
                                 </div>
+                                
                             </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-float">
-                                            <div>
-                                                <img id="imgeng" style="width:250px; height:170px;" />
-                                                <div class="fallback">
-                                                    <input name="file" id="imageEnginput" type="file" multiple />
-                                                    <input type="hidden" id="ImageEng" name="ImageEng" asp-for="ImageEng" />
-                                                </div>
-
-
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <div>
+                                            <img id="imgeng" style="width:250px; height:170px;" />
+                                            <div class="fallback">
+                                                <input name="file" id="imageEnginput" type="file" />
+                                                <input type="hidden" id="ImageEng" name="ImageEng" asp-for="ImageEng" />
                                             </div>
-
-                                            <label class="form-label">English Banner</label>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-float">
-                                            <div>
-                                                <img id="imgarb" style="width:250px; height:170px;" />
-                                                <div class="fallback">
-                                                    <input name="file" id="imageArbinput" type="file" multiple />
-                                                    <input type="hidden" id="ImageArb" name="ImageArb" asp-for="ImageArb" />
-                                                </div>
-                                            </div>
-                                            <label class="form-label">Arabic Banner</label>
-
-                                        </div>
+                                        <label class="form-label">Banner Image</label>
                                     </div>
                                 </div>
-
+                                <div class="col-md-6">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <input asp-for="EnglishUrl" type="text" class="form-control" name="EnglishUrl">
+                                            <label class="form-label">Url</label>
+                                        </div>
+                                        <span asp-validation-for="EnglishUrl" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-float">
+                                        <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                        <label for="IsPublished" class="form-label">IsPublished</label>
+                                    </div>
+                                    <span asp-validation-for="IsPublished" class="text-danger"></span>
+                                </div>
+                            </div>
                             <button class="btn btn-raised btn-primary waves-effect" style="float:right"  type="submit">SUBMIT</button>
 
                         </form>
-
                     </div>
                 </div>
             </div>
@@ -164,6 +129,14 @@
     {
     <script>
         $(document).ready(function () {
+            var cname = '@ExtensionHelper.GetSession("Companyname")';
+            if (cname) {
+                var cid = @ExtensionHelper.GetSession("CompanyMasterId");
+                $("#CompanyId").val(cid);
+                $('#companydiv').addClass('focused');
+                $("#companyname").prop("disabled", true);
+                $('#companyname').val(cname);
+            }
             uploadEngImage();
             uploadArbImage();
             AutofillCompany();

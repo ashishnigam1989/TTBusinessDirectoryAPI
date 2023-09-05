@@ -21,7 +21,8 @@ namespace CommonService.ViewModels.Company
         public int? EventTypeId { get; set; }
         public string EventType { get; set; }
         public string CompanyName { get; set; }
-        public string DisplayEventImage => string.Format(CommonConstants.S3BaseURL + EventImage, Id).Replace("com//", "com/");
+        public bool IsPublished { get; set; }
+        public string DisplayEventImage => string.Concat(CommonConstants.S3BaseURL + EventImage).Replace("com//", "com/");
 
     }
 }
