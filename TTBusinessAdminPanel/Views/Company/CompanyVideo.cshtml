@@ -30,11 +30,10 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Comapny Name</th>
-                            <th>Video Name Eng</th>
-                            <th>Eng Url</th>
-                            <th>Video Name Arb</th>
-                            <th>Arb Url</th>
+                            <th>Comapny</th>
+                            <th>Video Name</th>
+                            <th>Url</th>
+                            <th>Is Published</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -68,17 +67,11 @@
                     { "data": "videoNameEng", "name": "Video Eng Name", "autoWidth": true }, 
                     {
                         "render": function (data, row, d) {
-                            var btns = "<a href='" + d.englishUrl + "' class='icon' title='Edit'>English video url</a>";
+                            var btns = "<a href='" + d.englishUrl + "' class='icon' title='Edit'>Url</a>";
                             return btns;
                         }
                     },
-                    { "data": "videoNameArb", "name": "Video Arb Name", "autoWidth": true }, 
-                    {
-                        "render": function (data, row, d) {
-                            var btns = "<a href='" + d.arabicUrl + "' class='icon' title='Edit'>Arabic video url</a>";
-                            return btns;
-                        }
-                    },
+                    { "data": "isPublished", "name": "IsPublished", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/EditCompanyVideo/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " +
@@ -89,8 +82,6 @@
                 ]
             });
         });
-
-
     </script>
 }
 

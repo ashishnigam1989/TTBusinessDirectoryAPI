@@ -27,8 +27,8 @@ namespace CommonService.ViewModels.Company
         public DateTime? BannerExpiryDate { get; set; }
         public bool? IsPublished { get; set; }
         public DateTime? BannerStartDate { get; set; }
-        public string DisplayEngImage => string.Format(CommonConstants.S3BaseURL + ImageEng, Id).Replace("com//", "com/");
-        public string DisplayArbImage => string.Format(CommonConstants.S3BaseURL + ImageArb, Id).Replace("com//", "com/");
+        //public string DisplayEngImage => string.Concat(CommonConstants.S3BaseURL + ImageEng).Replace("com//", "com/");
+        public string DisplayEngImage => string.Concat(CommonConstants.S3BaseURL + ImageEng).Replace("com//", "com/");
         public string CompanyName { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model CommonService.RequestModel.CompanyBrandRequestModel;
+﻿@using TTBusinessAdminPanel.Extensions
+@model CommonService.RequestModel.CompanyBrandRequestModel;
 @{
     ViewData["Title"] = "Brand";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,16 +7,19 @@
 
 <div class="block-header">
     <div class="row">
-        <div class="col-lg-12 col-md-6 col-sm-7">
-            <h2>Company Brand</h2>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item">Masters</li>
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Company</a></li>
-                <li class="breadcrumb-item"><a href="@Url.Action("Brand", "Company")">Brand</a></li>
-            </ul>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-10 col-md-10 col-sm-10 float-left">
+                <h2>Company Management</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">Company</li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Premium Companies</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Brand", "Company")">Brand</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+
 <div class="row clearfix">
     <div class="col-lg-12">
         <div class="card">
@@ -35,7 +39,7 @@
                                 </select>
                                 </div>
                                 <span asp-validation-for="CompanyId" class="text-danger"></span>*@
-                                <div class="form-line">
+                                <div id="companydiv" class="form-line">
                                     <input type="text" class="form-control" id="companyname" name="companyname">
                                     <label class="form-label">Company Name</label>
                                 </div>
@@ -61,7 +65,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group form-float">
-                                <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished" checked="checked">
                                 <label for="IsPublished" class="form-label">IsPublished</label>
                             </div>
                             <span asp-validation-for="IsPublished" class="text-danger"></span>
@@ -102,6 +106,7 @@
                     <tr>
                         <th></th>
                         <th>Brand Name</th>
+                        <th>Is Published</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -113,7 +118,15 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            // BindCategrories();
+            var cid = @ExtensionHelper.GetSession("CompanyMasterId");
+            if (cid) {
+                var cname = '@ExtensionHelper.GetSession("Companyname")';
+                $("#companyname").prop("disabled", true);
+                $('#companyname').val(cname);
+                $("#CompanyId").val(cid);
+                $('#companydiv').addClass('focused');
+                bindBrand();
+            }
             AutofillCompany();
         });
         /*        var categories;
@@ -258,6 +271,7 @@
                 "columns": [
                     { "data": "id", "name": "Id", "autoWidth": true },
                     { "data": "brand", "name": "Brand", "autoWidth": true },
+                    { "data": "isPublished", "name": "IsPublished", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/DeleteCompanyBrand/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-delete'></i></a>  " ;

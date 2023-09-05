@@ -1,21 +1,25 @@
-﻿@model CommonService.RequestModel.CompanyTeamRequestModel
+﻿@using TTBusinessAdminPanel.Extensions
+@model CommonService.RequestModel.CompanyTeamRequestModel
 @{
     ViewData["Title"] = "Edit Team Member";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="block-header">
     <div class="row">
-        <div class="col-lg-12 col-md-6 col-sm-7">
-            <h2>Add User</h2>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Company</a></li>
-                <li class="breadcrumb-item"><a href="@Url.Action("CompanyTeam", "Company")">Company Team</a></li>
-                <li class="breadcrumb-item"><a href="@Url.Action("AddUpdateCompanyTeam", "Company")">Edit Team</a></li>
-            </ul>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-10 col-md-10 col-sm-10 float-left">
+                <h2>Company Management</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">Company</li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Premium Companies</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Service", "Company")">All Services</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("AddUpdateCompanyTeam", "Company", new {id=Model.Id})">Edit Team</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+
 <div class="row clearfix">
     <div class="col-lg-12">
         <div class="card">
@@ -33,27 +37,16 @@
                                     <div>
                                         <img id="img" style="width:250px; height:170px;" />
                                         <div class="fallback">
-                                            <input name="file" id="imageProfilePic" type="file" multiple />
+                                            <input name="file" id="imageProfilePic" type="file" />
                                             <input type="hidden" id="ProfilePic" name="ProfilePic" asp-for="ProfilePic" />
                                         </div>
-
-
                                     </div>
-
                                     <label class="form-label">Profile Picture</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <div>
-                                <div class="form-group form-float">
-                                    <div class="form-line focused">
-                                        <input asp-for="FullName" type="text" class="form-control" name="FullName" required>
-                                        <label class="form-label">Name</label>
-                                    </div>
-                                    <span asp-validation-for="FullName" class="text-danger"></span>
-                                </div>
-                            </div>
+                            
                             <div>
                                 <div class="form-group form-float">
                                    @* <div class="form-line">
@@ -73,6 +66,15 @@
                                     </div>
                                     <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
                                     <span asp-validation-for="CompanyId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input asp-for="FullName" type="text" class="form-control" name="FullName" required>
+                                        <label class="form-label">Name</label>
+                                    </div>
+                                    <span asp-validation-for="FullName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div>
@@ -114,6 +116,14 @@
     {
     <script>
         $(document).ready(function () {
+            var cname = '@ExtensionHelper.GetSession("Companyname")';
+            if (cname) {
+                var cid = @ExtensionHelper.GetSession("CompanyMasterId");
+                $("#CompanyId").val(cid);
+                $('#companydiv').addClass('focused');
+                $("#companyname").prop("disabled", true);
+                $('#companyname').val(cname);
+            }
             $('#img').attr('src', '@Model.DisplayProfilePic');
             $("#companyname").val('@Model.CompanyName');
 
@@ -172,7 +182,7 @@
                     })
                 },
                 select: function (e, i) {
-                    $("#CompanyMenuId").val(i.item.id);
+                    $("#CompanyId").val(i.item.id);
                 },
                 minLength: 1
             });
