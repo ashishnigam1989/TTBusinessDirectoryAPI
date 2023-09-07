@@ -2643,23 +2643,26 @@ namespace ApplicationService.Services
         public async Task<GetResults> GetCompanyEventById(int id)
         {
             GetResults result = new GetResults();
-            var cb = _dbContext.CompanyEvents.Join(_dbContext.Company, a => a.CompanyId, c => c.Id, (a, c) => new { a, c }).Where(w => w.a.Id == id && (w.a.IsDeleted==null || w.a.IsDeleted == false))
+            var cb = _dbContext.CompanyEvents.Join(_dbContext.Company, a => a.CompanyId, c => c.Id, (a, c) => new { a, c })
+                .Join(_dbContext.EventType, ev => ev.a.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new { ev, evmy })
+                .Where(w => w.ev.a.Id == id && (w.ev.a.IsDeleted==null || w.ev.a.IsDeleted == false))
                                                    .Select(s => new CompanyEventViewModel
                                                    {
-                                                       Id = s.a.Id,
-                                                       CompanyId = s.a.CompanyId,
-                                                       EventTitle = s.a.EventTitle,
-                                                       EventDesc = s.a.EventDesc,
-                                                       EventImage = s.a.EventImage,
-                                                       StartDate = s.a.StartDate,
-                                                       StartTime = s.a.StartTime,
-                                                       EndDate = s.a.EndDate,
-                                                       EndTime = s.a.EndTime,
-                                                       EventUrl = s.a.EventUrl,
-                                                       EventLocationUrl = s.a.EventLocationUrl,
-                                                       EventTypeId = s.a.EventTypeId,
-                                                       CompanyName=s.c.NameEng,
-                                                       IsPublished = s.a.IsPublished.HasValue ? true : false,
+                                                       Id = s.ev.a.Id,
+                                                       CompanyId = s.ev.a.CompanyId,
+                                                       EventTitle = s.ev.a.EventTitle,
+                                                       EventDesc = s.ev.a.EventDesc,
+                                                       EventImage = s.ev.a.EventImage,
+                                                       StartDate = s.ev.a.StartDate,
+                                                       StartTime = s.ev.a.StartTime,
+                                                       EndDate = s.ev.a.EndDate,
+                                                       EndTime = s.ev.a.EndTime,
+                                                       EventUrl = s.ev.a.EventUrl,
+                                                       EventLocationUrl = s.ev.a.EventLocationUrl,
+                                                       EventTypeId = s.ev.a.EventTypeId,
+                                                       CompanyName= s.ev.c.NameEng,
+                                                       EventType = s.evmy.EventTypeDesc,
+                                                       IsPublished = s.ev.a.IsPublished.HasValue ? true : false,
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company Event Found.";

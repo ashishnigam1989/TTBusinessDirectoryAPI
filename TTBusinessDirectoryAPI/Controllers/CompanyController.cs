@@ -436,5 +436,43 @@ namespace TTBusinessDirectoryAPI.Controllers
             return await Task.FromResult(getResults);
         }
 
+
+        [Route("GetCompanyEventById/{eventId:int}")]
+        public async Task<GetResults> GetCompanyEventById(int eventId)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                getResults = await _company.GetCompanyEventById(eventId);
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+
+        [Route("GetCompanyNewsArticleById/{newsArticleId:int}")]
+        public async Task<GetResults> GetCompanyNewsArticleById(int newsArticleId)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                getResults = await _company.GetCompanyNewsArticleById(newsArticleId);
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
     }
 }
