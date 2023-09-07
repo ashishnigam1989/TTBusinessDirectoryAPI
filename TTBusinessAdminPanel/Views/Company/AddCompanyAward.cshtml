@@ -1,4 +1,5 @@
-﻿@model CommonService.RequestModel.CompanyAwardsRequestModel
+﻿@using TTBusinessAdminPanel.Extensions
+@model CommonService.RequestModel.CompanyAwardsRequestModel
 @{
     ViewData["Title"] = "Add Awards";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -31,14 +32,12 @@
                                     <div>
                                         <img id="img" style="width:250px; height:170px;" />
                                         <div class="fallback">
-                                            <input name="file" id="imageAwardFile" type="file" multiple />
+                                            <input name="file" id="imageAwardFile" type="file" />
                                             <input type="hidden" id="AwardFile" name="AwardFile" asp-for="AwardFile" />
+                                            <label class="form-label">Award File</label>
                                         </div>
-
-
                                     </div>
-
-                                    <label class="form-label">Award File</label>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -56,7 +55,7 @@
                                         </select>
                                     </div>
                                     <span asp-validation-for="CompanyId" class="text-danger"></span>*@
-                                    <div class="form-line">
+                                    <div class="form-line focused">
                                         <input type="text" class="form-control" id="companyname" name="companyname">
 
                                         <label class="form-label">Company Name</label>
@@ -108,6 +107,14 @@
     {
     <script>
         $(document).ready(function () {
+            var cname = '@ExtensionHelper.GetSession("Companyname")';
+            if (cname) {
+                var cid = @ExtensionHelper.GetSession("CompanyMasterId");
+                $("#CompanyId").val(cid);
+                $('#companydiv').addClass('focused');
+                $("#companyname").prop("disabled", true);
+                $('#companyname').val(cname);
+            }
             uploadAwardFile();
             AutofillCompany();
         });

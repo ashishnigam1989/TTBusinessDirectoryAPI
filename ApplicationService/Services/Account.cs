@@ -28,7 +28,7 @@ namespace ApplicationService.Services
         public async Task<UserModel> Login(LoginRequestModel login)
         {
             var user = await _dbContext.Users.Join(_dbContext.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
-                .Where(x => x.u.EmailAddress == login.EmailAddress && x.u.Password == login.Password)
+                .Where(x => x.u.EmailAddress.ToLower() == login.EmailAddress.ToLower() && x.u.Password == login.Password)
                 .Select(s => new UserModel
                 {
                     Id = s.u.Id,

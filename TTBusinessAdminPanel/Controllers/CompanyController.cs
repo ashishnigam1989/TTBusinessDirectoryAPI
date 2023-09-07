@@ -647,7 +647,7 @@ namespace TTBusinessAdminPanel.Controllers
                         Image = s.Image,
                         SortOrder = s.SortOrder,
                         IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
-                        HasOffers = s.HasOffers,
+                        HasOffers = s.HasOffers.Value == true ? true : false,
                         IsDeleted = s.IsDeleted,
                         DeleterUserId = s.DeleterUserId,
                         DeletionTime = s.DeletionTime,
@@ -665,7 +665,7 @@ namespace TTBusinessAdminPanel.Controllers
                         OfferShortDescriptionArb = s.OfferShortDescriptionArb,
                         OldPrice = s.OldPrice,
                         CompanyName=s.Company
-
+                        
                     };
                 }
 
@@ -715,6 +715,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -725,7 +726,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyService(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyService(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyServiceViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -870,6 +871,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -880,7 +882,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyBanners(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyBanners(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyBannerViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -910,7 +912,7 @@ namespace TTBusinessAdminPanel.Controllers
                 {
                     var result = _company.AddEditCompanyBanner(reqmodel).Result;
                     Helper.MoveFileToS3Server(EnumImageType.BannerEng, Convert.ToInt64(result.Data), reqmodel.ImageEng);
-                    Helper.MoveFileToS3Server(EnumImageType.BannerArb, Convert.ToInt64(result.Data), reqmodel.ImageArb);
+                    //Helper.MoveFileToS3Server(EnumImageType.BannerArb, Convert.ToInt64(result.Data), reqmodel.ImageArb);
                     if (result.IsSuccess)
                     {
                         _notyfService.Success(result.Message);
@@ -1541,6 +1543,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -1551,7 +1554,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyTeam(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyTeam(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyTeamViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -1679,6 +1682,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -1689,7 +1693,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyAwards(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyAwards(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyAwardsViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -1814,6 +1818,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -1824,7 +1829,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyAddress(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyAddress(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyAddressViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -1949,6 +1954,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -1959,7 +1965,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyVideo(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyVideo(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyVideoViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -2080,6 +2086,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -2090,7 +2097,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyNewsArticle(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyNewsArticle(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyNewsArticleViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -2161,7 +2168,7 @@ namespace TTBusinessAdminPanel.Controllers
                         NewsTitle = s.NewsTitle,
                         NewsDesc = s.NewsDesc,
                         NewsUrl = s.NewsUrl,
-                        IsPublished = s.IsPublished,
+                        IsPublished = s.IsPublished.HasValue ? true : false,
                         CompanyName=s.CompanyName
                     };
                 }
@@ -2211,6 +2218,7 @@ namespace TTBusinessAdminPanel.Controllers
         {
             try
             {
+                var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -2221,7 +2229,7 @@ namespace TTBusinessAdminPanel.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageNo = (skip / pageSize);
                 int recordsTotal = 0;
-                var allData = _company.GetAllCompanyEvent(pageNo, pageSize, searchValue).Result;
+                var allData = _company.GetAllCompanyEvent(pageNo, pageSize, searchValue, cid).Result;
                 var cData = (List<CompanyEventViewModel>)allData.Data;
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -2300,7 +2308,8 @@ namespace TTBusinessAdminPanel.Controllers
                         EndTime = s.EndTime,
                         EventUrl = s.EventUrl,
                         EventTypeId = s.EventTypeId,
-                        CompanyName=s.CompanyName
+                        CompanyName=s.CompanyName,
+                        IsPublished = s.IsPublished,
                     };
                 }
             }

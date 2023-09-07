@@ -1,4 +1,5 @@
-﻿@model CommonService.RequestModel.CompanyEventRequestModel
+﻿@using TTBusinessAdminPanel.Extensions
+@model CommonService.RequestModel.CompanyEventRequestModel
 @{
     ViewData["Title"] = "Add Event";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,7 +13,7 @@
         overflow-x: hidden;
         z-index: 1000 /*show the dropdown over the addform*/
     }
-<</style>
+</style>
 
 <div class="block-header">
     <div class="row">
@@ -31,21 +32,16 @@
         <div class="card">
             <div class="header">
                 <h2>Add Event</h2>
-
-              
             </div>
             <div class="body">
                 <form id="addTeamform" asp-controller="Company" asp-action="AddUpdateCompanyEvent">
                     <div class="row col-md-12">
-
-
-
                         <div class="col-md-4">
                             <div class="form-group form-float">
                                 <div>
                                     <img id="img" style="width:250px; height:170px;" />
                                     <div class="fallback">
-                                        <input name="file" id="imageEventImage" type="file" multiple />
+                                        <input name="file" id="imageEventImage" type="file" />
                                         <input type="hidden" id="EventImage" name="EventImage" asp-for="EventImage" />
                                     </div>
                                 </div>
@@ -53,15 +49,6 @@
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <div class="form-group form-float">
-                                <div class="form-line">
-                                    <input asp-for="EventTitle" type="text" class="form-control" id="search" name="EventTitle">
-                                    
-                                    <label class="form-label">Event Title</label>
-                                </div>
-                                <span asp-validation-for="EventTitle" class="text-danger"></span>
-                            </div>
-                         
                             <div class="form-group form-float">
 
                               @*  <div class="form-line">
@@ -76,7 +63,7 @@
                                 </div>
                                 <span asp-validation-for="CompanyId" class="text-danger"></span>*@
 
-                                <div class="form-line">
+                                <div class="form-line focused">
                                     <input type="text" class="form-control" id="companyname" name="companyname">
 
                                     <label class="form-label">Company Name</label>
@@ -85,33 +72,18 @@
                                 <span asp-validation-for="CompanyId" class="text-danger"></span>
 
                             </div>
-
-                            <div class="form-group form-float">
-                                <div class="form-line focused">
-                                    <input asp-for="StartDate" type="date" class="form-control" name="StartDate">
-                                    <label class="form-label">Start Date</label>
-                                </div>
-                                <span asp-validation-for="StartDate" class="text-danger"></span>
-                            </div>
-                            <div class="form-group form-float">
-                                <div class="form-line focused">
-                                    <input asp-for="StartTime" type="time" class="form-control" name="StartTime">
-                                    <label class="form-label">Start Time</label>
-                                </div>
-                                <span asp-validation-for="StartTime" class="text-danger"></span>
-                            </div>
                             <div class="form-group form-float">
                                 <div class="form-line">
-                                    <input asp-for="EventUrl" type="text" class="form-control" name="EventUrl">
-                                    <label class="form-label">EventUrl</label>
+                                    <input asp-for="EventTitle" type="text" class="form-control" id="search" name="EventTitle">
+                                    
+                                    <label class="form-label">Event Title</label>
                                 </div>
-                                <span asp-validation-for="EventUrl" class="text-danger"></span>
+                                <span asp-validation-for="EventTitle" class="text-danger"></span>
                             </div>
-
                             <div class="form-group form-float">
                                 <div class="form-line">
                                     <select asp-for="EventTypeId" name="EventTypeId" class="show-tick">
-                                        <option value="">Select Event</option>
+                                        <option value="">Select Event Type</option>
                                         @foreach (var evnt in @ViewBag.EventType)
                                         {
                                             <option value="@evnt.Value">@evnt.Text</option>
@@ -120,25 +92,43 @@
                                 </div>
                                 <span asp-validation-for="EventTypeId" class="text-danger"></span>
                             </div>
+                            
+                            
                         </div>
-                        <div class="col-md-12">
-
-
-
-                            <div class="form-group form-float">
+                        
+                        <div class="col-md-6">
+                            <div class="col-md-12 form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="StartDate" type="date" class="form-control" name="StartDate">
+                                    <label class="form-label">Start Date</label>
+                                </div>
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-12 form-group form-float">
+                                <div class="form-line focused">
+                                    <input asp-for="StartTime" type="time" class="form-control" name="StartTime">
+                                    <label class="form-label">Start Time</label>
+                                </div>
+                                <span asp-validation-for="StartTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-12 form-group form-float">
                                 <div class="form-line focused">
                                     <input asp-for="EndDate" type="date" class="form-control" name="EndDate">
                                     <label class="form-label">End Date</label>
                                 </div>
                                 <span asp-validation-for="EndDate" class="text-danger"></span>
                             </div>
-                            <div class="form-group form-float">
+                            <div class="col-md-12 form-group form-float">
                                 <div class="form-line focused">
                                     <input asp-for="EndTime" type="time" class="form-control" name="EndTime">
                                     <label class="form-label">End Time</label>
                                 </div>
                                 <span asp-validation-for="EndTime" class="text-danger"></span>
                             </div>
+                        </div>
+                        <div class="col-md-12">
                             <div class="form-group form-float">
                                 <div class="form-line">
                                     <input asp-for="EventLocationUrl" type="text" class="form-control" name="EventLocationUrl">
@@ -146,15 +136,34 @@
                                 </div>
                                 <span asp-validation-for="EventLocationUrl" class="text-danger"></span>
                             </div>
+
                             <div class="form-group form-float">
                                 <div class="form-line">
-                                    <input asp-for="EventDesc" type="text" class="form-control" name="EventDesc" required>
-                                    <label class="form-label">Event Desc</label>
+                                    <input asp-for="EventUrl" type="text" class="form-control" name="EventUrl">
+                                    <label class="form-label">EventUrl</label>
+                                </div>
+                                <span asp-validation-for="EventUrl" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group form-float">
+                                <label class="form-label">Event Description</label>
+                                <div class="form-line">
+                                    <div class="body">
+                                        <textarea id="ckeditor" asp-for="EventDesc"></textarea>
+                                    </div>
                                 </div>
                                 <span asp-validation-for="EventDesc" class="text-danger"></span>
                             </div>
                         </div>
-                      
+                        <div class="form-group form-float">
+                            <div class="form-group form-float">
+                                <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                <label for="IsPublished" class="form-label">IsPublished</label>
+                            </div>
+                            <span asp-validation-for="IsPublished" class="text-danger"></span>
+
+                        </div>
                         <button class="btn btn-raised btn-primary waves-effect" type="submit">SUBMIT</button>
                 </div>
                 </form>
@@ -170,6 +179,14 @@
     
     <script>
         $(document).ready(function () {
+            var cname = '@ExtensionHelper.GetSession("Companyname")';
+            if (cname) {
+                var cid = @ExtensionHelper.GetSession("CompanyMasterId");
+                $("#CompanyId").val(cid);
+                $('#companydiv').addClass('focused');
+                $("#companyname").prop("disabled", true);
+                $('#companyname').val(cname);
+            }
             uploadEventImage();
             AutofillCompany();
         });

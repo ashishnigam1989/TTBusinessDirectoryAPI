@@ -39,13 +39,13 @@ namespace ApplicationService.IServices
 
         Task<GetResults> AddEditCompanyService(CompanyServiceRequestModel csModel);
         Task<GetResults> DeleteCompanyService(int Id);
-        Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyService(int page, int limit, string searchValue, int id);
         Task<GetResults> GetCompanyServiceById(int id);
         Task<GetResults> GetFeaturedCompanies(int limit);
 
         Task<GetResults> AddEditCompanyBanner(CompanyBannerRequestModel csModel);
         Task<GetResults> DeleteCompanyBanner(int Id);
-        Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyBanners(int page, int limit, string searchValue, int id);
         Task<GetResults> GetCompanyBannerById(int id);
 
         Task<GetResults> AddEditCompanyGallery(CompanyGalleryRequestModel csModel);
@@ -75,36 +75,36 @@ namespace ApplicationService.IServices
 
         Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel);
         Task<GetResults> DeleteCompanyTeam(int Id);
-        Task<GetResults> GetAllCompanyTeam(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyTeam(int page, int limit, string searchValue, int id);
         Task<GetResults> GetCompanyTeamById(int id);
 
 
         Task<GetResults> AddEditCompanyAwards(CompanyAwardsRequestModel ctModel);
         Task<GetResults> DeleteCompanyAwards(int Id);
-        Task<GetResults> GetAllCompanyAwards(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyAwards(int page, int limit, string searchValue, int id=0);
         Task<GetResults> GetCompanyAwardsById(int id);
 
 
         Task<GetResults> AddEditCompanyAddress(CompanyAddressRequestModel ctModel);
         Task<GetResults> DeleteCompanyAddress(int Id);
-        Task<GetResults> GetAllCompanyAddress(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyAddress(int page, int limit, string searchValue, int id);
         Task<GetResults> GetCompanyAddressById(int id);
 
 
         Task<GetResults> AddEditCompanyVideo(CompanyVideoRequestModel ctModel);
         Task<GetResults> DeleteCompanyVideo(int Id);
-        Task<GetResults> GetAllCompanyVideo(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyVideo(int page, int limit, string searchValue, int id);
         Task<GetResults> GetCompanyVideoById(int id);
 
 
         Task<GetResults> AddEditCompanyNewsArtical(CompanyNewsArticleRequestModel ctModel);
         Task<GetResults> DeleteCompanyNewsArtical(int Id);
-        Task<GetResults> GetAllCompanyNewsArticle(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyNewsArticle(int page, int limit, string searchValue, int id=0);
         Task<GetResults> GetCompanyNewsArticleById(int id);
 
         Task<GetResults> AddEditCompanyEvent(CompanyEventRequestModel ctModel);
         Task<GetResults> DeleteCompanyEvent(int Id);
-        Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue);
+        Task<GetResults> GetAllCompanyEvent(int page, int limit, string searchValue, int id = 0);
         Task<GetResults> GetCompanyEventById(int id);
 
 

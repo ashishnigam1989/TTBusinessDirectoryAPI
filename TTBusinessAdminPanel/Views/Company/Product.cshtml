@@ -32,7 +32,9 @@
                             <th></th>
                             <th>Product Name</th>
                             <th>Company</th>
-                            <th>Part Number</th>
+                            <th>Image</th>
+                            <th>Old Price<br />New Price</th>
+                            <th>Is Published</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -70,7 +72,17 @@
                     { "data": "id", "name": "Id", "autoWidth": true },
                     { "data": "nameEng", "name": "Product Name", "autoWidth": true },
                     { "data": "company", "name": "Company Name", "autoWidth": true },
-                    { "data": "partNumber", "name": "Part Number", "autoWidth": true },
+                    {
+                        "render": function (data, row, d) {
+                            return "<img src='" + d.displayLogo + "' width='60' height='50' />";
+                        }
+                    },
+                    {
+                        "render": function (data, row, d) {
+                            return "<span>" + d.oldPrice + "</span><br /><span>" + d.price + "</span>";
+                        }
+                    },
+                    { "data": "isPublished", "name": "Is Published", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/EditCompanyProduct/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " +

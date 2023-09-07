@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="col-lg-10 col-md-10 col-sm-10 float-left">
-                <h2>Company Banner</h2>
+                <h2>Company Banners</h2>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item">Company</li>
                     <li class="breadcrumb-item"><a href="@Url.Action("Banner", "Company")">All Banner</a></li>
@@ -30,10 +30,11 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Company Name</th>
-                            <th>Banner NameEng</th>
-                            <th>BannerEng</th>
-                            <th>BannerArb</th>
+                            <th>Company</th>
+                            <th>Banner</th>
+                            <th>Image</th>
+                            <th>URL</th>
+                            <th>Is Published</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -71,12 +72,8 @@
                             return btns;
                         }
                     },
-                    {
-                        "render": function (data, row, d) {
-                            var btns = "<img src='"+d.displayArbImage+"' style='width:30px; height:30px;' />";
-                            return btns;
-                        }
-                    },
+                    { "data": "englishUrl", "name": "Url", "autoWidth": true },
+                    { "data": "isPublished", "name": "Is Published", "autoWidth": true },
                     {
                         "render": function (data, row, d) {
                             var btns = "<a href='/Company/EditCompanyBanner/" + d.id + "' class='icon' title='Edit'><i class='zmdi zmdi-edit'></i></a> | " +

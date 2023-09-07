@@ -21,7 +21,7 @@ namespace CommonService.RequestModel
         public string Image { get; set; }
         public int? SortOrder { get; set; }
         public bool IsPublished { get; set; }
-        public bool? HasOffers { get; set; }
+        public bool HasOffers { get; set; }
         public bool IsDeleted { get; set; }
         public long? DeleterUserId { get; set; }
         public DateTime? DeletionTime { get; set; }
@@ -38,7 +38,7 @@ namespace CommonService.RequestModel
         public string OfferShortDescriptionEng { get; set; }
         public string OfferShortDescriptionArb { get; set; }
         public decimal OldPrice { get; set; }
-        public string DisplayLogo=> string.Format(CommonConstants.S3BaseURL + Image, Id);
+        public string DisplayLogo=> string.Concat(CommonConstants.S3BaseURL + Image);
         public string CompanyName { get; set; }
     }
 }

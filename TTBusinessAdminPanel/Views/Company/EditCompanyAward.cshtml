@@ -1,4 +1,5 @@
-﻿@model CommonService.RequestModel.CompanyAwardsRequestModel
+﻿@using TTBusinessAdminPanel.Extensions
+@model CommonService.RequestModel.CompanyAwardsRequestModel
 @{
     ViewData["Title"] = "Edit Awards";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -36,8 +37,6 @@
                                             <input name="file" id="imageAwardFile" type="file" />
                                             <input type="hidden" id="AwardFile" name="AwardFile" asp-for="AwardFile" />
                                         </div>
-
-
                                     </div>
 
                                     <label class="form-label">Award File</label>
@@ -109,6 +108,14 @@
     {
     <script>
         $(document).ready(function () {
+            var cname = '@ExtensionHelper.GetSession("Companyname")';
+            if (cname) {
+                var cid = @ExtensionHelper.GetSession("CompanyMasterId");
+                $("#CompanyId").val(cid);
+                $('#companydiv').addClass('focused');
+                $("#companyname").prop("disabled", true);
+                $('#companyname').val(cname);
+            }
             $('#img').attr('src', '@Model.DisplayAwardFile');
             $("#companyname").val('@Model.CompanyName');
 

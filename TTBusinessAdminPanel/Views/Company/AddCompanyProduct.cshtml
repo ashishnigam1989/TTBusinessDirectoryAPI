@@ -8,13 +8,16 @@
 
 <div class="block-header">
     <div class="row">
-        <div class="col-lg-12 col-md-6 col-sm-7">
-            <h2>Add Product</h2>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item">Company</li>
-                <li class="breadcrumb-item"><a href="@Url.Action("Product", "Company")">All Products</a></li>
-                <li class="breadcrumb-item"><a href="@Url.Action("AddCompanyProduct", "Company")">Add Product</a></li>
-            </ul>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-10 col-md-10 col-sm-10 float-left">
+                <h2>Company Management</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">Company</li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Company")">Premium Companies</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Product", "Company")">All Products</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("AddCompanyProduct", "Company")">Add Product</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
@@ -34,7 +37,7 @@
                                 <div class="col-md-4 center-align">
                                     <img id="img" style="width:250px; height:170px;" />
                                     <div class="fallback">
-                                        <input name="file" id="imageinput" type="file" multiple />
+                                        <input name="file" id="imageinput" type="file"  />
                                         <input type="hidden" id="Image" name="Image" asp-for="Image" />
                                     </div>
                                 </div>
@@ -65,20 +68,11 @@
                                     <div class="form-group form-float">
                                         <div class="form-line">
                                             <input asp-for="NameEng" type="text" class="form-control" name="NameEng" required>
-                                            <label class="form-label">NameEng</label>
+                                            <label class="form-label">Product Name</label>
                                         </div>
                                         <span asp-validation-for="NameEng" class="text-danger"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="NameArb" type="text" class="form-control" name="NameArb">
-                                        <label class="form-label">NameArb</label>
-                                    </div>
-                                    <span asp-validation-for="NameArb" class="text-danger"></span>
-                                </div>
-                            </div>
                             </div>
                         </div>
                         <div class="row">
@@ -86,7 +80,7 @@
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="PartNumber" type="text" class="form-control" name="PartNumber">
-                                        <label class="form-label">PartNumber</label>
+                                        <label class="form-label">Part Number</label>
                                     </div>
                                     <span asp-validation-for="PartNumber" class="text-danger"></span>
                                 </div>
@@ -94,15 +88,38 @@
                             <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line">
-                                        <input type="number" asp-for="SortOrder" class="form-control" name="SortOrder" id="SortOrder">
-                                        <label class="form-label">Sort Order</label>
+                                        <input asp-for="WarrantyEng" type="text" class="form-control" name="WarrantyEng">
+                                        <label class="form-label">Warranty</label>
                                     </div>
-                                    <span class="text-danger"></span>
+                                    <span asp-validation-for="WarrantyEng" class="text-danger"></span>
                                 </div>
                             </div>
-
-
                         </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="ShortDescriptionEng" type="text" class="form-control" name="ShortDescriptionEng">
+                                        <label class="form-label">Pruduct Short Description</label>
+                                    </div>
+                                    <span asp-validation-for="ShortDescriptionEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input asp-for="DescriptionEng" type="text" class="form-control" name="DescriptionEng">
+                                        <label class="form-label">Pruduct Description</label>
+                                    </div>
+                                    <span asp-validation-for="DescriptionEng" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group form-float">
@@ -122,6 +139,15 @@
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
+                                        <label for="IsPublished" class="form-label">Is Published</label>
+                                    </div>
+                                    <span asp-validation-for="IsPublished" class="text-danger"></span>
+                                </div>
+                            </div>
                            @* <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line">
@@ -136,6 +162,19 @@
                                     <span asp-validation-for="CountryId" class="text-danger"></span>
                                 </div>
                             </div>*@
+                            
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group form-float">
+                                    <div>
+                                        <input type="checkbox" asp-for="HasOffers" id="HasOffers" name="HasOffers">
+                                        <label for="HasOffers" class="form-label">Has Offers</label>
+                                    </div>
+                                    <span asp-validation-for="HasOffers" class="text-danger"></span>
+                                </div>
+                            </div>
                             <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
@@ -145,11 +184,7 @@
                                     <span asp-validation-for="OfferStartDate" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                         
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-float">
                                     <div class="form-line focused">
                                         <input asp-for="OfferEndDate" type="date" class="form-control" name="OfferEndDate">
@@ -158,88 +193,15 @@
                                     <span asp-validation-for="OfferEndDate" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group form-float">
-                                    <div>
-                                        <input type="checkbox" asp-for="IsPublished" id="IsPublished" name="IsPublished">
-                                        <label for="IsPublished" class="form-label">Is Published</label>
-                                    </div>
-                                    <span asp-validation-for="IsPublished" class="text-danger"></span>
-                                </div>
-                            </div>
+                            
                         </div>
 
-                    </fieldset>
-                    <h3>Other Info</h3>
-                    <fieldset>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="WarrantyEng" type="text" class="form-control" name="WarrantyEng">
-                                        <label class="form-label">WarrantyEng</label>
-                                    </div>
-                                    <span asp-validation-for="WarrantyEng" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="WarrantyArb" type="text" class="form-control" name="WarrantyArb">
-                                        <label class="form-label">WarrantyArb</label>
-                                    </div>
-                                    <span asp-validation-for="WarrantyArb" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="OffersDescriptionEng" type="text" class="form-control" name="MetaTitleArb">
-                                        <label class="form-label">OffersDescriptionEng</label>
-                                    </div>
-                                    <span asp-validation-for="OffersDescriptionEng" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="OffersDescriptionArb" type="text" class="form-control" name="OffersDescriptionArb">
-                                        <label class="form-label">OffersDescriptionArb</label>
-                                    </div>
-                                    <span asp-validation-for="OffersDescriptionArb" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                           <div class="col-md-6">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="DescriptionEng" type="text" class="form-control" name="DescriptionEng">
-                                        <label class="form-label">DescriptionEng</label>
-                                    </div>
-                                    <span asp-validation-for="DescriptionEng" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input asp-for="DescriptionArb" type="text" class="form-control" name="DescriptionArb">
-                                        <label class="form-label">DescriptionArb</label>
-                                    </div>
-                                    <span asp-validation-for="DescriptionArb" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input asp-for="OfferShortDescriptionEng" type="text" class="form-control" name="OfferShortDescriptionEng">
-                                        <label class="form-label">OfferShortDescriptionEng</label>
+                                        <label class="form-label">Offer Short Description</label>
                                     </div>
                                     <span asp-validation-for="OfferShortDescriptionEng" class="text-danger"></span>
                                 </div>
@@ -247,18 +209,14 @@
                             <div class="col-md-6">
                                 <div class="form-group form-float">
                                     <div class="form-line">
-                                        <input asp-for="OfferShortDescriptionArb" type="text" class="form-control" name="OfferShortDescriptionArb">
-                                        <label class="form-label">OfferShortDescriptionArb</label>
+                                        <input asp-for="OffersDescriptionEng" type="text" class="form-control" name="OffersDescriptionEng">
+                                        <label class="form-label">Offers Description</label>
                                     </div>
-                                    <span asp-validation-for="OfferShortDescriptionArb" class="text-danger"></span>
+                                    <span asp-validation-for="OffersDescriptionEng" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-
-
-
                     </fieldset>
-                    @*<button class="btn btn-raised btn-primary waves-effect" type="submit">SUBMIT</button>*@
 
                 </form>
             </div>
@@ -275,7 +233,7 @@
             if(cname)
             {
                 var cid = @ExtensionHelper.GetSession("CompanyMasterId");
-                $("#CompanyMenuId").val(cid);
+                $("#CompanyId").val(cid);
                   $('#companydiv').addClass('focused');
                     $("#companyname").prop("disabled", true);
                 $('#companyname').val(cname);
