@@ -108,6 +108,9 @@ namespace CommonService.Helpers
                 case EnumImageType.EventImage:
                     uploadPath = CommonConstants.EventImage;
                     break;
+                case EnumImageType.FreeListingLogo:
+                    uploadPath = CommonConstants.FreeListingImage;
+                    break;
                 default:
                     uploadPath = string.Empty;
                     break;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonService.Constants;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -32,5 +33,6 @@ namespace CommonService.ViewModels
         public string Image { get; set; }
         public string CountryName { get; set; }
         public string RegionName { get; set; }
+        public string DisplayLogo => string.Concat(CommonConstants.S3BaseURL + Image);
     }
 }

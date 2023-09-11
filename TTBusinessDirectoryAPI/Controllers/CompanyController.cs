@@ -1,18 +1,10 @@
 ﻿using ApplicationService.IServices;
 using CommonService.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using System.Threading.Tasks;
 using System;
 using CommonService.RequestModel;
-using DatabaseService.DbEntities;
-using CommonService.Constants;
-using CommonService.Enums;
-using CommonService.Helpers;
-using System.Collections;
-using System.IO;
-using System.Collections.Generic;
 
 namespace TTBusinessDirectoryAPI.Controllers
 {
@@ -308,6 +300,189 @@ namespace TTBusinessDirectoryAPI.Controllers
             {
                 getResults = await _company.GetCompanyDetailsById(companyid);
                 getResults.Message = "Company Details found";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetFreeListingCompanyById/{companyid}")]
+        public async Task<GetResults> GetFreeListingCompanyById(int companyid)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = await _company.GetFreeListing(companyid);
+                getResults.Message = "Free Listing Company Details found.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetCompanyProducts/{companyId:long}/{limit:int}/{skip:int}")]
+        public async Task<GetResults> GetCompanayProducts(long companyId, int limit , int skip)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                var data = await _company.GetProductsByCompanyId(companyId, skip, limit);
+                getResults.Data= data;
+                getResults.IsSuccess = true;
+                getResults.Message = "Fetched company products.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+
+        [HttpGet]
+        [Route("GetCompanyServices/{companyId:long}/{limit:int}/{skip:int}")]
+        public async Task<GetResults> GetCompanyServices(long companyId, int limit, int skip)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                var data = await _company.GetServicesByCompanyId(companyId, skip, limit);
+                getResults.Data = data;
+                getResults.IsSuccess = true;
+                getResults.Message = "Fetched company services.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetCompanyNewsArticles/{companyId:long}/{limit:int}/{skip:int}")]
+        public async Task<GetResults> GetCompanyNewsArticles(long companyId, int limit, int skip)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                var data = await _company.GetCompanyNewsArticles(companyId, skip, limit);
+                getResults.Data = data;
+                getResults.IsSuccess = true;
+                getResults.Message = "Fetched company services.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
+        [Route("GetCompanyEvents/{companyId:long}/{limit:int}/{skip:int}")]
+        public async Task<GetResults> GetCompanyEvents(long companyId, int limit, int skip)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                var data = await _company.GetCompanyEvents(companyId, skip, limit);
+                getResults.Data = data;
+                getResults.IsSuccess = true;
+                getResults.Message = "Fetched company services.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [Route("GetCompanyProductById/{productId:int}")]
+        public async Task<GetResults> GetCompanyProductById(int productId)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                getResults = await _company.GetCompanyProductById(productId);
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+
+        [Route("GetCompanyServiceById/{serviceId:int}")]
+        public async Task<GetResults> GetCompanyServiceById(int serviceId)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                getResults = await _company.GetCompanyServiceById(serviceId);
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+
+        [Route("GetCompanyEventById/{eventId:int}")]
+        public async Task<GetResults> GetCompanyEventById(int eventId)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                getResults = await _company.GetCompanyEventById(eventId);
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+
+        [Route("GetCompanyNewsArticleById/{newsArticleId:int}")]
+        public async Task<GetResults> GetCompanyNewsArticleById(int newsArticleId)
+        {
+            GetResults getResults = new GetResults();
+
+            try
+            {
+                getResults = await _company.GetCompanyNewsArticleById(newsArticleId);
                 logger.Info(getResults.Message);
             }
             catch (Exception ex)

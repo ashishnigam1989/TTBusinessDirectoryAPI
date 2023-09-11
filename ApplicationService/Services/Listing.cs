@@ -1,8 +1,11 @@
 ﻿using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Enums;
+using CommonService.Helpers;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -94,6 +97,7 @@ namespace ApplicationService.Services
                     _dbContext.FreeListing.Add(freeListing);
                     await _dbContext.SaveChangesAsync();
                     var listingId = freeListing.Id;
+                    var logoPath = Helper.MoveFileToS3Server(EnumImageType.FreeListingLogo, listingId, freeListingModel.Logo);
 
                     foreach (var productDetail in freeListingModel.FreeListingProductDetails)
                     {
@@ -109,6 +113,10 @@ namespace ApplicationService.Services
                         };
                         _dbContext.FreeListingDetails.Add(freeListingDetails);
                     }
+                    
+                    await _dbContext.SaveChangesAsync();
+                    freeListing.Logo = logoPath;
+                    _dbContext.FreeListing.Update(freeListing);
                     await _dbContext.SaveChangesAsync();
                 }
                 transaction.Commit();
