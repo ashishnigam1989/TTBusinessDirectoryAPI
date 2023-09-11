@@ -72,6 +72,7 @@ namespace ApplicationService.IServices
         Task<GetResults> ApproveRejectFreeListingCompany(int id);
         Task<GetResults> DeleteFreeListing(int Id);
         Task<GetResults> GetFreeListingDetails(int id);
+        Task<GetResults> GetFreeListing(int id);
 
         Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel);
         Task<GetResults> DeleteCompanyTeam(int Id);

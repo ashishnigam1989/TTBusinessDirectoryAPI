@@ -43,7 +43,8 @@ namespace ApplicationService.Services
                 PrimaryPhone = s.PrimaryPhone,
                 IsVerified = s.IsVerified,
                 id = s.Id,
-                Logo = s.Logo
+                Logo = !string.IsNullOrEmpty(s.Logo) ? s.Logo.StartsWith('/') ? s.Logo : string.Concat('/', s.Logo) : null,
+
             }).Distinct().OrderByDescending(o => o.id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
             total = _dbContext.Company.Where(w => w.IsDeleted == false).Where(w =>
@@ -1964,6 +1965,55 @@ namespace ApplicationService.Services
 
         }
 
+        public async Task<GetResults> GetFreeListing(int id)
+        {
+            var result = new GetResults();
+            var fDetail = _dbContext.FreeListing.Where(w => w.Id == id && !w.IsDeleted)
+                .Select(s => new FreeListingModel
+                {
+                    Id = s.Id,
+                    CompanyAddress = s.CompanyAddress,
+                    CompanyName = s.CompanyName,
+                    CompanyPhone = s.CompanyPhone,
+                    CountryId = s.CountryId,
+                    CreatorUserId = s.CreatorUserId,
+                    DistrictId = s.DistrictId,
+                    EmployeeNumber = s.EmployeeNum,
+                    FoundedYear = s.FoundedYear.ToString(),
+                    FounderName = s.FounderName,
+                    Logo = s.Logo,
+                    Pobox = s.Pobox,
+                    PrimaryEmail = s.PrimaryEmail,
+                    PrimaryWebsite = s.PrimaryWebsite,
+                    RegionId = s.RegionId
+
+                }).FirstOrDefault();
+
+            var products = await _dbContext.FreeListingDetails
+                .Join(_dbContext.Category, f => f.CategoryId, c => c.Id, (f, c) => new { f, c })
+                .DefaultIfEmpty()
+                .Where(d => d.f.FreeListingId.Equals(fDetail.Id))
+                .Select(p =>  new FreeListingDetailsModel
+                {
+                    Id= p.f.Id,
+                    Category = p.c.NameEng,
+                    CategoryId = p.f.CategoryId.ToString(),
+                    RelatedProduct = p.f.RelatedProduct,
+                    RelatedService = p.f.RelatedService,
+                    Brand = p.f.Brand,
+                    CreatorUserId = p.f.CreatorUserId,
+                })
+                .ToListAsync();
+
+            fDetail.FreeListingProductDetails = products;
+            result.IsSuccess = true;
+            result.Message = "Free Listing Detail";
+            result.Data = fDetail;
+            result.Total = 1;
+            return await Task.FromResult(result);
+
+        }
+
         #endregion
         #region CompanyTeam
         public async Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel)
@@ -2515,7 +2565,7 @@ namespace ApplicationService.Services
         public async Task<GetResults> GetCompanyNewsArticleById(int id)
         {
             GetResults result = new GetResults();
-            var cb = _dbContext.CompanyNewsArticle.Join(_dbContext.Company, a => a.CompanyId, c => c.Id, (a, c) => new {a,c}).Where(w => w.a.Id == id && w.a.IsDeleted == false)
+            var cb = _dbContext.CompanyNewsArticle.Join(_dbContext.Company, a => a.CompanyId, c => c.Id, (a, c) => new {a,c}).Where(w => w.a.Id == id && (!w.a.IsDeleted.HasValue || !w.a.IsDeleted.Value))
                                                    .Select(s => new CompanyNewsArticleViewModel
                                                    {
                                                        Id = s.a.Id,
@@ -2524,7 +2574,8 @@ namespace ApplicationService.Services
                                                        NewsDesc = s.a.NewsDesc,
                                                        NewsUrl = s.a.NewsUrl,
                                                        IsPublished = s.a.IsPublished,
-                                                       CompanyName=s.c.NameEng
+                                                       CompanyName=s.c.NameEng,
+                                                       CreationTime = s.a.CreationTime
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company News Found.";

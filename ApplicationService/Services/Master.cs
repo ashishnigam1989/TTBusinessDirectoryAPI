@@ -312,17 +312,16 @@ namespace ApplicationService.Services
             {
                 categoriesQuery = categoriesQuery.Take(count);
             }
-            var categories = await categoriesQuery.Select(s => new CategoriesViewModel
+            var categories = (await categoriesQuery.ToListAsync()).Select(s => new CategoriesViewModel
             {
                 Id = s.Id,
                 NameEng = s.NameEng,
                 NameArb = s.NameArb,
                 IsFeatured = isFeatured,
-                Icon = s.Icon,
+                Icon = !string.IsNullOrEmpty(s.Icon) ? s.Icon.StartsWith('/') ? s.Icon : string.Concat('/', s.Icon) : null,
             })
             .Distinct()
-            .OrderBy(o => o.NameEng)
-            .ToListAsync();
+            .OrderBy(o => o.NameEng);
 
             GetResults uobj = new GetResults
             {

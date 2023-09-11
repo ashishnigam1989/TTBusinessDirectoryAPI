@@ -311,6 +311,25 @@ namespace TTBusinessDirectoryAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetFreeListingCompanyById/{companyid}")]
+        public async Task<GetResults> GetFreeListingCompanyById(int companyid)
+        {
+            GetResults getResults = new GetResults();
+            try
+            {
+                getResults = await _company.GetFreeListing(companyid);
+                getResults.Message = "Free Listing Company Details found.";
+                logger.Info(getResults.Message);
+            }
+            catch (Exception ex)
+            {
+                getResults = new GetResults(false, ex.Message);
+                logger.Error(ex.Message);
+            }
+            return await Task.FromResult(getResults);
+        }
+
+        [HttpGet]
         [Route("GetCompanyProducts/{companyId:long}/{limit:int}/{skip:int}")]
         public async Task<GetResults> GetCompanayProducts(long companyId, int limit , int skip)
         {
