@@ -22,6 +22,7 @@ using TTBusinessDirectoryAPI.Models;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using CommonService.Helpers;
 
 namespace TTBusinessDirectoryAPI
 {
@@ -160,6 +161,7 @@ namespace TTBusinessDirectoryAPI
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            AccessAppSettings.Initialize(Configuration);
 
             app.UseEndpoints(endpoints =>
             {

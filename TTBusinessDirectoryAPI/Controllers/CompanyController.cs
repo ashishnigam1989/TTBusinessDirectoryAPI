@@ -331,7 +331,7 @@ namespace TTBusinessDirectoryAPI.Controllers
 
         [HttpGet]
         [Route("GetCompanyProducts/{companyId:long}/{limit:int}/{skip:int}")]
-        public async Task<GetResults> GetCompanayProducts(long companyId, int limit , int skip)
+        public async Task<GetResults> GetCompanyProducts(long companyId, int limit , int skip)
         {
             GetResults getResults = new GetResults();
 
