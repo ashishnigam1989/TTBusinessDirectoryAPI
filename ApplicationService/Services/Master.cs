@@ -115,7 +115,8 @@ namespace ApplicationService.Services
                     MetaDescriptionArb = s.MetaDescriptionArb,
                     PageContentArb = s.PageContentArb,
                     IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false,
-                    Icon = s.Icon
+                    Icon = !string.IsNullOrEmpty(s.Icon) ? s.Icon.StartsWith('/') ? s.Icon : string.Concat('/', s.Icon) : null,
+
 
                 }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
@@ -243,7 +244,8 @@ namespace ApplicationService.Services
                    MetaDescriptionArb = s.MetaDescriptionArb,
                    PageContentArb = s.PageContentArb,
                    IsFeatured = s.IsFeatured.HasValue ? s.IsFeatured.Value : false,
-                   Icon=s.Icon
+                   Icon = !string.IsNullOrEmpty(s.Icon) ? s.Icon.StartsWith('/') ? s.Icon : string.Concat('/', s.Icon) : null,
+
 
                }).FirstOrDefaultAsync().Result;
             GetResults result = new GetResults
@@ -344,6 +346,7 @@ namespace ApplicationService.Services
                 NameEng = s.NameEng,
                 NameArb = s.NameArb,
                 Logo = s.Logo
+               
             }).Distinct().OrderByDescending(o => o.Id).Skip(limit * page).Take(limit).ToListAsync().Result;
             int total = _dbContext.Brand.Where(w => (string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
                                 !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb) && w.IsDeleted == false

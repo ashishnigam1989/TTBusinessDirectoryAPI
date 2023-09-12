@@ -409,14 +409,16 @@ namespace ApplicationService.Services
 
         public async Task<GetResults> GetFeaturedCompanies(int limit)
         {
-            List<CompanyModel> companylist = await _dbContext.Company.Where(w => w.IsPublished.Value && w.IsFeatured.Value).Select(s => new CompanyModel
-            {
-                NameEng = s.NameEng,
-                EstablishmentDate = s.EstablishmentDate,
-                Logo = s.Logo,
-                PrimaryWebsite = s.PrimaryWebsite,
-                id = s.Id
-            }).Distinct().OrderByDescending(o => o.id).Take(limit).ToListAsync();
+            List<CompanyModel> companylist = _dbContext.Company
+                .Where(w => w.IsPublished.Value && w.IsFeatured.Value).Distinct().OrderByDescending(o => o.Id).Take(limit).ToList()
+                .Select(s => new CompanyModel
+                {
+                    NameEng = s.NameEng,
+                    EstablishmentDate = s.EstablishmentDate,
+                    Logo = !string.IsNullOrEmpty(s.Logo) ? s.Logo.StartsWith('/') ? s.Logo : string.Concat('/', s.Logo) : null,
+                    PrimaryWebsite = s.PrimaryWebsite,
+                    id = s.Id
+                }).ToList();
 
             GetResults uobj = new GetResults
             {
@@ -851,7 +853,7 @@ namespace ApplicationService.Services
                                                        PartNumber = s.a.PartNumber,
                                                        WarrantyEng = s.a.WarrantyEng,
                                                        WarrantyArb = s.a.WarrantyArb,
-                                                       Image = s.a.Image,
+                                                       Image = !string.IsNullOrEmpty(s.a.Image) ? s.a.Image.StartsWith('/') ? s.a.Image : string.Concat('/', s.a.Image) : null,
                                                        SortOrder = s.a.SortOrder,
                                                        IsPublished = s.a.IsPublished,
                                                        HasOffers = s.a.HasOffers,
@@ -1339,7 +1341,7 @@ namespace ApplicationService.Services
                         ShortDescriptionEng = c.ShortDescriptionEng,
                         PrimaryEmail = c.PrimaryEmail,
                         PrimaryPhone = c.PrimaryPhone,
-                        Logo = c.Logo,
+                        Logo = !string.IsNullOrEmpty(c.Logo) ? c.Logo.StartsWith('/') ? c.Logo : string.Concat('/', c.Logo) : null,
                         PrimaryWebsite = c.PrimaryWebsite,
                         OverallRating = c.OverallRating,
                         TotalReviews = c.TotalReviews,
@@ -1361,7 +1363,7 @@ namespace ApplicationService.Services
                     DescriptionEng = c.DescriptionEng,
                     ShortDescriptionEng = c.ShortDescriptionEng,
                     Price = c.Price,
-                    Image = c.Image,
+                    Image = !string.IsNullOrEmpty(c.Image) ? c.Image.StartsWith('/') ? c.Image : string.Concat('/', c.Image) : null,
                     WarrantyEng = c.WarrantyEng,
                     OldPrice = c.OldPrice,
                     PartNumber = c.PartNumber,
@@ -1377,7 +1379,7 @@ namespace ApplicationService.Services
                     DescriptionEng = c.DescriptionEng,
                     ShortDescriptionEng = c.ShortDescriptionEng,
                     Price = c.Price,
-                    Image = c.Image
+                    Image = !string.IsNullOrEmpty(c.Image) ? c.Image.StartsWith('/') ? c.Image : string.Concat('/', c.Image) : null,
                 }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyVideos = await _dbContext.CompanyVideos.Where(c => c.CompanyId == companyId && !c.IsDeleted)
@@ -1398,7 +1400,7 @@ namespace ApplicationService.Services
                     CompanyId = c.CompanyId,
                     Designation = c.Designation,
                     FullName = c.FullName,
-                    ProfilePic = c.ProfilePic,
+                    ProfilePic = !string.IsNullOrEmpty(c.ProfilePic) ? c.ProfilePic.StartsWith('/') ? c.ProfilePic : string.Concat('/', c.ProfilePic) : null,
                 }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyTags = await _dbContext.CompanyTags.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
@@ -1429,7 +1431,7 @@ namespace ApplicationService.Services
                 {
                     Id = c.ev.Id,
                     CompanyId = c.ev.CompanyId,
-                    EventImage = c.ev.EventImage,
+                    EventImage = !string.IsNullOrEmpty(c.ev.EventImage) ? c.ev.EventImage.StartsWith('/') ? c.ev.EventImage : string.Concat('/', c.ev.EventImage) : null,
                     EventLocationUrl = c.ev.EventLocationUrl,
                     EndDate = c.ev.EndDate,
                     EndTime = c.ev.EndTime,
@@ -1450,7 +1452,7 @@ namespace ApplicationService.Services
                   ArabicUrl = c.ArabicUrl,
                   BannerNameEng = c.BannerNameArb,
                   ImageArb = c.ImageArb,
-                  ImageEng = c.ImageEng,
+                  ImageEng = !string.IsNullOrEmpty(c.ImageEng) ? c.ImageEng.StartsWith('/') ? c.ImageEng : string.Concat('/', c.ImageEng) : null,
                   EnglishUrl = c.EnglishUrl,
                   Target = c.Target,
                   SortOrder = c.SortOrder,
@@ -1464,7 +1466,8 @@ namespace ApplicationService.Services
                     CreationTime = c.CreationTime,
                     NewsDesc = c.NewsDesc,
                     NewsTitle = c.NewsTitle,
-                    NewsUrl = c.NewsUrl
+                    NewsUrl = !string.IsNullOrEmpty(c.NewsUrl) ? c.NewsUrl.StartsWith('/') ? c.NewsUrl : string.Concat('/', c.NewsUrl) : null,
+
                 }).OrderByDescending(c => c.CreationTime).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyAwards = await _dbContext.CompanyAwards.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
@@ -1473,7 +1476,7 @@ namespace ApplicationService.Services
                    Id = c.Id,
                    CompanyId = c.CompanyId,
                    AwardDesc = c.AwardDesc,
-                   AwardFile = c.AwardFile,
+                   AwardFile = !string.IsNullOrEmpty(c.AwardFile) ? c.AwardFile.StartsWith('/') ? c.AwardFile : string.Concat('/', c.AwardFile) : null,
                    AwardTitle = c.AwardTitle
                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
@@ -1495,8 +1498,8 @@ namespace ApplicationService.Services
                     DescriptionEng = c.DescriptionEng,
                     ShortDescriptionEng = c.ShortDescriptionEng,
                     Price = c.Price,
-                    Image = c.Image,
-                    HasOffers= c.HasOffers,
+                    Image = !string.IsNullOrEmpty(c.Image) ? c.Image.StartsWith('/') ? c.Image : string.Concat('/', c.Image) : null,
+                    HasOffers = c.HasOffers,
                     WarrantyEng = c.WarrantyEng,
                     OldPrice= c.OldPrice,
                     PartNumber = c.PartNumber,
@@ -1523,7 +1526,7 @@ namespace ApplicationService.Services
                     DescriptionEng = c.DescriptionEng,
                     ShortDescriptionEng = c.ShortDescriptionEng,
                     Price = c.Price,
-                    Image = c.Image,
+                    Image = !string.IsNullOrEmpty(c.Image) ? c.Image.StartsWith('/') ? c.Image : string.Concat('/', c.Image) : null,
                     HasOffers = c.HasOffers,
                     OldPrice = c.OldPrice,
                 })
@@ -1547,7 +1550,7 @@ namespace ApplicationService.Services
                     CompanyId = c.CompanyId,
                     NewsDesc = c.NewsDesc,
                     NewsTitle = c.NewsTitle,
-                    NewsUrl= c.NewsUrl
+                    NewsUrl = !string.IsNullOrEmpty(c.NewsUrl) ? c.NewsUrl.StartsWith('/') ? c.NewsUrl : string.Concat('/', c.NewsUrl) : null,
                 })
                 .OrderBy(p => p.Id)
                 .Skip(skip)
@@ -1574,8 +1577,8 @@ namespace ApplicationService.Services
                     EndDate= c.ev.EndDate, 
                     EndTime= c.ev.EndTime,
                     EventDesc= c.ev.EventDesc,
-                    EventImage= c.ev.EventImage,
-                    EventTitle= c.ev.EventTitle,
+                    EventImage = !string.IsNullOrEmpty(c.ev.EventImage) ? c.ev.EventImage.StartsWith('/') ? c.ev.EventImage : string.Concat('/', c.ev.EventImage) : null,
+                    EventTitle = c.ev.EventTitle,
                     EventUrl= c.ev.EventUrl,
                     EventLocationUrl= c.ev.EventLocationUrl,
                     EventType= c.evmy.EventTypeDesc
@@ -1981,7 +1984,7 @@ namespace ApplicationService.Services
                     EmployeeNumber = s.EmployeeNum,
                     FoundedYear = s.FoundedYear.ToString(),
                     FounderName = s.FounderName,
-                    Logo = s.Logo,
+                    Logo = !string.IsNullOrEmpty(s.Logo) ? s.Logo.StartsWith('/') ? s.Logo : string.Concat('/', s.Logo) : null,
                     Pobox = s.Pobox,
                     PrimaryEmail = s.PrimaryEmail,
                     PrimaryWebsite = s.PrimaryWebsite,
