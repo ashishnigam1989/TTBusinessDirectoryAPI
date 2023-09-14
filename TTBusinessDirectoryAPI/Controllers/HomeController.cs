@@ -147,23 +147,29 @@ namespace TTBusinessDirectoryAPI.Controllers
                 if (Request.Form.Files.Count > 0)
                 {
                     var imgType = (EnumImageType)Enum.Parse(typeof(EnumImageType), Convert.ToString(Request.Form["imgtype"]));
-                    string filetempPath = Helper.GetFileUploadDetails(imgType);
+                    string filetempPath = "/" + Helper.GetFileUploadDetails(imgType);
                     string tempPath = CommonConstants.FileTempPath + "/" + filetempPath;
                     if (!Directory.Exists(tempPath))
                     {
                         Directory.CreateDirectory(tempPath);
                     }
-                    var postedFile = Request.Form.Files[0];
-                    if (postedFile != null)
+                    for (int i = 0; i < Request.Form.Files.Count; i++)
                     {
-                        string newName = string.Empty;
-                        newName = DateTime.Now.ToString("ddMMyyyyhhmmss") + "_" + postedFile.FileName;
-                        string newPath = Path.Combine(tempPath, newName);
-                        using (var stream = new FileStream(newPath, FileMode.Create))
+
+                        var postedFile = Request.Form.Files[i];
+                        if (postedFile != null)
                         {
-                            await postedFile.CopyToAsync(stream);
-                            imageList.Add(filetempPath + newName);
-                            stream.Flush();
+                            string newName = string.Empty;
+                            FileInfo fi = new FileInfo(postedFile.FileName);
+                            //newName = DateTime.Now.ToString("ddMMyyyyhhmmss")+"_"+ postedFile.FileName;
+                            newName = DateTime.Now.ToString("ddMMyyyyhhmmss") + fi.Extension;
+                            string newPath = Path.Combine(tempPath, newName);
+                            using (var stream = new FileStream(newPath, FileMode.Create))
+                            {
+                                postedFile.CopyTo(stream);
+                                imageList.Add(filetempPath + newName);
+                                stream.Flush();
+                            }
                         }
                     }
                 }
