@@ -1,5 +1,6 @@
 ﻿using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Constants;
 using CommonService.Enums;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
@@ -130,7 +131,8 @@ namespace ApplicationService.Services
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
                     ShouldChangePasswordOnNextLogin = true,
-                    Designation=userRequest.Designation
+                    Designation=userRequest.Designation,
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.Users.Add(uobj);
@@ -138,7 +140,7 @@ namespace ApplicationService.Services
                 var userRole = new UserRoles();
                 userRole.UserId = uobj.Id;
                 userRole.RoleId = userRequest.RoleId;
-                userRole.CreatorUserId = uobj.Id;
+                userRole.CreatorUserId = CommonConstants.LoggedInUser;
                 userRole.CreationTime = DateTime.Now;
                 _dbContext.UserRoles.Add(userRole);
                 await _dbContext.SaveChangesAsync();
@@ -154,6 +156,7 @@ namespace ApplicationService.Services
                 userinfo.PasswordResetCode = String.Empty;
                 userinfo.LastLoginTime = DateTime.Now; 
                 userinfo.LastModificationTime = DateTime.Now;
+                userinfo.LastModifierUserId = CommonConstants.LoggedInUser;
                 userinfo.Designation=userRequest.Designation;
                 userinfo.ShouldChangePasswordOnNextLogin = true;
 
@@ -163,7 +166,7 @@ namespace ApplicationService.Services
                     var userRole = new UserRoles();
                     userRole.UserId = userinfo.Id;
                     userRole.RoleId = userRequest.RoleId;
-                    userRole.CreatorUserId = userinfo.Id;
+                    userRole.CreatorUserId = CommonConstants.LoggedInUser;
                     userRole.CreationTime = DateTime.Now;
                     _dbContext.UserRoles.Add(userRole);
                 }
@@ -171,7 +174,7 @@ namespace ApplicationService.Services
                 {
                     roleinfo.UserId = userinfo.Id;
                     roleinfo.RoleId = userRequest.RoleId;
-                    roleinfo.CreatorUserId = userinfo.Id;
+                    roleinfo.CreatorUserId = CommonConstants.LoggedInUser;
                     roleinfo.CreationTime = DateTime.Now;
                 }
                 await _dbContext.SaveChangesAsync();
@@ -203,6 +206,7 @@ namespace ApplicationService.Services
                     LastLoginTime = DateTime.Now,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
+                    CreatorUserId = CommonConstants.LoggedInUser,
                     IsActive = true,
                 };
                 _dbContext.Users.Add(uobj);
@@ -212,7 +216,7 @@ namespace ApplicationService.Services
                 {
                     UserId = userId,
                     RoleId = userRequest.RoleId,
-                    CreatorUserId= userId,
+                    CreatorUserId= CommonConstants.LoggedInUser,
                     CreationTime= DateTime.Now,
                 });
                 await _dbContext.SaveChangesAsync();
@@ -308,7 +312,7 @@ namespace ApplicationService.Services
                     RoleId = urModel.RoleId,
                     UserId = urModel.UserId,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = urModel.UserId,
+                    CreatorUserId = CommonConstants.LoggedInUser,
                 };
             }
             await _dbContext.SaveChangesAsync();
@@ -323,7 +327,7 @@ namespace ApplicationService.Services
             {
                 uinfo.IsDeleted = true;
                 uinfo.DeletionTime = DateTime.Now;
-                uinfo.CreatorUserId = deletedby;
+                uinfo.DeleterUserId = CommonConstants.LoggedInUser;
             }
             await _dbContext.SaveChangesAsync();
             ischanged = true;

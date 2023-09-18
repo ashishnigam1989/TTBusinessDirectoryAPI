@@ -148,7 +148,7 @@ namespace ApplicationService.Services
                         Unspsccode = crModel.Unspsccode,
                         IsPublished = crModel.IsPublished,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = crModel.CreatorUserId,
+                        CreatorUserId = CommonConstants.LoggedInUser,
                         Keywords = crModel.Keywords,
                         SuggestionHits = crModel.SuggestionHits,
                         Slug = crModel.Slug,
@@ -186,7 +186,7 @@ namespace ApplicationService.Services
                     cdata.Unspsccode = crModel.Unspsccode;
                     cdata.IsPublished = crModel.IsPublished;
                     cdata.LastModificationTime = DateTime.Now;
-                    cdata.LastModifierUserId = crModel.LastModifierUserId;
+                    cdata.LastModifierUserId = CommonConstants.LoggedInUser;
                     cdata.Keywords = crModel.Keywords;
                     cdata.SuggestionHits = crModel.SuggestionHits;
                     cdata.Slug = crModel.Slug;
@@ -261,6 +261,7 @@ namespace ApplicationService.Services
             {
                 category.IsDeleted = true;
                 category.DeletionTime = DateTime.Now;
+                category.DeleterUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.IsSuccess = true;
                 result.Message = "Category deleted.";
@@ -414,11 +415,11 @@ namespace ApplicationService.Services
                         NameArb = breqmodel.NameArb,
                         SortOrder = breqmodel.SortOrder,
                         Logo = breqmodel.Logo,
-                        IsDeleted = breqmodel.IsDeleted,
-                        DeleterUserId = breqmodel.DeleterUserId,
-                        DeletionTime = breqmodel.DeletionTime,
+                        IsDeleted = false,
+                        //DeleterUserId = breqmodel.DeleterUserId,
+                        //DeletionTime = breqmodel.DeletionTime,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = breqmodel.CreatorUserId,
+                        CreatorUserId = CommonConstants.LoggedInUser,
                         IsPublished = breqmodel.IsPublished,
                         Slug = breqmodel.Slug,
                         SeoEnabled = breqmodel.SeoEnabled,
@@ -454,11 +455,11 @@ namespace ApplicationService.Services
                     brandobj.NameArb = breqmodel.NameArb;
                     brandobj.SortOrder = breqmodel.SortOrder;
                     brandobj.Logo = breqmodel.Logo;
-                    brandobj.IsDeleted = breqmodel.IsDeleted;
-                    brandobj.DeleterUserId = breqmodel.DeleterUserId;
-                    brandobj.DeletionTime = breqmodel.DeletionTime;
+                    brandobj.IsDeleted = false;
+                    //brandobj.DeleterUserId = breqmodel.DeleterUserId;
+                    //brandobj.DeletionTime = breqmodel.DeletionTime;
                     brandobj.LastModificationTime = breqmodel.LastModificationTime;
-                    brandobj.LastModifierUserId = breqmodel.LastModifierUserId;
+                    brandobj.LastModifierUserId = CommonConstants.LoggedInUser;
                     brandobj.IsPublished = breqmodel.IsPublished;
                     brandobj.Slug = breqmodel.Slug;
                     brandobj.SeoEnabled = breqmodel.SeoEnabled;
@@ -495,6 +496,7 @@ namespace ApplicationService.Services
             {
                 brand.IsDeleted = true;
                 brand.DeletionTime = DateTime.Now;
+                brand.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Brand deleted";
             }
             else
@@ -548,8 +550,8 @@ namespace ApplicationService.Services
                     BrandId = _rModel.BrandId,
                     CategoryId =catid,
                     CreationTime=DateTime.Now,
-                    CreatorUserId=_rModel.CreatedBy
-                    
+                    CreatorUserId= CommonConstants.LoggedInUser
+
                 };
                 rmlist.Add(rmModel);
             }
@@ -611,7 +613,7 @@ namespace ApplicationService.Services
                     DistrictName = dreqmodel.District,
                     RegionId = dreqmodel.RegionId,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = dreqmodel.CreatedBy
+                    CreatorUserId = CommonConstants.LoggedInUser
                 };
                 _dbContext.Districts.Add(ds);
                 result.IsSuccess = true;

@@ -1,5 +1,6 @@
 ﻿using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Constants;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
@@ -84,7 +85,7 @@ namespace ApplicationService.Services
                         SortOrder = 99,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = regionRequest.CreatorUserId,
+                        CreatorUserId = CommonConstants.LoggedInUser,
 
                     };
                     _dbContext.Region.Add(cobj);
@@ -115,7 +116,7 @@ namespace ApplicationService.Services
                     region.SortOrder = 99;
                     region.IsDeleted = false;
                     region.LastModificationTime = DateTime.Now;
-                    region.LastModifierUserId = regionRequest.LastModifierUserId;
+                    region.LastModifierUserId = CommonConstants.LoggedInUser;
                     gobj = new GetResults()
                     {
                         IsSuccess = true,
@@ -151,6 +152,7 @@ namespace ApplicationService.Services
             {
                 region.IsDeleted = true;
                 region.DeletionTime = DateTime.Now;
+                region.DeleterUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 gobj = new GetResults()
                 {
@@ -296,6 +298,7 @@ namespace ApplicationService.Services
             if (uinfo != null)
             {
                 uinfo.IsDeleted = true;
+        
             }
             await _dbContext.SaveChangesAsync();
             ischanged = true;

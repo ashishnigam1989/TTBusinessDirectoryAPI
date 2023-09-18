@@ -55,6 +55,7 @@ namespace ApplicationService.Services
                     LastLoginTime = DateTime.Now,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
+                    CreatorUserId = userRequest.CreatorUserId,
                     IsActive = true,
                 };
                 _dbContext.Users.Add(uobj);
