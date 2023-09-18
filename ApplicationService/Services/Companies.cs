@@ -1,6 +1,7 @@
 using Amazon.S3;
 using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Constants;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using CommonService.ViewModels.Company;
@@ -32,7 +33,6 @@ namespace ApplicationService.Services
             int total = 0;
             List<CompanyModel> companylist = _dbContext.Company.Where(w =>
            (!string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
-            !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb ||
             !string.IsNullOrEmpty(searchValue) ? w.PrimaryEmail.ToLower().Contains(searchValue.ToLower()) : w.PrimaryEmail == w.PrimaryEmail ||
             !string.IsNullOrEmpty(searchValue) ? w.PrimaryPhone.ToLower().Contains(searchValue.ToLower()) : w.PrimaryPhone == w.PrimaryPhone) && w.IsDeleted == false
             ).Select(s => new CompanyModel
@@ -43,7 +43,8 @@ namespace ApplicationService.Services
                 PrimaryPhone = s.PrimaryPhone,
                 IsVerified = s.IsVerified,
                 id = s.Id,
-                Logo = !string.IsNullOrEmpty(s.Logo) ? s.Logo.StartsWith('/') ? s.Logo : string.Concat('/', s.Logo) : null,
+                Logo = s.Logo
+                //Logo = !string.IsNullOrEmpty(s.Logo) ? s.Logo.StartsWith('/') ? s.Logo : string.Concat('/', s.Logo) : null,
 
             }).Distinct().OrderByDescending(o => o.id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
@@ -191,7 +192,7 @@ namespace ApplicationService.Services
                         ThemeColor = creqmodel.ThemeColor,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = creqmodel.CreatorUserId,
+                        CreatorUserId = CommonConstants.LoggedInUser,
                         IsPublished = creqmodel.IsPublished,
                         DomainName = creqmodel.DomainName,
                         PrimaryMobile = creqmodel.PrimaryMobile,
@@ -205,7 +206,7 @@ namespace ApplicationService.Services
                         IsVerified = creqmodel.IsVerified,
                         DistrictId = creqmodel.DistrictId,
                         CountryId = creqmodel.CountryId,
-
+                        
 
                     };
                     _dbContext.Company.Add(cobj);
@@ -275,7 +276,7 @@ namespace ApplicationService.Services
                     cdetail.ThemeColor = creqmodel.ThemeColor;
                     cdetail.IsDeleted = false;
                     cdetail.LastModificationTime = DateTime.Now;
-                    cdetail.LastModifierUserId = creqmodel.LastModifierUserId;
+                    cdetail.LastModifierUserId = CommonConstants.LoggedInUser;
                     cdetail.IsPublished = creqmodel.IsPublished;
                     cdetail.DomainName = creqmodel.DomainName;
                     cdetail.PrimaryMobile = creqmodel.PrimaryMobile;
@@ -328,6 +329,7 @@ namespace ApplicationService.Services
             {
                 cdetail.IsDeleted = true;
                 cdetail.DeletionTime = DateTime.Now;
+                cdetail.DeleterUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 gobj = new GetResults()
                 {
@@ -486,7 +488,8 @@ namespace ApplicationService.Services
                     BrandId = cbModel.BrandId,
                     IsPublished = cbModel.IsPublished,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = cbModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser,
+                    IsDeleted = false
                 };
                 _dbContext.CompanyBrand.Add(cc);
                 _dbContext.SaveChanges();
@@ -516,6 +519,7 @@ namespace ApplicationService.Services
             {
                 cbObj.IsDeleted = true;
                 cbObj.DeletionTime = DateTime.Now;
+                cbObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Brand Deleted.";
                 result.IsSuccess = true;
             }
@@ -615,7 +619,8 @@ namespace ApplicationService.Services
                     CategoryId = ccModel.CategoryId,
                     IsPublished = ccModel.IsPublished,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ccModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser,
+                    IsDeleted = false
                 };
                 _dbContext.CompanyCategory.Add(cc);
                 _dbContext.SaveChanges();
@@ -645,6 +650,7 @@ namespace ApplicationService.Services
             {
                 ccObj.IsDeleted = true;
                 ccObj.DeletionTime = DateTime.Now;
+                ccObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Category Deleted.";
                 result.IsSuccess = true;
             }
@@ -730,7 +736,7 @@ namespace ApplicationService.Services
                     IsPublished = cpModel.IsPublished,
                     HasOffers = cpModel.HasOffers,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = cpModel.CreatorUserId,
+                    CreatorUserId = CommonConstants.LoggedInUser,
                     Price = cpModel.Price,
                     OffersDescriptionEng = cpModel.OffersDescriptionEng,
                     OffersDescriptionArb = cpModel.OffersDescriptionArb,
@@ -740,7 +746,7 @@ namespace ApplicationService.Services
                     OfferShortDescriptionEng = cpModel.OfferShortDescriptionEng,
                     OfferShortDescriptionArb = cpModel.OfferShortDescriptionArb,
                     OldPrice = cpModel.OldPrice,
-
+                    IsDeleted = false
                 };
                 _dbContext.CompanyProduct.Add(cp);
                 _dbContext.SaveChanges();
@@ -767,7 +773,7 @@ namespace ApplicationService.Services
                 cpObj.IsPublished = cpModel.IsPublished;
                 cpObj.HasOffers = cpModel.HasOffers;
                 cpObj.LastModificationTime = DateTime.Now;
-                cpObj.LastModifierUserId = cpModel.LastModifierUserId;
+                cpObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 cpObj.Price = cpModel.Price;
                 cpObj.OffersDescriptionEng = cpModel.OffersDescriptionEng;
                 cpObj.OffersDescriptionArb = cpModel.OffersDescriptionArb;
@@ -797,6 +803,7 @@ namespace ApplicationService.Services
             {
                 cpObj.IsDeleted = true;
                 cpObj.DeletionTime = DateTime.Now;
+                cpObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Product Deleted.";
             }
             _dbContext.SaveChanges();
@@ -907,12 +914,12 @@ namespace ApplicationService.Services
                     OffersDescriptionEng = csModel.OffersDescriptionEng,
                     OffersDescriptionArb = csModel.OffersDescriptionArb,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId,
+                    CreatorUserId = CommonConstants.LoggedInUser,
                     OfferStartDate = csModel.OfferStartDate,
                     OfferEndDate = csModel.OfferEndDate,
                     OfferShortDescriptionEng = csModel.OfferShortDescriptionEng,
-                    OfferShortDescriptionArb = csModel.OfferShortDescriptionArb
-
+                    OfferShortDescriptionArb = csModel.OfferShortDescriptionArb,
+                    IsDeleted = false
                 };
                 _dbContext.CompanyService.Add(cs);
                 _dbContext.SaveChanges();
@@ -940,7 +947,7 @@ namespace ApplicationService.Services
                 csObj.OffersDescriptionEng = csModel.OffersDescriptionEng;
                 csObj.OffersDescriptionArb = csModel.OffersDescriptionArb;
                 csObj.LastModificationTime = csModel.LastModificationTime;
-                csObj.LastModifierUserId = csModel.LastModifierUserId;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 csObj.OfferStartDate = csModel.OfferStartDate;
                 csObj.OfferEndDate = csModel.OfferEndDate;
                 csObj.OfferShortDescriptionEng = csModel.OfferShortDescriptionEng;
@@ -965,6 +972,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Service Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1068,7 +1076,8 @@ namespace ApplicationService.Services
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser,
+                    
 
                 };
                 _dbContext.CompanyBanners.Add(cs);
@@ -1094,8 +1103,8 @@ namespace ApplicationService.Services
                 csObj.IsPublished = csModel.IsPublished;
                 csObj.SortOrder = csModel.SortOrder;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = csModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
 
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
@@ -1116,6 +1125,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Banner Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1202,7 +1212,7 @@ namespace ApplicationService.Services
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyGalleryAttachment.Add(cs);
@@ -1227,8 +1237,8 @@ namespace ApplicationService.Services
                 csObj.IsPublished = csModel.IsPublished;
                 csObj.SortOrder = csModel.SortOrder;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = csModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Gallery Updated.";
@@ -1245,6 +1255,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Gallery Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1616,7 +1627,7 @@ namespace ApplicationService.Services
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyOffers.Add(cs);
@@ -1643,7 +1654,7 @@ namespace ApplicationService.Services
                 csObj.SortOrder = csModel.SortOrder;
                 csObj.IsDeleted = false;
                 csObj.LastModificationTime = DateTime.Now;
-                csObj.CreatorUserId = csModel.CreatorUserId;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company offer Updated.";
@@ -1660,6 +1671,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company offer Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1755,7 +1767,7 @@ namespace ApplicationService.Services
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyLinks.Add(cs);
@@ -1774,8 +1786,8 @@ namespace ApplicationService.Services
                 csObj.IsPublished = csModel.IsPublished;
                 csObj.SortOrder = csModel.SortOrder;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = csModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Links Updated.";
@@ -1792,6 +1804,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Links Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1905,6 +1918,7 @@ namespace ApplicationService.Services
                         Message = "Company Freelisting Rejected Successfully."
                     };
                 }
+                cdetail.LastModifierUserId = CommonConstants.LoggedInUser;
                 cdetail.LastModificationTime = DateTime.Now;
                 _dbContext.SaveChanges();
 
@@ -1928,6 +1942,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Freelisting Deleted.";
             }
             else
@@ -2032,7 +2047,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyTeams.Add(cs);
@@ -2051,8 +2066,8 @@ namespace ApplicationService.Services
                 csObj.ProfilePic = ctModel.ProfilePic;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 csObj.ProfilePic = string.Format(ctModel.ProfilePic, csObj.Id);
@@ -2072,6 +2087,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Team Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2147,7 +2163,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyAwards.Add(cs);
@@ -2166,8 +2182,8 @@ namespace ApplicationService.Services
                 csObj.AwardFile = ctModel.AwardFile;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 csObj.AwardFile = string.Format(ctModel.AwardFile, csObj.Id);
@@ -2187,6 +2203,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Award Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2262,7 +2279,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyAddress.Add(cs);
@@ -2282,8 +2299,8 @@ namespace ApplicationService.Services
                 csObj.RegionId = ctModel.RegionId;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Address Updated.";
@@ -2301,6 +2318,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Address Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2382,7 +2400,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyVideos.Add(cs);
@@ -2399,8 +2417,8 @@ namespace ApplicationService.Services
                 csObj.ArabicUrl = ctModel.ArabicUrl;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Video Updated.";
@@ -2417,6 +2435,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Video Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2493,7 +2512,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyNewsArticle.Add(cs);
@@ -2511,8 +2530,8 @@ namespace ApplicationService.Services
                 csObj.NewsUrl = ctModel.NewsUrl;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 csObj.NewsUrl = string.Format(ctModel.NewsUrl, csObj.Id);
@@ -2531,6 +2550,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company News Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2609,7 +2629,7 @@ namespace ApplicationService.Services
                     EventLocationUrl = ctModel.EventLocationUrl,
                     IsDeleted = false,
                     CreationTime =DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
                 };
                 _dbContext.CompanyEvents.Add(cs);
                 _dbContext.SaveChanges();
@@ -2634,8 +2654,8 @@ namespace ApplicationService.Services
                 csObj.EventTypeId = ctModel.EventTypeId;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 csObj.EventImage = string.Format(ctModel.EventImage, csObj.Id);
@@ -2655,6 +2675,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Event Deleted.";
             }
             _dbContext.SaveChanges();
