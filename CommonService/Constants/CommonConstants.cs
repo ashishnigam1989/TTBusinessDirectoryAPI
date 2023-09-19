@@ -7,7 +7,7 @@ namespace CommonService.Constants
 {
     public static class CommonConstants
     {
-        public static string FileTempPath = "C:/TempImages/";
+        public static string FileTempPath = "C:/TempImages";
         public static string CompanyLogo = "/Content/Company/{0}/Logo/";
         public static string CategoryIcon = "/Content/Category/{0}/Icon/";
         public static string BrandLogo = "/Content/Brand/{0}/Logo/";

@@ -90,9 +90,10 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     result = _company.CreateUpdateCompany(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.CompanyLogo, Convert.ToInt64(result.Data), reqmodel.Logo);
+                    
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.CompanyLogo, Convert.ToInt64(result.Data), reqmodel.Logo);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Index", "Company");
                     }
@@ -596,9 +597,9 @@ namespace TTBusinessAdminPanel.Controllers
                     var cid = Convert.ToInt32(ExtensionHelper.GetSession("CompanyMasterId"));
                     reqmodel.CompanyId = cid;
                     var result = _company.AddEditCompanyProduct(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.ProductLogo, Convert.ToInt64(result.Data), reqmodel.Image);
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.ProductLogo, Convert.ToInt64(result.Data), reqmodel.Image);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Product", "Company");
                     }
@@ -755,9 +756,10 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyService(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.ServiceLogo, Convert.ToInt64(result.Data), reqmodel.Image);
+                    
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.ServiceLogo, Convert.ToInt64(result.Data), reqmodel.Image);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Service", "Company");
                     }
@@ -911,10 +913,9 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyBanner(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.BannerEng, Convert.ToInt64(result.Data), reqmodel.ImageEng);
-                    //Helper.MoveFileToS3Server(EnumImageType.BannerArb, Convert.ToInt64(result.Data), reqmodel.ImageArb);
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.BannerEng, Convert.ToInt64(result.Data), reqmodel.ImageEng);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Banner", "Company");
                     }
@@ -1051,10 +1052,11 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyGallery(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.GalleryFile, Convert.ToInt64(result.Data), reqmodel.File);
-                    Helper.MoveFileToS3Server(EnumImageType.GalleryImage, Convert.ToInt64(result.Data), reqmodel.Image);
+                    
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.GalleryFile, Convert.ToInt64(result.Data), reqmodel.File);
+                        Helper.MoveFileToS3Server(EnumImageType.GalleryImage, Convert.ToInt64(result.Data), reqmodel.Image);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Gallery", "Company");
                     }
@@ -1192,9 +1194,10 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyoffers(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.OfferImage, Convert.ToInt64(result.Data), reqmodel.Image);
+                    
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.OfferImage, Convert.ToInt64(result.Data), reqmodel.Image);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Offer", "Company");
                     }
@@ -1584,10 +1587,11 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyTeam(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.TeamPicture, Convert.ToInt64(result.Data), reqmodel.ProfilePic);
+                    
 
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.TeamPicture, Convert.ToInt64(result.Data), reqmodel.ProfilePic);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("CompanyTeam", "Company");
                     }
@@ -1722,10 +1726,10 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyAwards(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.AwardFile, Convert.ToInt64(result.Data), reqmodel.AwardFile);
 
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.AwardFile, Convert.ToInt64(result.Data), reqmodel.AwardFile);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("CompanyAward", "Company");
                     }
@@ -2126,10 +2130,10 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyNewsArtical(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.NewsImage, Convert.ToInt64(result.Data), reqmodel.NewsUrl);
 
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.NewsImage, Convert.ToInt64(result.Data), reqmodel.NewsUrl);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("CompanyNews", "Company");
                     }
@@ -2259,10 +2263,10 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _company.AddEditCompanyEvent(reqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.NewsImage, Convert.ToInt64(result.Data), reqmodel.EventImage);
 
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.EventImage, Convert.ToInt64(result.Data), reqmodel.EventImage);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Event", "Company");
                     }

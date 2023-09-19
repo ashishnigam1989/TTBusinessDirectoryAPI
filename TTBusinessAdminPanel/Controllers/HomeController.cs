@@ -480,9 +480,10 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     result = _master.CreateUpdateCategory(rceqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.CategoryIcon, (long)result.Data, rceqmodel.Icon);
+                    
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.CategoryIcon, (long)result.Data, rceqmodel.Icon);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Category", "Home");
                     }
@@ -612,9 +613,10 @@ namespace TTBusinessAdminPanel.Controllers
                 if (ModelState.IsValid)
                 {
                     result = _master.AddUpdateBrand(breqmodel).Result;
-                    Helper.MoveFileToS3Server(EnumImageType.BrandLogo, Convert.ToInt64(result.Data), breqmodel.Logo);
+                    
                     if (result.IsSuccess)
                     {
+                        Helper.MoveFileToS3Server(EnumImageType.BrandLogo, Convert.ToInt64(result.Data), breqmodel.Logo);
                         _notyfService.Success(result.Message);
                         return RedirectToAction("Brand", "Home");
                     }
