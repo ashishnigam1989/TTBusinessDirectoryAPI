@@ -50,7 +50,7 @@ namespace TTBusinessAdminPanel.Controllers
         public IActionResult GetAllCompany()
         {
             try
-            {
+            { 
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
@@ -89,6 +89,7 @@ namespace TTBusinessAdminPanel.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    reqmodel.CreatorUserId = Helper._loginUserid;
                     result = _company.CreateUpdateCompany(reqmodel).Result;
                     
                     if (result.IsSuccess)

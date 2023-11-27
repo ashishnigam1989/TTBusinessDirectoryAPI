@@ -9,9 +9,10 @@ using NLog;
 using System;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using System.Collections.Generic;
-using TTBusinessAdminPanel.Extensions;
+using TTBusinessAdminPanel.Extensions; 
+using CommonService.Helpers; 
 using CommonService.Constants;
-using System.Diagnostics.Eventing.Reader;
+using System.Diagnostics.Eventing.Reader; 
 
 namespace TTBusinessAdminPanel.Controllers
 {
@@ -49,8 +50,10 @@ namespace TTBusinessAdminPanel.Controllers
                         claims.Add(new Claim(ClaimTypes.Email, user.EmailAddress));
                         claims.Add(new Claim(ClaimTypes.Role, user.RoleId.ToString()));
                         claims.Add(new Claim(ClaimTypes.PrimarySid, user.Id.ToString()));
-                        ExtensionHelper.SetUserSession(user);
-                        CommonConstants.LoggedInUser = user.Id;
+                        ExtensionHelper.SetUserSession(user); 
+                        Helper._loginUserid = user.Id;
+ 
+                        CommonConstants.LoggedInUser = user.Id; 
                         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);
                         HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);

@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using TTBusinessAdminPanel.Extensions;
 using TTBusinessAdminPanel.Models;
 
 namespace TTBusinessAdminPanel.Controllers
@@ -45,6 +46,7 @@ namespace TTBusinessAdminPanel.Controllers
         //Dashboard
         public IActionResult Index()
         {
+            
             return View();
         }
 

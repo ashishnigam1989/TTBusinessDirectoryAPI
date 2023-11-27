@@ -1,6 +1,7 @@
 ﻿using CommonService.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using NLog.Web.LayoutRenderers;
 using System;
 using System.Globalization;
 

@@ -15,6 +15,8 @@ namespace CommonService.Helpers
 {
     public static class Helper
     {
+        public static long _loginUserid { get; set; }
+
         private static readonly RegionEndpoint bucketRegion = RegionEndpoint.APSouth1;
        
         public static string MoveFileToS3Server(EnumImageType imageType,long UploadId,string tempImagePath)
