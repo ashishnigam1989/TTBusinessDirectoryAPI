@@ -10,6 +10,7 @@ using System;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using System.Collections.Generic;
 using TTBusinessAdminPanel.Extensions;
+using CommonService.Helpers;
 
 namespace TTBusinessAdminPanel.Controllers
 {
@@ -48,6 +49,7 @@ namespace TTBusinessAdminPanel.Controllers
                         claims.Add(new Claim(ClaimTypes.Role, user.RoleId.ToString()));
                         claims.Add(new Claim(ClaimTypes.PrimarySid, user.Id.ToString()));
                         ExtensionHelper.SetUserSession(user);
+                        Helper._loginUserid = user.Id;
 
                         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);
