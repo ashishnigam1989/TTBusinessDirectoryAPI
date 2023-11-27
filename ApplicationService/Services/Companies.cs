@@ -1,6 +1,7 @@
 using Amazon.S3;
 using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Constants;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using CommonService.ViewModels.Company;
@@ -32,7 +33,6 @@ namespace ApplicationService.Services
             int total = 0;
             List<CompanyModel> companylist = _dbContext.Company.Where(w =>
            (!string.IsNullOrEmpty(searchValue) ? w.NameEng.ToLower().Contains(searchValue.ToLower()) : w.NameEng == w.NameEng ||
-            !string.IsNullOrEmpty(searchValue) ? w.NameArb.ToLower().Contains(searchValue.ToLower()) : w.NameArb == w.NameArb ||
             !string.IsNullOrEmpty(searchValue) ? w.PrimaryEmail.ToLower().Contains(searchValue.ToLower()) : w.PrimaryEmail == w.PrimaryEmail ||
             !string.IsNullOrEmpty(searchValue) ? w.PrimaryPhone.ToLower().Contains(searchValue.ToLower()) : w.PrimaryPhone == w.PrimaryPhone) && w.IsDeleted == false
             ).Select(s => new CompanyModel
@@ -44,6 +44,8 @@ namespace ApplicationService.Services
                 IsVerified = s.IsVerified,
                 id = s.Id,
                 Logo = s.Logo
+                //Logo = !string.IsNullOrEmpty(s.Logo) ? s.Logo.StartsWith('/') ? s.Logo : string.Concat('/', s.Logo) : null,
+
             }).Distinct().OrderByDescending(o => o.id).Skip(limit * page).Take(limit).ToListAsync().Result;
 
             total = _dbContext.Company.Where(w => w.IsDeleted == false).Where(w =>
@@ -190,7 +192,7 @@ namespace ApplicationService.Services
                         ThemeColor = creqmodel.ThemeColor,
                         IsDeleted = false,
                         CreationTime = DateTime.Now,
-                        CreatorUserId = creqmodel.CreatorUserId,
+                        CreatorUserId = CommonConstants.LoggedInUser,
                         IsPublished = creqmodel.IsPublished,
                         DomainName = creqmodel.DomainName,
                         PrimaryMobile = creqmodel.PrimaryMobile,
@@ -204,7 +206,7 @@ namespace ApplicationService.Services
                         IsVerified = creqmodel.IsVerified,
                         DistrictId = creqmodel.DistrictId,
                         CountryId = creqmodel.CountryId,
-
+                        
 
                     };
                     _dbContext.Company.Add(cobj);
@@ -274,7 +276,7 @@ namespace ApplicationService.Services
                     cdetail.ThemeColor = creqmodel.ThemeColor;
                     cdetail.IsDeleted = false;
                     cdetail.LastModificationTime = DateTime.Now;
-                    cdetail.LastModifierUserId = creqmodel.LastModifierUserId;
+                    cdetail.LastModifierUserId = CommonConstants.LoggedInUser;
                     cdetail.IsPublished = creqmodel.IsPublished;
                     cdetail.DomainName = creqmodel.DomainName;
                     cdetail.PrimaryMobile = creqmodel.PrimaryMobile;
@@ -327,6 +329,7 @@ namespace ApplicationService.Services
             {
                 cdetail.IsDeleted = true;
                 cdetail.DeletionTime = DateTime.Now;
+                cdetail.DeleterUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 gobj = new GetResults()
                 {
@@ -485,7 +488,8 @@ namespace ApplicationService.Services
                     BrandId = cbModel.BrandId,
                     IsPublished = cbModel.IsPublished,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = cbModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser,
+                    IsDeleted = false
                 };
                 _dbContext.CompanyBrand.Add(cc);
                 _dbContext.SaveChanges();
@@ -515,6 +519,7 @@ namespace ApplicationService.Services
             {
                 cbObj.IsDeleted = true;
                 cbObj.DeletionTime = DateTime.Now;
+                cbObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Brand Deleted.";
                 result.IsSuccess = true;
             }
@@ -614,7 +619,8 @@ namespace ApplicationService.Services
                     CategoryId = ccModel.CategoryId,
                     IsPublished = ccModel.IsPublished,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ccModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser,
+                    IsDeleted = false
                 };
                 _dbContext.CompanyCategory.Add(cc);
                 _dbContext.SaveChanges();
@@ -644,6 +650,7 @@ namespace ApplicationService.Services
             {
                 ccObj.IsDeleted = true;
                 ccObj.DeletionTime = DateTime.Now;
+                ccObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Category Deleted.";
                 result.IsSuccess = true;
             }
@@ -729,7 +736,7 @@ namespace ApplicationService.Services
                     IsPublished = cpModel.IsPublished,
                     HasOffers = cpModel.HasOffers,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = cpModel.CreatorUserId,
+                    CreatorUserId = CommonConstants.LoggedInUser,
                     Price = cpModel.Price,
                     OffersDescriptionEng = cpModel.OffersDescriptionEng,
                     OffersDescriptionArb = cpModel.OffersDescriptionArb,
@@ -739,7 +746,7 @@ namespace ApplicationService.Services
                     OfferShortDescriptionEng = cpModel.OfferShortDescriptionEng,
                     OfferShortDescriptionArb = cpModel.OfferShortDescriptionArb,
                     OldPrice = cpModel.OldPrice,
-
+                    IsDeleted = false
                 };
                 _dbContext.CompanyProduct.Add(cp);
                 _dbContext.SaveChanges();
@@ -766,7 +773,7 @@ namespace ApplicationService.Services
                 cpObj.IsPublished = cpModel.IsPublished;
                 cpObj.HasOffers = cpModel.HasOffers;
                 cpObj.LastModificationTime = DateTime.Now;
-                cpObj.LastModifierUserId = cpModel.LastModifierUserId;
+                cpObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 cpObj.Price = cpModel.Price;
                 cpObj.OffersDescriptionEng = cpModel.OffersDescriptionEng;
                 cpObj.OffersDescriptionArb = cpModel.OffersDescriptionArb;
@@ -796,6 +803,7 @@ namespace ApplicationService.Services
             {
                 cpObj.IsDeleted = true;
                 cpObj.DeletionTime = DateTime.Now;
+                cpObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Product Deleted.";
             }
             _dbContext.SaveChanges();
@@ -906,12 +914,12 @@ namespace ApplicationService.Services
                     OffersDescriptionEng = csModel.OffersDescriptionEng,
                     OffersDescriptionArb = csModel.OffersDescriptionArb,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId,
+                    CreatorUserId = CommonConstants.LoggedInUser,
                     OfferStartDate = csModel.OfferStartDate,
                     OfferEndDate = csModel.OfferEndDate,
                     OfferShortDescriptionEng = csModel.OfferShortDescriptionEng,
-                    OfferShortDescriptionArb = csModel.OfferShortDescriptionArb
-
+                    OfferShortDescriptionArb = csModel.OfferShortDescriptionArb,
+                    IsDeleted = false
                 };
                 _dbContext.CompanyService.Add(cs);
                 _dbContext.SaveChanges();
@@ -939,7 +947,7 @@ namespace ApplicationService.Services
                 csObj.OffersDescriptionEng = csModel.OffersDescriptionEng;
                 csObj.OffersDescriptionArb = csModel.OffersDescriptionArb;
                 csObj.LastModificationTime = csModel.LastModificationTime;
-                csObj.LastModifierUserId = csModel.LastModifierUserId;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 csObj.OfferStartDate = csModel.OfferStartDate;
                 csObj.OfferEndDate = csModel.OfferEndDate;
                 csObj.OfferShortDescriptionEng = csModel.OfferShortDescriptionEng;
@@ -964,6 +972,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Service Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1067,7 +1076,8 @@ namespace ApplicationService.Services
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser,
+                    
 
                 };
                 _dbContext.CompanyBanners.Add(cs);
@@ -1093,8 +1103,8 @@ namespace ApplicationService.Services
                 csObj.IsPublished = csModel.IsPublished;
                 csObj.SortOrder = csModel.SortOrder;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = csModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
 
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
@@ -1115,6 +1125,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Banner Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1201,7 +1212,7 @@ namespace ApplicationService.Services
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyGalleryAttachment.Add(cs);
@@ -1226,8 +1237,8 @@ namespace ApplicationService.Services
                 csObj.IsPublished = csModel.IsPublished;
                 csObj.SortOrder = csModel.SortOrder;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = csModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Gallery Updated.";
@@ -1244,6 +1255,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Gallery Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1325,7 +1337,7 @@ namespace ApplicationService.Services
         }
         #endregion
 
-        public async Task<GetResults> GetCompanyDetailsById(long companyId)
+        public async Task<GetResults> GetCompanyDetailsById(long companyId, int limit = 20)
         {
             GetResults result = new GetResults { IsSuccess = true };
             CompanyDetailModel companyDetailModel =
@@ -1355,25 +1367,29 @@ namespace ApplicationService.Services
             companyDetailModel.CompanyProducts = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId && !c.IsDeleted)
                 .Select(c => new CompanyProductViewModel
                 {
-                    CompanyId = c.Id,
+                    CompanyId = c.CompanyId,
                     NameEng = c.NameEng,
                     DescriptionEng = c.DescriptionEng,
                     ShortDescriptionEng = c.ShortDescriptionEng,
                     Price = c.Price,
-                    Image = c.Image
-                }).ToListAsync();
+                    Image = c.Image,
+                    WarrantyEng = c.WarrantyEng,
+                    OldPrice = c.OldPrice,
+                    PartNumber = c.PartNumber,
+                    Id = c.Id,
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyServices = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId && !c.IsDeleted)
                 .Select(c => new CompanyServiceViewModel
                 {
                     Id = c.Id,
-                    CompanyId = c.Id,
+                    CompanyId = c.CompanyId,
                     NameEng = c.NameEng,
                     DescriptionEng = c.DescriptionEng,
                     ShortDescriptionEng = c.ShortDescriptionEng,
                     Price = c.Price,
                     Image = c.Image
-                }).ToListAsync();
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyVideos = await _dbContext.CompanyVideos.Where(c => c.CompanyId == companyId && !c.IsDeleted)
                 .Select(c => new CompanyVideoViewModel
@@ -1384,7 +1400,7 @@ namespace ApplicationService.Services
                     ArabicUrl = c.ArabicUrl,
                     EnglishUrl = c.EnglishUrl,
                     SortOrder = c.SortOrder,
-                }).ToListAsync();
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyTeams = await _dbContext.CompanyTeams.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
                 .Select(c => new CompanyTeamViewModel
@@ -1394,7 +1410,7 @@ namespace ApplicationService.Services
                     Designation = c.Designation,
                     FullName = c.FullName,
                     ProfilePic = c.ProfilePic,
-                }).ToListAsync();
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyTags = await _dbContext.CompanyTags.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
               .Select(c => new CompanyTagViewModel
@@ -1402,7 +1418,7 @@ namespace ApplicationService.Services
                   Id = c.Id,
                   CompanyId = c.CompanyId,
                   TagName = c.TagName,
-              }).ToListAsync();
+              }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyAddresses = await _dbContext.CompanyAddress.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
                 .Select(c => new CompanyAddressViewModel
@@ -1415,7 +1431,7 @@ namespace ApplicationService.Services
                     GoogleLocation = c.GoogleLocation,
                     RegionId = c.RegionId,
                     Website = c.Website
-                }).ToListAsync();
+                }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyEvents = await _dbContext.CompanyEvents
                 .Join(_dbContext.EventType, ev => ev.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new { ev, evmy })
@@ -1435,7 +1451,7 @@ namespace ApplicationService.Services
                     StartDate = c.ev.StartDate,
                     StartTime = c.ev.StartTime,
                     EventType = c.evmy.EventTypeDesc
-                }).OrderByDescending(o => o.StartDate).ToListAsync();
+                }).OrderByDescending(o => o.StartDate).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyBanners = await _dbContext.CompanyBanners.Where(c => c.CompanyId == companyId && !c.IsDeleted)
               .Select(c => new CompanyBannerViewModel
@@ -1449,7 +1465,7 @@ namespace ApplicationService.Services
                   EnglishUrl = c.EnglishUrl,
                   Target = c.Target,
                   SortOrder = c.SortOrder,
-              }).ToListAsync();
+              }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyNewsArticles = await _dbContext.CompanyNewsArticle.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
                 .Select(c => new CompanyNewsArticleViewModel
@@ -1460,7 +1476,7 @@ namespace ApplicationService.Services
                     NewsDesc = c.NewsDesc,
                     NewsTitle = c.NewsTitle,
                     NewsUrl = c.NewsUrl
-                }).OrderByDescending(c => c.CreationTime).ToListAsync();
+                }).OrderByDescending(c => c.CreationTime).Take(limit).ToListAsync();
 
             companyDetailModel.CompanyAwards = await _dbContext.CompanyAwards.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
                .Select(c => new CompanyAwardsViewModel
@@ -1470,12 +1486,119 @@ namespace ApplicationService.Services
                    AwardDesc = c.AwardDesc,
                    AwardFile = c.AwardFile,
                    AwardTitle = c.AwardTitle
-               }).ToListAsync();
+               }).OrderBy(p => p.Id).Take(limit).ToListAsync();
 
 
             result.Data = companyDetailModel;
             result.Total = 1;
             return result;
+        }
+
+        public async Task<GetResults> GetProductsByCompanyId(long companyId, int skip, int limit)
+        {
+            GetResults result = new GetResults { Message = "Company Product List." };
+            result.Data = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId && !c.IsDeleted)
+                .Select(c => new CompanyProductViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    NameEng = c.NameEng,
+                    DescriptionEng = c.DescriptionEng,
+                    ShortDescriptionEng = c.ShortDescriptionEng,
+                    Price = c.Price,
+                    Image = c.Image,
+                    HasOffers= c.HasOffers,
+                    WarrantyEng = c.WarrantyEng,
+                    OldPrice= c.OldPrice,
+                    PartNumber = c.PartNumber,
+                })
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+            result.IsSuccess = true;
+            result.Total = await _dbContext.CompanyProduct.Where(c => c.CompanyId == companyId && !c.IsDeleted).CountAsync();
+            return await Task.FromResult(result);
+        }
+
+        public async Task<GetResults> GetServicesByCompanyId(long companyId, int skip, int limit)
+        {
+            GetResults result = new GetResults { Message = "Company Service List." };
+            result.Data = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId && !c.IsDeleted)
+                .Select(c => new CompanyServiceViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    NameEng = c.NameEng,
+                    DescriptionEng = c.DescriptionEng,
+                    ShortDescriptionEng = c.ShortDescriptionEng,
+                    Price = c.Price,
+                    Image = c.Image,
+                    HasOffers = c.HasOffers,
+                    OldPrice = c.OldPrice,
+                })
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+            result.IsSuccess = true;
+            result.Total = await _dbContext.CompanyService.Where(c => c.CompanyId == companyId && !c.IsDeleted).CountAsync();
+            return await Task.FromResult(result);
+        }
+
+        public async Task<GetResults> GetCompanyNewsArticles(long companyId, int skip, int limit)
+        {
+            GetResults result = new GetResults { Message = "Company Service List." };
+            result.Data = await _dbContext.CompanyNewsArticle.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value))
+                .Select(c => new CompanyNewsArticleViewModel
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    NewsDesc = c.NewsDesc,
+                    NewsTitle = c.NewsTitle,
+                    NewsUrl= c.NewsUrl
+                })
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+            result.IsSuccess = true;
+            result.Total = await _dbContext.CompanyNewsArticle.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value)).CountAsync();
+            return await Task.FromResult(result);
+        }
+
+        public async Task<GetResults> GetCompanyEvents(long companyId, int skip, int limit)
+        {
+            GetResults result = new GetResults { Message = "Company Service List." };
+            result.Data = await _dbContext.CompanyEvents
+                .Join(_dbContext.EventType, ev => ev.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new { ev, evmy })
+                .Where(c => c.ev.CompanyId == companyId && (!c.ev.IsDeleted.HasValue || !c.ev.IsDeleted.Value))
+                .Select(c => new CompanyEventViewModel
+                {
+                    Id = c.ev.Id,
+                    CompanyId = c.ev.CompanyId,
+                    StartDate = c.ev.StartDate,
+                    StartTime= c.ev.StartTime,
+                    EndDate= c.ev.EndDate, 
+                    EndTime= c.ev.EndTime,
+                    EventDesc= c.ev.EventDesc,
+                    EventImage= c.ev.EventImage,
+                    EventTitle= c.ev.EventTitle,
+                    EventUrl= c.ev.EventUrl,
+                    EventLocationUrl= c.ev.EventLocationUrl,
+                    EventType= c.evmy.EventTypeDesc
+                })
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+            result.IsSuccess = true;
+            result.Total = await _dbContext.CompanyEvents.Where(c => c.CompanyId == companyId && (!c.IsDeleted.HasValue || !c.IsDeleted.Value)).CountAsync();
+            return await Task.FromResult(result);
         }
 
         #region CompanyOffers
@@ -1504,7 +1627,7 @@ namespace ApplicationService.Services
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyOffers.Add(cs);
@@ -1531,7 +1654,7 @@ namespace ApplicationService.Services
                 csObj.SortOrder = csModel.SortOrder;
                 csObj.IsDeleted = false;
                 csObj.LastModificationTime = DateTime.Now;
-                csObj.CreatorUserId = csModel.CreatorUserId;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company offer Updated.";
@@ -1548,6 +1671,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company offer Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1643,7 +1767,7 @@ namespace ApplicationService.Services
                     SortOrder = csModel.SortOrder,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = csModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyLinks.Add(cs);
@@ -1662,8 +1786,8 @@ namespace ApplicationService.Services
                 csObj.IsPublished = csModel.IsPublished;
                 csObj.SortOrder = csModel.SortOrder;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = csModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Links Updated.";
@@ -1680,6 +1804,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Links Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1793,6 +1918,7 @@ namespace ApplicationService.Services
                         Message = "Company Freelisting Rejected Successfully."
                     };
                 }
+                cdetail.LastModifierUserId = CommonConstants.LoggedInUser;
                 cdetail.LastModificationTime = DateTime.Now;
                 _dbContext.SaveChanges();
 
@@ -1816,6 +1942,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Freelisting Deleted.";
             }
             else
@@ -1853,6 +1980,55 @@ namespace ApplicationService.Services
 
         }
 
+        public async Task<GetResults> GetFreeListing(int id)
+        {
+            var result = new GetResults();
+            var fDetail = _dbContext.FreeListing.Where(w => w.Id == id && !w.IsDeleted)
+                .Select(s => new FreeListingModel
+                {
+                    Id = s.Id,
+                    CompanyAddress = s.CompanyAddress,
+                    CompanyName = s.CompanyName,
+                    CompanyPhone = s.CompanyPhone,
+                    CountryId = s.CountryId,
+                    CreatorUserId = s.CreatorUserId,
+                    DistrictId = s.DistrictId,
+                    EmployeeNumber = s.EmployeeNum,
+                    FoundedYear = s.FoundedYear.ToString(),
+                    FounderName = s.FounderName,
+                    Logo = s.Logo,
+                    Pobox = s.Pobox,
+                    PrimaryEmail = s.PrimaryEmail,
+                    PrimaryWebsite = s.PrimaryWebsite,
+                    RegionId = s.RegionId
+
+                }).FirstOrDefault();
+
+            var products = await _dbContext.FreeListingDetails
+                .Join(_dbContext.Category, f => f.CategoryId, c => c.Id, (f, c) => new { f, c })
+                .DefaultIfEmpty()
+                .Where(d => d.f.FreeListingId.Equals(fDetail.Id))
+                .Select(p =>  new FreeListingDetailsModel
+                {
+                    Id= p.f.Id,
+                    Category = p.c.NameEng,
+                    CategoryId = p.f.CategoryId.ToString(),
+                    RelatedProduct = p.f.RelatedProduct,
+                    RelatedService = p.f.RelatedService,
+                    Brand = p.f.Brand,
+                    CreatorUserId = p.f.CreatorUserId,
+                })
+                .ToListAsync();
+
+            fDetail.FreeListingProductDetails = products;
+            result.IsSuccess = true;
+            result.Message = "Free Listing Detail";
+            result.Data = fDetail;
+            result.Total = 1;
+            return await Task.FromResult(result);
+
+        }
+
         #endregion
         #region CompanyTeam
         public async Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel)
@@ -1871,7 +2047,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyTeams.Add(cs);
@@ -1890,8 +2066,8 @@ namespace ApplicationService.Services
                 csObj.ProfilePic = ctModel.ProfilePic;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 csObj.ProfilePic = string.Format(ctModel.ProfilePic, csObj.Id);
@@ -1911,6 +2087,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Team Deleted.";
             }
             _dbContext.SaveChanges();
@@ -1986,7 +2163,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyAwards.Add(cs);
@@ -2005,8 +2182,8 @@ namespace ApplicationService.Services
                 csObj.AwardFile = ctModel.AwardFile;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 csObj.AwardFile = string.Format(ctModel.AwardFile, csObj.Id);
@@ -2026,6 +2203,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Award Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2101,7 +2279,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyAddress.Add(cs);
@@ -2121,8 +2299,8 @@ namespace ApplicationService.Services
                 csObj.RegionId = ctModel.RegionId;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Address Updated.";
@@ -2140,6 +2318,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Address Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2221,7 +2400,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyVideos.Add(cs);
@@ -2238,8 +2417,8 @@ namespace ApplicationService.Services
                 csObj.ArabicUrl = ctModel.ArabicUrl;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 result.Message = "Company Video Updated.";
@@ -2256,6 +2435,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Video Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2332,7 +2512,7 @@ namespace ApplicationService.Services
                     IsPublished = ctModel.IsPublished,
                     IsDeleted = false,
                     CreationTime = DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
 
                 };
                 _dbContext.CompanyNewsArticle.Add(cs);
@@ -2350,8 +2530,8 @@ namespace ApplicationService.Services
                 csObj.NewsUrl = ctModel.NewsUrl;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 csObj.NewsUrl = string.Format(ctModel.NewsUrl, csObj.Id);
@@ -2370,6 +2550,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company News Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2404,7 +2585,7 @@ namespace ApplicationService.Services
         public async Task<GetResults> GetCompanyNewsArticleById(int id)
         {
             GetResults result = new GetResults();
-            var cb = _dbContext.CompanyNewsArticle.Join(_dbContext.Company, a => a.CompanyId, c => c.Id, (a, c) => new {a,c}).Where(w => w.a.Id == id && w.a.IsDeleted == false)
+            var cb = _dbContext.CompanyNewsArticle.Join(_dbContext.Company, a => a.CompanyId, c => c.Id, (a, c) => new {a,c}).Where(w => w.a.Id == id && (!w.a.IsDeleted.HasValue || !w.a.IsDeleted.Value))
                                                    .Select(s => new CompanyNewsArticleViewModel
                                                    {
                                                        Id = s.a.Id,
@@ -2413,7 +2594,8 @@ namespace ApplicationService.Services
                                                        NewsDesc = s.a.NewsDesc,
                                                        NewsUrl = s.a.NewsUrl,
                                                        IsPublished = s.a.IsPublished,
-                                                       CompanyName=s.c.NameEng
+                                                       CompanyName=s.c.NameEng,
+                                                       CreationTime = s.a.CreationTime
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company News Found.";
@@ -2447,7 +2629,7 @@ namespace ApplicationService.Services
                     EventLocationUrl = ctModel.EventLocationUrl,
                     IsDeleted = false,
                     CreationTime =DateTime.Now,
-                    CreatorUserId = ctModel.CreatorUserId
+                    CreatorUserId = CommonConstants.LoggedInUser
                 };
                 _dbContext.CompanyEvents.Add(cs);
                 _dbContext.SaveChanges();
@@ -2472,8 +2654,8 @@ namespace ApplicationService.Services
                 csObj.EventTypeId = ctModel.EventTypeId;
                 csObj.IsPublished = ctModel.IsPublished;
                 csObj.IsDeleted = false;
-                csObj.CreationTime = DateTime.Now;
-                csObj.CreatorUserId = ctModel.CreatorUserId;
+                csObj.LastModificationTime = DateTime.Now;
+                csObj.LastModifierUserId = CommonConstants.LoggedInUser;
                 _dbContext.SaveChanges();
                 result.Data = csObj.Id;
                 csObj.EventImage = string.Format(ctModel.EventImage, csObj.Id);
@@ -2493,6 +2675,7 @@ namespace ApplicationService.Services
             {
                 csObj.IsDeleted = true;
                 csObj.DeletionTime = DateTime.Now;
+                csObj.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Company Event Deleted.";
             }
             _dbContext.SaveChanges();
@@ -2532,23 +2715,26 @@ namespace ApplicationService.Services
         public async Task<GetResults> GetCompanyEventById(int id)
         {
             GetResults result = new GetResults();
-            var cb = _dbContext.CompanyEvents.Join(_dbContext.Company, a => a.CompanyId, c => c.Id, (a, c) => new { a, c }).Where(w => w.a.Id == id && (w.a.IsDeleted==null || w.a.IsDeleted == false))
+            var cb = _dbContext.CompanyEvents.Join(_dbContext.Company, a => a.CompanyId, c => c.Id, (a, c) => new { a, c })
+                .Join(_dbContext.EventType, ev => ev.a.EventTypeId, evmy => evmy.EventTypeId, (ev, evmy) => new { ev, evmy })
+                .Where(w => w.ev.a.Id == id && (w.ev.a.IsDeleted==null || w.ev.a.IsDeleted == false))
                                                    .Select(s => new CompanyEventViewModel
                                                    {
-                                                       Id = s.a.Id,
-                                                       CompanyId = s.a.CompanyId,
-                                                       EventTitle = s.a.EventTitle,
-                                                       EventDesc = s.a.EventDesc,
-                                                       EventImage = s.a.EventImage,
-                                                       StartDate = s.a.StartDate,
-                                                       StartTime = s.a.StartTime,
-                                                       EndDate = s.a.EndDate,
-                                                       EndTime = s.a.EndTime,
-                                                       EventUrl = s.a.EventUrl,
-                                                       EventLocationUrl = s.a.EventLocationUrl,
-                                                       EventTypeId = s.a.EventTypeId,
-                                                       CompanyName=s.c.NameEng,
-                                                       IsPublished = s.a.IsPublished.HasValue ? true : false,
+                                                       Id = s.ev.a.Id,
+                                                       CompanyId = s.ev.a.CompanyId,
+                                                       EventTitle = s.ev.a.EventTitle,
+                                                       EventDesc = s.ev.a.EventDesc,
+                                                       EventImage = s.ev.a.EventImage,
+                                                       StartDate = s.ev.a.StartDate,
+                                                       StartTime = s.ev.a.StartTime,
+                                                       EndDate = s.ev.a.EndDate,
+                                                       EndTime = s.ev.a.EndTime,
+                                                       EventUrl = s.ev.a.EventUrl,
+                                                       EventLocationUrl = s.ev.a.EventLocationUrl,
+                                                       EventTypeId = s.ev.a.EventTypeId,
+                                                       CompanyName= s.ev.c.NameEng,
+                                                       EventType = s.evmy.EventTypeDesc,
+                                                       IsPublished = s.ev.a.IsPublished.HasValue ? true : false,
                                                    }).FirstOrDefaultAsync().Result;
             result.IsSuccess = true;
             result.Message = "Company Event Found.";

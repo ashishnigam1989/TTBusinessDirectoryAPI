@@ -22,6 +22,7 @@ using TTBusinessDirectoryAPI.Models;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using CommonService.Helpers;
 
 namespace TTBusinessDirectoryAPI
 {
@@ -37,7 +38,7 @@ namespace TTBusinessDirectoryAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BusinessDirectoryDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("dbConnection")));
+            services.AddDbContext<BusinessDirectoryDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors(options =>
             {
                 options.AddPolicy(
@@ -160,6 +161,7 @@ namespace TTBusinessDirectoryAPI
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            AccessAppSettings.Initialize(Configuration);
 
             app.UseEndpoints(endpoints =>
             {

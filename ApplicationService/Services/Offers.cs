@@ -1,5 +1,6 @@
 ﻿using ApplicationService.IServices;
 using AutoMapper;
+using CommonService.Constants;
 using CommonService.RequestModel;
 using CommonService.ViewModels;
 using DatabaseService.DbEntities;
@@ -111,13 +112,13 @@ namespace ApplicationService.Services
                         OfferStartDate = oreqmodel.OfferStartDate,
                         OfferEndDate = oreqmodel.OfferEndDate,
                         SortOrder = oreqmodel.SortOrder,
-                        IsDeleted = oreqmodel.IsDeleted,
-                        DeleterUserId = oreqmodel.DeleterUserId,
-                        DeletionTime = oreqmodel.DeletionTime,
-                        LastModificationTime = oreqmodel.LastModificationTime,
-                        LastModifierUserId = oreqmodel.LastModifierUserId,
+                        IsDeleted = false,
+                        //DeleterUserId = oreqmodel.DeleterUserId,
+                        //DeletionTime = oreqmodel.DeletionTime,
+                        //LastModificationTime = oreqmodel.LastModificationTime,
+                        //LastModifierUserId = oreqmodel.LastModifierUserId,
                         CreationTime = oreqmodel.CreationTime,
-                        CreatorUserId = oreqmodel.CreatorUserId,
+                        CreatorUserId = CommonConstants.LoggedInUser,
                         IsPublished = oreqmodel.IsPublished,
                         Image = oreqmodel.Image
                     };
@@ -140,13 +141,13 @@ namespace ApplicationService.Services
                     offerobj.OfferStartDate = oreqmodel.OfferStartDate;
                     offerobj.OfferEndDate = oreqmodel.OfferEndDate;
                     offerobj.SortOrder = oreqmodel.SortOrder;
-                    offerobj.IsDeleted = oreqmodel.IsDeleted;
-                    offerobj.DeleterUserId = oreqmodel.DeleterUserId;
-                    offerobj.DeletionTime = oreqmodel.DeletionTime;
+                    offerobj.IsDeleted = false;
+                    //offerobj.DeleterUserId = oreqmodel.DeleterUserId;
+                    //offerobj.DeletionTime = oreqmodel.DeletionTime;
                     offerobj.LastModificationTime = oreqmodel.LastModificationTime;
-                    offerobj.LastModifierUserId = oreqmodel.LastModifierUserId;
-                    offerobj.CreationTime = oreqmodel.CreationTime;
-                    offerobj.CreatorUserId = oreqmodel.CreatorUserId;
+                    offerobj.LastModifierUserId = CommonConstants.LoggedInUser;
+                    //offerobj.CreationTime = oreqmodel.CreationTime;
+                    //offerobj.CreatorUserId = oreqmodel.CreatorUserId;
                     offerobj.IsPublished = oreqmodel.IsPublished;
                     offerobj.Image = oreqmodel.Image;
 
@@ -174,6 +175,7 @@ namespace ApplicationService.Services
             {
                 offer.IsDeleted = true;
                 offer.DeletionTime = DateTime.Now;
+                offer.DeleterUserId = CommonConstants.LoggedInUser;
                 result.Message = "Offer deleted";
             }
             else

@@ -55,7 +55,7 @@ namespace ApplicationService.IServices
 
         Task<GetResults> GetAllKeywords();
 
-        Task<GetResults> GetCompanyDetailsById(long companyId);
+        Task<GetResults> GetCompanyDetailsById(long companyId, int limit = 20);
 
         Task<GetResults> AddEditCompanyoffers(CompanyOffersRequestModel csModel);
         Task<GetResults> DeleteCompanyOffer(int Id);
@@ -72,6 +72,7 @@ namespace ApplicationService.IServices
         Task<GetResults> ApproveRejectFreeListingCompany(int id);
         Task<GetResults> DeleteFreeListing(int Id);
         Task<GetResults> GetFreeListingDetails(int id);
+        Task<GetResults> GetFreeListing(int id);
 
         Task<GetResults> AddEditCompanyTeam(CompanyTeamRequestModel ctModel);
         Task<GetResults> DeleteCompanyTeam(int Id);
@@ -110,5 +111,10 @@ namespace ApplicationService.IServices
 
 
         Task<GetResults> SearchCompany(string searchValue);
+        Task<GetResults> GetProductsByCompanyId(long companyId, int skip, int limit);
+        Task<GetResults> GetServicesByCompanyId(long companyId, int skip, int limit);
+        Task<GetResults> GetCompanyEvents(long companyId, int skip, int limit);
+
+        Task<GetResults> GetCompanyNewsArticles(long companyId, int skip, int limit);
     }
 }

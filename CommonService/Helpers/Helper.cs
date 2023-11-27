@@ -27,7 +27,7 @@ namespace CommonService.Helpers
                 tempImagePath = CommonConstants.FileTempPath + tempImagePath;
                 if (File.Exists(tempImagePath))
                 {
-                    string movingImagePath =string.Format( GetFileUploadDetails(imageType),UploadId);
+                    string movingImagePath =string.Format( GetFileUploadDetails(imageType),UploadId).Replace("/Content", "Content");
                     string fileName = Path.GetFileName(tempImagePath);
                     finalPath = string.Concat(movingImagePath, fileName);
                     UploadToS3(tempImagePath, movingImagePath, fileName);
@@ -109,6 +109,9 @@ namespace CommonService.Helpers
                     break; 
                 case EnumImageType.EventImage:
                     uploadPath = CommonConstants.EventImage;
+                    break;
+                case EnumImageType.FreeListingLogo:
+                    uploadPath = CommonConstants.FreeListingImage;
                     break;
                 default:
                     uploadPath = string.Empty;
