@@ -478,9 +478,19 @@
     <!-- Main Content -->
     <section class="content home">
         <div class="container-fluid">
+            @{
+                var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+                var actionName = this.ViewContext.RouteData.Values["action"].ToString();
+                if (controllerName.ToLower()=="company" && actionName.ToLower()!="index")
+                {
+                    <partial name="_PremiumCompanyPartial.cshtml" />
+
+                }
+            }
+            
             @RenderBody()
 
-            <div class="row clearfix">
+            <div id="header" class="row clearfix">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="body">

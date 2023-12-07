@@ -15,6 +15,7 @@ namespace ApplicationService.IServices
         Task<bool> RoleMenuPermission(RoleMenuMapping _rModel);
         Task<UserModel> GetUserById(int userid);
         Task<bool> ApproveRejectUser(ChangeStatusModel uModel);
+        Task<bool> EnableDisableUser(EnableDisableModel uModel);
         Task<long> CreateUserForListing(UserRequestModel userRequest);
         Task<bool> CreateUserRole(UserRoleModel urModel);
         Task<bool> DeleteUser(int userid, int deletedby);

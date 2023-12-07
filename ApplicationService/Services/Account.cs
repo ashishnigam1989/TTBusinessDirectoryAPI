@@ -333,6 +333,20 @@ namespace ApplicationService.Services
             ischanged = true;
             return await Task.FromResult(ischanged);
         }
+
+        public async Task<bool> EnableDisableUser(EnableDisableModel uModel)
+        {
+            bool ischanged = false;
+            var uinfo = _dbContext.Users.Where(w => w.Id == uModel.UserId).FirstOrDefaultAsync().Result;
+            if (uinfo != null)
+            {
+                    uinfo.IsActive = uModel.IsEnabled;
+                
+            }
+            await _dbContext.SaveChangesAsync();
+            ischanged = true;
+            return await Task.FromResult(ischanged);
+        }
     }
 
 }

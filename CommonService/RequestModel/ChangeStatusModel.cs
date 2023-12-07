@@ -10,4 +10,9 @@ namespace CommonService.RequestModel
         public int Id { get; set; }
         public EnumStatus Status { get; set; }
     }
+    public class EnableDisableModel
+    {
+        public int UserId { get; set; }
+        public bool IsEnabled { get; set; }
+    }
 }
