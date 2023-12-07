@@ -294,5 +294,21 @@ namespace TTBusinessAdminPanel.Controllers
             }
             return Json(isupdated);
         }
+
+        [HttpPost]
+        public IActionResult EnableDisableUser(EnableDisableModel uModel)
+        {
+            bool isupdated = false;
+            try
+            {
+                isupdated = _account.EnableDisableUser(uModel).Result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+            return Json(isupdated);
+        }
+
     }
 }

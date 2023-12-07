@@ -123,6 +123,12 @@ namespace TTBusinessAdminPanel.Controllers
                 if (id > 0)
                 {
                     BindCountries();
+                    if (id > 0)
+                    {
+                        var cdetail = companydetail(id);
+                        ExtensionHelper.SetSession("Companyname", cdetail.NameEng);
+                        ExtensionHelper.SetSession("CompanyMasterId", Convert.ToString(id));
+                    }
                     var company = _company.GetCompanyById(id).Result;
                     cmodel = (CompanyRequestModel)company.Data;
                 }
@@ -649,20 +655,15 @@ namespace TTBusinessAdminPanel.Controllers
                         Image = s.Image,
                         SortOrder = s.SortOrder,
                         IsPublished = s.IsPublished.HasValue?s.IsPublished.Value:false,
-                        HasOffers = s.HasOffers.Value == true ? true : false,
+                        HasOffers = s.HasOffers.HasValue ? true : false,
                         IsDeleted = s.IsDeleted,
-                        DeleterUserId = s.DeleterUserId,
-                        DeletionTime = s.DeletionTime,
-                        LastModificationTime = s.LastModificationTime,
-                        LastModifierUserId = s.LastModifierUserId,
-                        CreationTime = s.CreationTime,
-                        CreatorUserId = s.CreatorUserId,
+                        
                         Price = s.Price,
                         OffersDescriptionEng = s.OffersDescriptionEng,
                         OffersDescriptionArb = s.OffersDescriptionArb,
-                        CountryId = s.CountryId,
-                        OfferStartDate = s.OfferStartDate,
-                        OfferEndDate = s.OfferEndDate,
+                        CountryId = s.CountryId.HasValue?s.CountryId.Value:0,
+                        OfferStartDate = s.OfferStartDate.HasValue?s.OfferStartDate.Value:DateTime.Now,
+                        OfferEndDate = s.OfferEndDate.HasValue ? s.OfferEndDate.Value : DateTime.Now,
                         OfferShortDescriptionEng = s.OfferShortDescriptionEng,
                         OfferShortDescriptionArb = s.OfferShortDescriptionArb,
                         OldPrice = s.OldPrice,
@@ -2422,6 +2423,11 @@ namespace TTBusinessAdminPanel.Controllers
                 ExtensionHelper.SetSession("CompanyMasterId", Convert.ToString(id));
             }
             return View("Index", "Company");
+        }
+
+        public IActionResult PremiumCompanyDashboard()
+        {
+            return View();
         }
     }
   
