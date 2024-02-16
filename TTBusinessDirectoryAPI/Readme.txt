@@ -17,8 +17,3 @@ Logger (Install-Package NLog.Extensions.Logging)
 Install-Package Swashbuckle.AspNetCore
 
 User - admin@yopmail.com, Pwd - 1
-
-> Multiple join in lamda exp
-> pagination in API
-> Authorisation on API
-> Memory Dispose
